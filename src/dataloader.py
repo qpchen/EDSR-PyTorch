@@ -1,5 +1,6 @@
 import threading
 import random
+import sys
 
 import torch
 import torch.multiprocessing as multiprocessing
@@ -8,7 +9,8 @@ from torch.utils.data import SequentialSampler
 from torch.utils.data import RandomSampler
 from torch.utils.data import BatchSampler
 from torch.utils.data import _utils
-from torch.utils.data.dataloader import _DataLoaderIter
+# from torch.utils.data.dataloader import _DataLoaderIter
+from torch.utils.data.dataloader import _BaseDataLoaderIter
 
 from torch.utils.data._utils import collate
 from torch.utils.data._utils import signal_handling
@@ -17,7 +19,13 @@ from torch.utils.data._utils import ExceptionWrapper
 from torch.utils.data._utils import IS_WINDOWS
 from torch.utils.data._utils.worker import ManagerWatchdog
 
-from torch._six import queue
+# from torch._six import queue
+TORCH_MAJOR = int(torch.__version__.split('.')[0])
+TORCH_MINOR = int(torch.__version__.split('.')[1])
+if TORCH_MAJOR == 1 and TORCH_MINOR < 8:
+    from torch._six import queue
+else:
+    import queue
 
 def _ms_loop(dataset, index_queue, data_queue, done_event, collate_fn, scale, seed, init_fn, worker_id):
     try:
@@ -65,7 +73,8 @@ def _ms_loop(dataset, index_queue, data_queue, done_event, collate_fn, scale, se
     except KeyboardInterrupt:
         pass
 
-class _MSDataLoaderIter(_DataLoaderIter):
+# class _MSDataLoaderIter(_DataLoaderIter):
+class _MSDataLoaderIter(_BaseDataLoaderIter):
 
     def __init__(self, loader):
         self.dataset = loader.dataset
