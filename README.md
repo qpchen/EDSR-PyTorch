@@ -37,11 +37,11 @@ We provide scripts for reproducing all the results from our paper. You can train
 * Python 3.6
 * PyTorch >= 1.0.0
 * numpy
-* skimage
+* scikit-image \[instead of skimage\]
 * **imageio**
 * matplotlib
 * tqdm
-* cv2 >= 3.xx (Only if you want to use video input/output)
+* cv2 >= 3.xx (Only if you want to use video input/output) \[should `pip install opencv-python`\]
 
 ## Code
 Clone this repository into any place you want.
