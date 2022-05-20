@@ -54,3 +54,9 @@ python main.py --model EDSR --scale 2 --patch_size 96 --save edsr_baseline_x2 --
 # RCAN_BIX8_G10R20P48, input=48x48, output=384x384
 #python main.py --template RCAN --save RCAN_BIX8_G10R20P48 --scale 8 --reset --save_results --patch_size 384 --pre_train ../experiment/model/RCAN_BIX2.pt
 
+# Test A2N model (x4) on Set5
+#python main.py --data_test Set5 --scale 4 --model AAN --pre_train ../experiment/model/aan_x4.pt --test_only --chop --save_results
+
+# Train A2N model (x2)
+#python main.py --n_GPUs 1 --model AAN --save ann_x2 --scale 2 --patch_size 128 --reset --chop --batch_size 32  --lr 5e-4 --epochs 2000[default 300] --skip_threshold 1e6[default 1e8] --data_test Set5[or DIV2K]
+# why --data_test DIV2K got evaluation error by dimension fault?
