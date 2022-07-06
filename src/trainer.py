@@ -45,8 +45,21 @@ class Trainer():
             timer_model.tic()
 
             self.optimizer.zero_grad()
-            sr = self.model(lr, 0)
-            loss = self.loss(sr, hr)
+            if self.args.model == 'BISRCNN' or self.args.model == 'BICNNV2':
+                sr, br = self.model(lr, 0, hr)
+                loss_forw = self.loss(sr, hr)
+                loss_back = self.loss(br, lr)
+                loss = (loss_forw + loss_back)/2
+            elif self.args.model == 'BICNNV3':
+                ff1, ff2, sr, bf1, bf2, br = self.model(lr, 0, hr)
+                loss_fea1 = self.loss(ff1, bf2)
+                loss_fea2 = self.loss(ff2, bf1)
+                loss_forw = self.loss(sr, hr)
+                loss_back = self.loss(br, lr)
+                loss = (loss_forw + loss_back + loss_fea1 + loss_fea2)/4
+            else:
+                sr = self.model(lr, 0)
+                loss = self.loss(sr, hr)
             loss.backward()
             if self.args.gclip > 0:
                 utils.clip_grad_value_(
