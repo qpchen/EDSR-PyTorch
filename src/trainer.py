@@ -45,18 +45,34 @@ class Trainer():
             timer_model.tic()
 
             self.optimizer.zero_grad()
-            if self.args.model == 'BISRCNN' or self.args.model == 'BICNNV2':
+            if self.args.model == 'BISRCNN' or self.args.model == 'BICNNV2' \
+                    or self.args.model == 'BIAANV3':
                 sr, br = self.model(lr, 0, hr)
                 loss_forw = self.loss(sr, hr)
                 loss_back = self.loss(br, lr)
                 loss = (loss_forw + loss_back)/2
-            elif self.args.model == 'BICNNV3':
-                ff1, ff2, sr, bf1, bf2, br = self.model(lr, 0, hr)
+            elif self.args.model == 'BICNNV3' or self.args.model == 'BICNNV4':
+                sr, br, ff1, ff2, bf1, bf2 = self.model(lr, 0, hr)
+                loss_forw = self.loss(sr, hr)
+                loss_back = self.loss(br, lr)
+                loss_fea1 = self.loss(ff1, bf2)
+                loss_fea2 = self.loss(ff2, bf1)
+                loss = (loss_forw + loss_back + loss_fea1 + loss_fea2)/4
+            elif self.args.model == 'BIAANV1' or self.args.model == 'BIAANV6':
+                sr, br, ff1, ff2, ff3, bf1, bf2, bf3 = self.model(lr, 0, hr)
+                loss_fea1 = self.loss(ff1, bf3)
+                loss_fea2 = self.loss(ff2, bf2)
+                loss_fea3 = self.loss(ff3, bf1)
+                loss_forw = self.loss(sr, hr)
+                loss_back = self.loss(br, lr)
+                loss = (loss_forw + loss_back + loss_fea1 + loss_fea2 + loss_fea3) / 5
+            elif self.args.model == 'BIAAN':  # version 5:
+                sr, br, ff1, ff2, bf1, bf2 = self.model(lr, 0, hr)
                 loss_fea1 = self.loss(ff1, bf2)
                 loss_fea2 = self.loss(ff2, bf1)
                 loss_forw = self.loss(sr, hr)
                 loss_back = self.loss(br, lr)
-                loss = (loss_forw + loss_back + loss_fea1 + loss_fea2)/4
+                loss = (loss_forw + loss_back + loss_fea1 + loss_fea2) / 4
             else:
                 sr = self.model(lr, 0)
                 loss = self.loss(sr, hr)
