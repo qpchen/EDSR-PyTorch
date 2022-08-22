@@ -46,7 +46,8 @@ class Trainer():
 
             self.optimizer.zero_grad()
             if self.args.model == 'BISRCNN' or self.args.model == 'BICNNV2' \
-                    or self.args.model == 'BIAANV3':
+                    or self.args.model == 'BIAANV3' or self.args.model == 'BIAANV3B' \
+                    or self.args.model == 'BIAANV3D' or self.args.model == 'BIAANV9':
                 sr, br = self.model(lr, 0, hr)
                 loss_forw = self.loss(sr, hr)
                 loss_back = self.loss(br, lr)
@@ -58,7 +59,9 @@ class Trainer():
                 loss_fea1 = self.loss(ff1, bf2)
                 loss_fea2 = self.loss(ff2, bf1)
                 loss = (loss_forw + loss_back + loss_fea1 + loss_fea2)/4
-            elif self.args.model == 'BIAANV1' or self.args.model == 'BIAANV6':
+            elif self.args.model == 'BIAANV1' or self.args.model == 'BIAANV6' \
+                    or self.args.model == 'BIAANV7' or self.args.model == 'BIAANV3C' \
+                    or self.args.model == 'BIAANV8':# or self.args.model == 'BIAANV3D':
                 sr, br, ff1, ff2, ff3, bf1, bf2, bf3 = self.model(lr, 0, hr)
                 loss_fea1 = self.loss(ff1, bf3)
                 loss_fea2 = self.loss(ff2, bf2)
@@ -66,7 +69,7 @@ class Trainer():
                 loss_forw = self.loss(sr, hr)
                 loss_back = self.loss(br, lr)
                 loss = (loss_forw + loss_back + loss_fea1 + loss_fea2 + loss_fea3) / 5
-            elif self.args.model == 'BIAAN':  # version 5:
+            elif self.args.model == 'BIAAN' or self.args.model == 'BIAANV3E':  # BIAAN means version 5
                 sr, br, ff1, ff2, bf1, bf2 = self.model(lr, 0, hr)
                 loss_fea1 = self.loss(ff1, bf2)
                 loss_fea2 = self.loss(ff2, bf1)
