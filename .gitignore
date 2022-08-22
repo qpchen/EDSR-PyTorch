@@ -68,5 +68,8 @@ target/
 # PyCharm
 .idea
 
-# Starlight HPC output file
+# Starlight HPC file
 *.out
+src/continuerun.sh
+src/startrun.sh
+src/runyh.sh
