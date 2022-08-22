@@ -76,6 +76,13 @@ class Trainer():
                 loss_forw = self.loss(sr, hr)
                 loss_back = self.loss(br, lr)
                 loss = (loss_forw + loss_back + loss_fea1 + loss_fea2) / 4
+            elif self.args.model == 'BIAANV3F' or self.args.model == 'BIAANV9A':  # BIAAN means version 5
+                sr, br, ff1, ff2, bf2, bf3 = self.model(lr, 0, hr)
+                loss_fea1 = self.loss(ff1, bf3)/2
+                loss_fea2 = self.loss(ff2, bf2)/2
+                loss_forw = self.loss(sr, hr)
+                loss_back = self.loss(br, lr)
+                loss = (loss_forw + loss_back + loss_fea1 + loss_fea2) / 3
             else:
                 sr = self.model(lr, 0)
                 loss = self.loss(sr, hr)
