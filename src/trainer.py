@@ -47,7 +47,8 @@ class Trainer():
             self.optimizer.zero_grad()
             if self.args.model == 'BISRCNN' or self.args.model == 'BICNNV2' \
                     or self.args.model == 'BIAANV3' or self.args.model == 'BIAANV3B' \
-                    or self.args.model == 'BIAANV3D' or self.args.model == 'BIAANV9':
+                    or self.args.model == 'BIAANV3D' or self.args.model == 'BIAANV9' \
+                    or self.args.model == 'BIAANV9C':
                 sr, br = self.model(lr, 0, hr)
                 loss_forw = self.loss(sr, hr)
                 loss_back = self.loss(br, lr)
@@ -77,11 +78,13 @@ class Trainer():
                 loss_back = self.loss(br, lr)
                 loss = (loss_forw + loss_back + loss_fea1 + loss_fea2) / 4
             elif self.args.model == 'BIAANV3F' or self.args.model == 'BIAANV9A' \
-                    or self.args.model == 'BIAANV3G':
+                    or self.args.model == 'BIAANV3G' or self.args.model == 'BIAANV9B':
                 sr, br, ff1, ff2, bf2, bf3 = self.model(lr, 0, hr)
-                ch = 40
-                loss_fea1 = self.loss(ff1/ch, bf3/ch)
-                loss_fea2 = self.loss(ff2/ch, bf2/ch)
+                # ch = 40
+                # loss_fea1 = self.loss(ff1/ch, bf3/ch)
+                # loss_fea2 = self.loss(ff2/ch, bf2/ch)
+                loss_fea1 = self.loss(ff1, bf3)
+                loss_fea2 = self.loss(ff2, bf2)
                 loss_forw = self.loss(sr, hr)
                 loss_back = self.loss(br, lr)
                 loss = (loss_forw + loss_back + loss_fea1 + loss_fea2) / 4
