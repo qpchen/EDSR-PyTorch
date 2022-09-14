@@ -12,7 +12,7 @@ nohup python main.py --n_GPUs 1 --scale 2 --patch_size 128 --lr 5e-4 --epochs 20
 #nohup python main.py --n_GPUs 1 --scale 2 --patch_size 128 --lr 5e-4 --epochs 2000 --skip_threshold 1e6 --data_test Set5 --batch_size 32 --gclip 5 --model BIAANV9B --load biann_v9bg_x2 --resume -1 > train_v9bg.out 2>&1 &
 #nohup python main.py --n_GPUs 1 --scale 2 --patch_size 128 --lr 5e-4 --epochs 2000 --skip_threshold 1e6 --data_test Set5 --batch_size 32 --gclip 5 --model BIAANV10 --reset --save biann_v10g_x2 > train_v10g.out 2>&1 &
 export CUDA_VISIBLE_DEVICES=3
-nohup python main.py --n_GPUs 1 --scale 2 --patch_size 128 --lr 5e-4 --epochs 2000 --skip_threshold 1e6 --data_test Set5 --batch_size 32 --gclip 5 --model BIAANV9C --reset --save biann_nov9c_x2  > train_nov9c.out 2>&1 &
+nohup python main.py --n_GPUs 1 --scale 2 --patch_size 128 --lr 5e-4 --epochs 2000 --skip_threshold 1e6 --data_test Set5 --batch_size 32 --gclip 5 --model BIAANV9C --reset --save biann_nov9cg_x2  > train_nov9c.out 2>&1 &
 
 #####################################################################
 # can use '--jobid=id' to continue yhbatch/yhrun jobs to old queue
