@@ -235,7 +235,7 @@ class BIAANV9B(nn.Module):
                 bfea2 = self.lrelu(self.batt2(bfea2))
                 bfea2 = self.lrelu(self.bLRconv2(bfea2))
 
-            btrunk = self.trunk_conv(self.AAB_trunk(bfea2))
+            btrunk = self.btrunk_conv(self.bAAB_trunk(bfea2))
             bfea3 = bfea2 + btrunk
 
             ################

@@ -235,7 +235,7 @@ class BIAANV9(nn.Module):
                 bfea2 = self.lrelu(self.batt1(bfea2))
                 bfea2 = self.bdownconv1(F.interpolate(bfea2, scale_factor=1/2, mode='nearest'))
 
-            btrunk = self.trunk_conv(self.AAB_trunk(bfea2))
+            btrunk = self.btrunk_conv(self.bAAB_trunk(bfea2))
             bfea3 = bfea2 + btrunk
 
             ################
