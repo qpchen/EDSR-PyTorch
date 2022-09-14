@@ -48,7 +48,8 @@ class Trainer():
             if self.args.model == 'BISRCNN' or self.args.model == 'BICNNV2' \
                     or self.args.model == 'BIAANV3' or self.args.model == 'BIAANV3B' \
                     or self.args.model == 'BIAANV3D' or self.args.model == 'BIAANV9' \
-                    or self.args.model == 'BIAANV9C' or self.args.model == 'BIAANV3H':
+                    or self.args.model == 'BIAANV9C' or self.args.model == 'BIAANV3H' \
+                    or self.args.model == 'BIAANV10':
                 sr, br = self.model(lr, 0, hr)
                 loss_forw = self.loss(sr, hr)
                 loss_back = self.loss(br, lr)
