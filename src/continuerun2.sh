@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #startid=999
-read -rp "Enter your name, please: " startid
+read -rp "Enter exist jobid, please: " startid
 
 # set python output immediately
 export PYTHONUNBUFFERED=1
