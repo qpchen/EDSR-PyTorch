@@ -55,7 +55,8 @@ class Trainer():
                 loss_forw = self.loss(sr, hr)
                 loss_back = self.loss(br, lr)
                 loss = (loss_forw + loss_back)/2
-            elif self.args.model == 'BICNNV3' or self.args.model == 'BICNNV4':
+            elif self.args.model == 'BICNNV3' or self.args.model == 'BICNNV4' \
+                    or self.args.model == 'BIFSRCNNV8':
                 sr, br, ff1, ff2, bf1, bf2 = self.model(lr, 0, hr)
                 loss_forw = self.loss(sr, hr)
                 loss_back = self.loss(br, lr)
@@ -121,6 +122,17 @@ class Trainer():
                 loss_fea7 = self.loss(f7, b1)
                 loss = (loss_forw + loss_back + loss_fea1 + loss_fea2 + loss_fea3 +
                         loss_fea4 + loss_fea5 + loss_fea6 + loss_fea7) / 9
+            elif self.args.model == 'BIFSRCNNV7':
+                sr, br, f2, f3, f4, f5, f6, b2, b3, b4, b5, b6 = self.model(lr, 0, hr)
+                loss_forw = self.loss(sr, hr)
+                loss_back = self.loss(br, lr)
+                loss_fea2 = self.loss(f2, b6)
+                loss_fea3 = self.loss(f3, b5)
+                loss_fea4 = self.loss(f4, b4)
+                loss_fea5 = self.loss(f5, b3)
+                loss_fea6 = self.loss(f6, b2)
+                loss = (loss_forw + loss_back + loss_fea2 + loss_fea3 +
+                        loss_fea4 + loss_fea5 + loss_fea6) / 7
             else:
                 sr = self.model(lr, 0)
                 loss = self.loss(sr, hr)

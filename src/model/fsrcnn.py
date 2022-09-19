@@ -60,7 +60,7 @@ class FSRCNN(nn.Module):
                                          (4, 4), (upscale_factor - 1, upscale_factor - 1))
 
         # Initialize model weights.
-        self._initialize_weights()
+        # self._initialize_weights()
 
     def forward(self, x):
         # x = self.sub_mean(x)
