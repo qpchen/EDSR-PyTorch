@@ -3,13 +3,14 @@ import math
 from decimal import Decimal
 
 import utility
+import model
 
 import torch
 import torch.nn.utils as utils
 from tqdm import tqdm
 
 class Trainer():
-    def __init__(self, args, loader, my_model, my_loss, ckp):
+    def __init__(self, args, loader, my_model, my_loss, ckp, ref_model=None):
         self.args = args
         self.scale = args.scale
 
@@ -19,6 +20,7 @@ class Trainer():
         self.model = my_model
         self.loss = my_loss
         self.optimizer = utility.make_optimizer(args, self.model)
+        self.ref_model = ref_model
 
         if self.args.load != '':
             self.optimizer.load(ckp.dir, epoch=len(ckp.log))
@@ -51,7 +53,7 @@ class Trainer():
                     or self.args.model == 'BIAANV9C' or self.args.model == 'BIAANV3H' \
                     or self.args.model == 'BIAANV10' or self.args.model == 'BIAANV12' \
                     or self.args.model == 'BIFSRCNNV3' or self.args.model == 'BIFSRCNNV6' \
-                    or self.args.model == 'BIFSRCNNV9':
+                    or self.args.model == 'BIFSRCNNV9' or self.args.model == 'IRN':
                 sr, br = self.model(lr, 0, hr)
                 loss_forw = self.loss(sr, hr)
                 loss_back = self.loss(br, lr)
@@ -123,7 +125,8 @@ class Trainer():
                 loss_fea7 = self.loss(f7, b1)
                 loss = (loss_forw + loss_back + loss_fea1 + loss_fea2 + loss_fea3 +
                         loss_fea4 + loss_fea5 + loss_fea6 + loss_fea7) / 9
-            elif self.args.model == 'BIFSRCNNV7' or self.args.model == 'BIFSRCNNV10':
+            elif self.args.model == 'BIFSRCNNV7' or self.args.model == 'BIFSRCNNV10' \
+                    or self.args.model == 'BIFSRCNNPS':
                 sr, br, f2, f3, f4, f5, f6, b2, b3, b4, b5, b6 = self.model(lr, 0, hr)
                 loss_forw = self.loss(sr, hr)
                 loss_back = self.loss(br, lr)
@@ -134,6 +137,35 @@ class Trainer():
                 loss_fea6 = self.loss(f6, b2)
                 loss = (loss_forw + loss_back + loss_fea2 + loss_fea3 +
                         loss_fea4 + loss_fea5 + loss_fea6) / 7
+            elif self.args.model == 'DFSRCNN' or self.args.model == 'DFSRCNNPS':
+                br = self.model(hr, 0)
+                loss = self.loss(br, lr)
+            elif self.args.model == 'UFSRCNN':
+                sr, f1, f2, f3, f4 = self.model(lr, 0, True)
+                br, b1, b2, b3, b4 = self.ref_model(hr, 0, True)
+                loss_forw = self.loss(sr, hr)
+                # loss_fea1 = self.loss(f1, b4)  # v2
+                loss_fea2 = self.loss(f2, b3)
+                loss_fea3 = self.loss(f3, b2)
+                # loss_fea4 = self.loss(f4, b1)  # v1
+                # loss = (loss_forw + loss_fea1 + loss_fea2 + loss_fea3 + loss_fea4) / 5  # v1
+                # loss = (loss_forw + loss_fea1 + loss_fea2 + loss_fea3) / 4  # v2
+                loss = (loss_forw + loss_fea2 + loss_fea3) / 3
+            elif self.args.model == 'UFSRCNNPS' or self.args.model == 'UFSRCNNPSV2':
+                sr, f1, f2, f3, f4, f5, f6, f7 = self.model(lr, 0, True)
+                br, b1, b2, b3, b4, b5, b6, b7 = self.ref_model(hr, 0, True)
+                loss_forw = self.loss(sr, hr)
+                loss_fea1 = self.loss(f1, b7)
+                loss_fea2 = self.loss(f2, b6)
+                loss_fea3 = self.loss(f3, b5)
+                loss_fea4 = self.loss(f4, b4)
+                loss_fea5 = self.loss(f5, b3)
+                loss_fea6 = self.loss(f6, b2)
+                loss_fea7 = self.loss(f7, b1)
+                # loss = (loss_forw + loss_fea2 + loss_fea3 + loss_fea4 + loss_fea5 + loss_fea6) / 6  # v2
+                # loss = (loss_forw + loss_fea2 + loss_fea6) / 3  # v3
+                loss = (loss_forw + loss_fea1 + loss_fea2 + loss_fea3 +
+                        loss_fea4 + loss_fea5 + loss_fea6 + loss_fea7) / 8  # v4
             else:
                 sr = self.model(lr, 0)
                 loss = self.loss(sr, hr)
@@ -176,20 +208,36 @@ class Trainer():
         for idx_data, d in enumerate(self.loader_test):
             for idx_scale, scale in enumerate(self.scale):
                 d.dataset.set_scale(idx_scale)
-                for lr, hr, filename in tqdm(d, ncols=80):
-                    lr, hr = self.prepare(lr, hr)
-                    sr = self.model(lr, idx_scale)
-                    sr = utility.quantize(sr, self.args.rgb_range)
+                if self.args.model == 'DFSRCNN' or self.args.model == 'DFSRCNNPS':
+                    for lr, hr, filename in tqdm(d, ncols=80):
+                        lr, hr = self.prepare(lr, hr)
+                        br = self.model(hr, idx_scale)
+                        br = utility.quantize(br, self.args.rgb_range)
 
-                    save_list = [sr]
-                    self.ckp.log[-1, idx_data, idx_scale] += utility.calc_psnr(
-                        sr, hr, scale, self.args.rgb_range, dataset=d
-                    )
-                    if self.args.save_gt:
-                        save_list.extend([lr, hr])
+                        save_list = [br]
+                        self.ckp.log[-1, idx_data, idx_scale] += utility.calc_psnr(
+                            br, lr, scale, self.args.rgb_range, dataset=d
+                        )
+                        if self.args.save_gt:
+                            save_list.extend([lr, hr])
 
-                    if self.args.save_results:
-                        self.ckp.save_results(d, filename[0], save_list, scale)
+                        if self.args.save_results:
+                            self.ckp.save_results(d, filename[0], save_list, scale)
+                else:
+                    for lr, hr, filename in tqdm(d, ncols=80):
+                        lr, hr = self.prepare(lr, hr)
+                        sr = self.model(lr, idx_scale)
+                        sr = utility.quantize(sr, self.args.rgb_range)
+
+                        save_list = [sr]
+                        self.ckp.log[-1, idx_data, idx_scale] += utility.calc_psnr(
+                            sr, hr, scale, self.args.rgb_range, dataset=d
+                        )
+                        if self.args.save_gt:
+                            save_list.extend([lr, hr])
+
+                        if self.args.save_results:
+                            self.ckp.save_results(d, filename[0], save_list, scale)
 
                 self.ckp.log[-1, idx_data, idx_scale] /= len(d)
                 best = self.ckp.log.max(0)
