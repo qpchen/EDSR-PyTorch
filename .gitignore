@@ -73,3 +73,6 @@ target/
 #src/continuerun.sh
 #src/startrun.sh
 src/runyh.sh
+
+# Jupyter temp file
+*.ipynb_checkpoints/
