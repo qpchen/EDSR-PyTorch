@@ -155,17 +155,18 @@ class Trainer():
                 sr, f1, f2, f3, f4, f5, f6, f7 = self.model(lr, 0, True)
                 br, b1, b2, b3, b4, b5, b6, b7 = self.ref_model(hr, 0, True)
                 loss_forw = self.loss(sr, hr)
-                loss_fea1 = self.loss(f1, b7)
+                # loss_fea1 = self.loss(f1, b7)
                 loss_fea2 = self.loss(f2, b6)
-                loss_fea3 = self.loss(f3, b5)
-                loss_fea4 = self.loss(f4, b4)
-                loss_fea5 = self.loss(f5, b3)
+                # loss_fea3 = self.loss(f3, b5)
+                # loss_fea4 = self.loss(f4, b4)
+                # loss_fea5 = self.loss(f5, b3)
                 loss_fea6 = self.loss(f6, b2)
-                loss_fea7 = self.loss(f7, b1)
+                # loss_fea7 = self.loss(f7, b1)
                 # loss = (loss_forw + loss_fea2 + loss_fea3 + loss_fea4 + loss_fea5 + loss_fea6) / 6  # v2
-                # loss = (loss_forw + loss_fea2 + loss_fea6) / 3  # v3
-                loss = (loss_forw + loss_fea1 + loss_fea2 + loss_fea3 +
-                        loss_fea4 + loss_fea5 + loss_fea6 + loss_fea7) / 8  # v4
+                loss = (loss_forw + loss_fea2 + loss_fea6) / 3  # v3
+                # loss = (loss_forw + loss_fea1 + loss_fea2 + loss_fea3 +
+                #         loss_fea4 + loss_fea5 + loss_fea6 + loss_fea7) / 8  # v4
+                # loss = (loss_forw + loss_fea1 + loss_fea2 + loss_fea6 + loss_fea7) / 5  # v5
             else:
                 sr = self.model(lr, 0)
                 loss = self.loss(sr, hr)

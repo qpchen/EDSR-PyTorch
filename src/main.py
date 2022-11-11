@@ -33,7 +33,12 @@ def main():
             elif args.model == 'UFSRCNNPS' or args.model == 'UFSRCNNPSV2':
                 downargs = copy.deepcopy(args)
                 downargs.model = 'DFSRCNNPS'
-                downargs.save = 'dfsrcnnps_v1_x2'
+                if args.scale == 2:
+                    downargs.save = 'dfsrcnnps_v1_x2'
+                elif args.scale == 3:
+                    downargs.save = 'dfsrcnnps_v1_x3'
+                elif args.scale == 4:
+                    downargs.save = 'dfsrcnnps_v1_x4'
                 downargs.load = ''
                 downargs.resume = 0
                 downargs.reset = False
