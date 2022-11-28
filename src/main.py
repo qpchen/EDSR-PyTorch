@@ -30,14 +30,15 @@ def main():
                 downargs.reset = False
                 downckp = utility.checkpoint(downargs)
                 downmodel = model.Model(downargs, downckp)
-            elif args.model == 'UFSRCNNPS' or args.model == 'UFSRCNNPSV2':
+            elif args.model == 'UFSRCNNPS' or args.model == 'UFSRCNNPSV2' \
+                    or args.model == 'UFSRCNNPSV6':
                 downargs = copy.deepcopy(args)
                 downargs.model = 'DFSRCNNPS'
-                if args.scale == 2:
+                if args.scale[0] == 2:
                     downargs.save = 'dfsrcnnps_v1_x2'
-                elif args.scale == 3:
+                elif args.scale[0] == 3:
                     downargs.save = 'dfsrcnnps_v1_x3'
-                elif args.scale == 4:
+                elif args.scale[0] == 4:
                     downargs.save = 'dfsrcnnps_v1_x4'
                 downargs.load = ''
                 downargs.resume = 0

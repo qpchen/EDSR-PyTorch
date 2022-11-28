@@ -151,7 +151,8 @@ class Trainer():
                 # loss = (loss_forw + loss_fea1 + loss_fea2 + loss_fea3 + loss_fea4) / 5  # v1
                 # loss = (loss_forw + loss_fea1 + loss_fea2 + loss_fea3) / 4  # v2
                 loss = (loss_forw + loss_fea2 + loss_fea3) / 3
-            elif self.args.model == 'UFSRCNNPS' or self.args.model == 'UFSRCNNPSV2':
+            elif self.args.model == 'UFSRCNNPS' or self.args.model == 'UFSRCNNPSV2' \
+                    or self.args.model == 'UFSRCNNPSV6':
                 sr, f1, f2, f3, f4, f5, f6, f7 = self.model(lr, 0, True)
                 br, b1, b2, b3, b4, b5, b6, b7 = self.ref_model(hr, 0, True)
                 loss_forw = self.loss(sr, hr)
