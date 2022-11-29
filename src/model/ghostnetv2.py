@@ -191,6 +191,8 @@ class GhostNetV2(nn.Module):
     def __init__(self, args, num_classes=1000, width=1.0, dropout=0.2, block=GhostBottleneckV2):
         super(GhostNetV2, self).__init__()
         # self.cfgs = cfgs
+        rf1 = 2
+        rf2 = 4
         self.cfgs = [
             # k, t, c, SE, s
             # ########## init version ##########
@@ -200,23 +202,23 @@ class GhostNetV2(nn.Module):
             # [[5, 72, 40, 0.25, 1]],
             # [[5, 120, 40, 0.25, 1]]
             # ########## debug version ##########
-            [[3, 16/2, 16/2, 0, 1]],
-            [[3, 48/2, 24/2, 0, 1]],
-            [[3, 72/2, 24/2, 0, 1]],
-            [[5, 72/2, 40/2, 0.25, 1]],
-            [[5, 120/2, 40/2, 0.25, 1]],
-            [[3, 240/4, 80/4, 0, 1]],
-            [[3, 200/4, 80/4, 0, 1],
-             [3, 184/4, 80/4, 0, 1],
-             [3, 184/4, 80/4, 0, 1],
-             [3, 480/4, 112/4, 0.25, 1],
-             [3, 672/4, 112/4, 0.25, 1]
+            [[3, 16/rf1, 16/rf1, 0, 1]],
+            [[3, 48/rf1, 24/rf1, 0, 1]],
+            [[3, 72/rf1, 24/rf1, 0, 1]],
+            [[5, 72/rf1, 40/rf1, 0.25, 1]],
+            [[5, 120/rf1, 40/rf1, 0.25, 1]],
+            [[3, 240/rf2, 80/rf2, 0, 1]],
+            [[3, 200/rf2, 80/rf2, 0, 1],
+             [3, 184/rf2, 80/rf2, 0, 1],
+             [3, 184/rf2, 80/rf2, 0, 1],
+             [3, 480/rf2, 112/rf2, 0.25, 1],
+             [3, 672/rf2, 112/rf2, 0.25, 1]
              ],
-            [[5, 672/4, 160/4, 0.25, 1]],
-            [[5, 960/4, 160/4, 0, 1],
-             [5, 960/4, 160/4, 0.25, 1],
-             [5, 960/4, 160/4, 0, 1],
-             [5, 960/4, 160/4, 0.25, 1]
+            [[5, 672/rf2, 160/rf2, 0.25, 1]],
+            [[5, 960/rf2, 160/rf2, 0, 1],
+             [5, 960/rf2, 160/rf2, 0.25, 1],
+             [5, 960/rf2, 160/rf2, 0, 1],
+             [5, 960/rf2, 160/rf2, 0.25, 1]
              ]
         ]
         self.dropout = dropout
@@ -252,7 +254,7 @@ class GhostNetV2(nn.Module):
 
         # building last several layers
         conv = common.default_conv
-        output_channel = 320  # 160
+        output_channel = 1280 // rf2  # 160
         self.global_pool = nn.AdaptiveAvgPool2d((1, 1))
         self.conv_head = nn.Conv2d(input_channel, output_channel, 1, 1, 0, bias=True)
         self.act2 = nn.ReLU(inplace=True)
