@@ -143,6 +143,12 @@ parser.add_argument('--save_results', action='store_true',
 parser.add_argument('--save_gt', action='store_true',
                     help='save low-resolution and high-resolution images together')
 
+# GhostNetV2 reduce factor settings
+parser.add_argument('--rf1', type=int, default='2',
+                    help='GhostNetV2 reduce factor 1 stage')
+parser.add_argument('--rf2', type=int, default='4',
+                    help='GhostNetV2 reduce factor 2 stage')
+
 args = parser.parse_args()
 template.set_template(args)
 

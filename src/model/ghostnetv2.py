@@ -191,8 +191,8 @@ class GhostNetV2(nn.Module):
     def __init__(self, args, num_classes=1000, width=1.0, dropout=0.2, block=GhostBottleneckV2):
         super(GhostNetV2, self).__init__()
         # self.cfgs = cfgs
-        rf1 = 2
-        rf2 = 4
+        rf1 = args.rf1
+        rf2 = args.rf2
         self.cfgs = [
             # k, t, c, SE, s
             # ########## init version ##########
