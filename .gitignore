@@ -71,8 +71,9 @@ target/
 # Starlight HPC file
 *.out
 #src/continuerun.sh
-#src/startrun.sh
-src/runyh.sh
+!src/startrun.sh
+src/*.sh
+*.tar
 
 # Jupyter temp file
 *.ipynb_checkpoints/
