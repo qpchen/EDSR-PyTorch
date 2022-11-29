@@ -254,7 +254,8 @@ class GhostNetV2(nn.Module):
 
         # building last several layers
         conv = common.default_conv
-        output_channel = 1280 // rf2  # 160
+        # output_channel = 160
+        output_channel = 1280 // rf2
         self.global_pool = nn.AdaptiveAvgPool2d((1, 1))
         self.conv_head = nn.Conv2d(input_channel, output_channel, 1, 1, 0, bias=True)
         self.act2 = nn.ReLU(inplace=True)
