@@ -7,6 +7,7 @@ import model
 import loss
 from option import args
 from trainer import Trainer
+from torchinfo import summary
 
 torch.manual_seed(args.seed)
 checkpoint = utility.checkpoint(args)
@@ -50,6 +51,11 @@ def main():
             loader = data.Data(args)
             _model = model.Model(args, checkpoint)
             _loss = loss.Loss(args, checkpoint) if not args.test_only else None
+            # param = utility.count_param(_model, args.model)
+            # print('%s total parameters: %.2fM (%d)' % (args.model, param / 1e6, param))
+            _batch_size = args.batch_size if not args.test_only else 1
+            summary(_model, [(_batch_size, args.n_colors, args.patch_size, args.patch_size), args.scale])
+
             t = Trainer(args, loader, _model, _loss, checkpoint, downmodel)
             while not t.terminate():
                 t.train()

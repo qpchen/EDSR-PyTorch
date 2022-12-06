@@ -236,3 +236,13 @@ def make_optimizer(args, target):
     optimizer._register_scheduler(scheduler_class, **kwargs_scheduler)
     return optimizer
 
+# compute model params
+def count_param(model, model_name):
+    layer_count = 0
+    param_count = 0
+    for param in model.parameters():
+        param_count += param.view(-1).size()[0]
+        layer_count += 1
+        print('%s layer %i parameters: %.2fM (%d)' %
+              (model_name, layer_count, param.view(-1).size()[0] / 1e6, param.view(-1).size()[0]))
+    return param_count
