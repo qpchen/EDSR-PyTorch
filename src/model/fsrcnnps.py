@@ -22,8 +22,8 @@ class FSRCNNPS(nn.Module):
         num_channels = args.n_colors
 
         # RGB mean for DIV2K
-        self.sub_mean = common.MeanShift(args.rgb_range)
-        self.add_mean = common.MeanShift(args.rgb_range, sign=1)
+        # self.sub_mean = common.MeanShift(args.rgb_range)
+        # self.add_mean = common.MeanShift(args.rgb_range, sign=1)
 
         # Feature extraction layer.
         self.feature_extraction = nn.Sequential(
