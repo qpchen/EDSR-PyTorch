@@ -113,16 +113,16 @@ class BIFSRCNNLIV4(nn.Module):
         #################################################
         # Bi-direct loss process layers
         # Bi-direct Deconv layer
-        self.lsdeconv = nn.Sequential(
-            nn.Conv2d(num_channels, num_channels, (3, 3), (1, 1), (1, 1)),
-            nn.PReLU(num_channels)
-        )
+        # self.lsdeconv = nn.Sequential(
+        #     nn.Conv2d(num_channels, num_channels, (3, 3), (1, 1), (1, 1)),
+        #     nn.PReLU(num_channels)
+        # )
 
         # Bi-direct Expanding layer
-        self.lsexpand = nn.Sequential(
-            nn.Conv2d(56, 56, (3, 3), (1, 1), (1, 1)),
-            nn.PReLU(56)
-        )
+        # self.lsexpand = nn.Sequential(
+        #     nn.Conv2d(56, 56, (3, 3), (1, 1), (1, 1)),
+        #     nn.PReLU(56)
+        # )
 
         # Bi-direct Mapping layer.
         self.lsmap1 = nn.Sequential(
@@ -150,10 +150,10 @@ class BIFSRCNNLIV4(nn.Module):
         )
 
         # Bi-direct Feature extraction layer
-        self.lsfeature = nn.Sequential(
-            nn.Conv2d(56, 56, (3, 3), (1, 1), (1, 1)),
-            nn.PReLU(56)
-        )
+        # self.lsfeature = nn.Sequential(
+        #     nn.Conv2d(56, 56, (3, 3), (1, 1), (1, 1)),
+        #     nn.PReLU(56)
+        # )
         #################################################
 
         # Initialize model weights.
