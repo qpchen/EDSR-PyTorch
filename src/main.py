@@ -54,8 +54,10 @@ def main():
             # param = utility.count_param(_model, args.model)
             # print('%s total parameters: %.2fM (%d)' % (args.model, param / 1e6, param))
             _batch_size = args.batch_size if not args.test_only else 1
-            summary(_model, [(_batch_size, args.n_colors, args.patch_size, args.patch_size), args.scale])
-
+            model_stats = summary(_model, [(_batch_size, args.n_colors, args.patch_size, args.patch_size), args.scale])
+            summary_str = str(model_stats)
+            print(summary_str)
+            checkpoint.write_log(summary_str)
             t = Trainer(args, loader, _model, _loss, checkpoint, downmodel)
             while not t.terminate():
                 t.train()
