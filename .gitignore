@@ -63,7 +63,7 @@ target/
 *.png
 *.txt
 *.swp
-.vscode
+# .vscode
 
 # PyCharm
 .idea
@@ -77,3 +77,7 @@ src/*.sh
 
 # Jupyter temp file
 *.ipynb_checkpoints/
+
+# Temporally Test IRN net
+src/model/irn.py
+src/model/modules/

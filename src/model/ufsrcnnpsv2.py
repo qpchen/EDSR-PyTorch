@@ -83,9 +83,10 @@ class UFSRCNNPSV2(nn.Module):
 
         # Bi-direct Expanding layer
         self.biexpand = nn.Sequential(
-            nn.Conv2d(56, 56, (3, 3), (1, 1), (1, 1)),
+            nn.Conv2d(56, 56, (1, 1), (1, 1), (0, 0)),
             nn.PReLU(56)
-        )  # v5: nn.Conv2d(56, 56, (1, 1), (1, 1), (0, 0))
+        )  # v3: nn.Conv2d(56, 56, (1, 1), (1, 1), (0, 0))
+        # v5: nn.Conv2d(56, 56, (3, 3), (1, 1), (1, 1))
 
         # Bi-direct Mapping layer.
         self.bimap1 = nn.Sequential(
@@ -114,9 +115,10 @@ class UFSRCNNPSV2(nn.Module):
 
         # Bi-direct Feature extraction layer
         self.bifeature = nn.Sequential(
-            nn.Conv2d(56, 56, (3, 3), (1, 1), (1, 1)),
+            nn.Conv2d(56, 56, (1, 1), (1, 1), (0, 0)),
             nn.PReLU(56)
-        )
+        )  # v3: nn.Conv2d(56, 56, (1, 1), (1, 1), (0, 0))
+        # v5: nn.Conv2d(56, 56, (3, 3), (1, 1), (1, 1))
 
         # Initialize model weights.
         # self._initialize_weights()

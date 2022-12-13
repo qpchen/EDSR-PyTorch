@@ -167,10 +167,10 @@ class Trainer():
                 loss_fea6 = self.loss(f6, b2)
                 loss_fea7 = self.loss(f7, b1)
                 # loss = (loss_forw + loss_fea2 + loss_fea3 + loss_fea4 + loss_fea5 + loss_fea6) / 6  # v2
-                # loss = (loss_forw + loss_fea2 + loss_fea6) / 3  # v3 & v7
+                loss = (loss_forw + loss_fea2 + loss_fea6) / 3  # v3 & v7
                 # loss = (loss_forw + loss_fea1 + loss_fea2 + loss_fea3 +
                 #         loss_fea4 + loss_fea5 + loss_fea6 + loss_fea7) / 8  # v4
-                loss = (loss_forw + loss_fea1 + loss_fea2 + loss_fea6 + loss_fea7) / 5  # v5
+                # loss = (loss_forw + loss_fea1 + loss_fea2 + loss_fea6 + loss_fea7) / 5  # v5
             else:
                 sr = self.model(lr, 0)
                 loss = self.loss(sr, hr)

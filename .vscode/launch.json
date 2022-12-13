@@ -1,0 +1,47 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "cwd": "${workspaceFolder}/src",
+            "args": [
+                "--n_GPUs",
+                "1",
+                "--scale",
+                "2",
+                "--patch_size",
+                "128",
+                "--batch_size",
+                "32",
+                "--data_test",
+                "Set5",
+                "--loss",
+                "1*MSE",
+                "--lr",
+                "1e-3",
+                "--n_colors",
+                "3",
+                "--optimizer",
+                "ADAM",
+                "--skip_threshold",
+                "1e6",
+                "--epochs",
+                "2000",
+                "--model",
+                "FSRCNNA",
+                "--save",
+                "fsrcnn_a_IU_x2",
+                "--reset"
+            ],
+            "env": {
+                "PYTHONUNBUFFERED": "1",
+                "CUDA_VISIBLE_DEVICES": "0"
+            },
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ]
+}
