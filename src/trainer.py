@@ -264,6 +264,8 @@ class Trainer():
 
         if not self.args.test_only:
             self.ckp.save(self, epoch, is_best=(best[1][0, 0] + 1 == epoch))
+        if self.args.acb_switch:
+            self.model.save_acb_inf(self.ckp.get_path('model'), epoch)
 
         self.ckp.write_log(
             'Total: {:.2f}s\n'.format(timer_test.toc()), refresh=True
@@ -281,6 +283,10 @@ class Trainer():
 
     def terminate(self):
         if self.args.test_only:
+            if self.args.acb_switch:
+                for m in self.model.modules():
+                    if hasattr(m, 'switch_to_deploy'):
+                        m.switch_to_deploy()
             self.test()
             return True
         else:

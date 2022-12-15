@@ -36,9 +36,9 @@ class FSRCNNAC(nn.Module):
     def __init__(self, args):
         super(FSRCNNAC, self).__init__()
 
-        upscale_factor = args.scale[0]
         num_channels = args.n_colors
         self.scale = args.scale[0]
+        use_inf = args.acb_inf
 
         # RGB mean for DIV2K
         self.sub_mean = common.MeanShift(args.rgb_range)
@@ -46,7 +46,7 @@ class FSRCNNAC(nn.Module):
 
         # Feature extraction layer.
         self.feature_extraction = nn.Sequential(
-            acb.ACBlock(num_channels, 56, 5, 1, 2),
+            acb.ACBlock(num_channels, 56, 5, 1, 2, deploy=use_inf),
             nn.PReLU(56)
         )
 
@@ -58,13 +58,13 @@ class FSRCNNAC(nn.Module):
 
         # Mapping layer.
         self.map = nn.Sequential(
-            acb.ACBlock(12, 12, 3, 1, 1),
+            acb.ACBlock(12, 12, 3, 1, 1, deploy=use_inf),
             nn.PReLU(12),
-            acb.ACBlock(12, 12, 3, 1, 1),
+            acb.ACBlock(12, 12, 3, 1, 1, deploy=use_inf),
             nn.PReLU(12),
-            acb.ACBlock(12, 12, 3, 1, 1),
+            acb.ACBlock(12, 12, 3, 1, 1, deploy=use_inf),
             nn.PReLU(12),
-            acb.ACBlock(12, 12, 3, 1, 1),
+            acb.ACBlock(12, 12, 3, 1, 1, deploy=use_inf),
             nn.PReLU(12)
         )
 
@@ -92,12 +92,12 @@ class FSRCNNAC(nn.Module):
         # )
 
         self.upconv1 = nn.Sequential(
-            acb.ACBlock(56, 24, 3, 1, 1),
+            acb.ACBlock(56, 24, 3, 1, 1, deploy=use_inf),
             PA(24),
             nn.PReLU(24),
-            acb.ACBlock(24, 24, 3, 1, 1),
+            acb.ACBlock(24, 24, 3, 1, 1, deploy=use_inf),
             nn.PReLU(24),
-            acb.ACBlock(24, num_channels, 3, 1, 1)
+            acb.ACBlock(24, num_channels, 3, 1, 1, deploy=use_inf)
         )
 
     def forward(self, x):

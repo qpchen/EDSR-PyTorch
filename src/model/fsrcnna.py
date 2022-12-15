@@ -34,7 +34,6 @@ class FSRCNNA(nn.Module):
     def __init__(self, args):
         super(FSRCNNA, self).__init__()
 
-        upscale_factor = args.scale[0]
         num_channels = args.n_colors
         self.scale = args.scale[0]
 

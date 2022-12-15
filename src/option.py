@@ -149,6 +149,13 @@ parser.add_argument('--rf1', type=int, default='2',
 parser.add_argument('--rf2', type=int, default='4',
                     help='GhostNetV2 reduce factor 2 stage')
 
+# ACBlock inference-time settings
+parser.add_argument('--acb_inf', action='store_true',
+                    help='Load ACBlock using inference-time Structure')
+parser.add_argument('--acb_switch', action='store_true',
+                    help='When test_only, load training-time ACBlock, then switch to inference-time model and save it')
+
+
 args = parser.parse_args()
 template.set_template(args)
 
