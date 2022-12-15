@@ -38,7 +38,7 @@ class FSRCNNAC(nn.Module):
 
         num_channels = args.n_colors
         self.scale = args.scale[0]
-        use_inf = args.acb_inf
+        use_inf = args.load_inf
 
         # RGB mean for DIV2K
         self.sub_mean = common.MeanShift(args.rgb_range)

@@ -75,19 +75,18 @@ class Model(nn.Module):
         for s in save_dirs:
             torch.save(self.model.state_dict(), s)
 
-    def save_acb_inf(self, apath, epoch, is_best=False):
-            save_dirs = [os.path.join(apath, 'acb_inf_model.pt')]
+    def save_inf(self, apath, epoch, is_best=False):
+            save_dirs = [os.path.join(apath, 'inf_model.pt')]
 
             if is_best:
-                save_dirs.append(os.path.join(apath, 'acb_inf_model_best.pt'))
+                save_dirs.append(os.path.join(apath, 'inf_model_best.pt'))
             if self.save_models:
                 save_dirs.append(
-                    os.path.join(apath, 'acb_inf_model_{}.pt'.format(epoch))
+                    os.path.join(apath, 'inf_model_{}.pt'.format(epoch))
                 )
 
             for s in save_dirs:
                 torch.save(self.model.state_dict(), s)
-
 
     def load(self, apath, pre_train='', resume=-1, cpu=False):
         load_from = None
