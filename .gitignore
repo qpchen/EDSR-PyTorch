@@ -63,7 +63,8 @@ target/
 *.png
 *.txt
 *.swp
-# .vscode
+.vscode
+!.vscode/launch.json
 
 # PyCharm
 .idea

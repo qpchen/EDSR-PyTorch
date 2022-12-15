@@ -19,7 +19,7 @@
                 "--data_test",
                 "Set5",
                 "--loss",
-                "1*MSE",
+                "1*SmoothL1",
                 "--lr",
                 "1e-3",
                 "--n_colors",
@@ -29,16 +29,16 @@
                 "--skip_threshold",
                 "1e6",
                 "--epochs",
-                "2000",
+                "3000",
                 "--model",
-                "FSRCNNA",
+                "FSRCNNAC",
                 "--save",
-                "fsrcnn_a_IU_x2",
+                "fsrcnn_ac_x2",
                 "--reset"
             ],
             "env": {
                 "PYTHONUNBUFFERED": "1",
-                "CUDA_VISIBLE_DEVICES": "0"
+                "CUDA_VISIBLE_DEVICES": "1"
             },
             "console": "integratedTerminal",
             "justMyCode": true
