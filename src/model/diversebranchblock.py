@@ -113,7 +113,7 @@ class DiverseBranchBlock(nn.Module):
             self.dbb_origin = conv_bn(in_channels=in_channels, out_channels=out_channels, kernel_size=kernel_size, stride=stride, padding=padding, dilation=dilation, groups=groups)
 
             self.dbb_avg = nn.Sequential()
-            if groups < out_channels:
+            if groups <= out_channels:  # by Qiangpu: modified from < to <=, for Y channel training, when out_channels=1, groups=1
                 self.dbb_avg.add_module('conv',
                                         nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=1,
                                                   stride=1, padding=0, groups=groups, bias=False))
