@@ -8,7 +8,7 @@ import torch.nn.functional as F
 from model import acb
 
 def make_model(args, parent=False):
-    return FSRCNNRAC(args)
+    return FSRCNNRACV2(args)
 
 class PA(nn.Module):
     '''PA is pixel attention'''
@@ -26,7 +26,7 @@ class PA(nn.Module):
 
         return out
 
-class FSRCNNRAC(nn.Module):
+class FSRCNNRACV2(nn.Module):
     """
     Args:
         upscale_factor (int): Image magnification factor.
@@ -34,7 +34,7 @@ class FSRCNNRAC(nn.Module):
 
     # def __init__(self, upscale_factor: int) -> None:
     def __init__(self, args):
-        super(FSRCNNRAC, self).__init__()
+        super(FSRCNNRACV2, self).__init__()
 
         num_channels = args.n_colors
         self.scale = args.scale[0]
@@ -82,14 +82,7 @@ class FSRCNNRAC(nn.Module):
         # self._initialize_weights()
 
         #### IU: upsampling interpolate version
-        self.upconv1 = nn.Sequential(
-            nn.Conv2d(56, 24, 3, 1, 1, bias=True),
-            PA(24),
-            nn.PReLU(24),
-            nn.Conv2d(24, 24, 3, 1, 1, bias=True),
-            nn.PReLU(24),
-            nn.Conv2d(24, num_channels, 3, 1, 1, bias=True)
-        )
+        self.upconv1 = nn.Conv2d(56, num_channels, 3, 1, 1, bias=True)
 
         # self.upconv1 = nn.Sequential(
         #     acb.ACBlock(56, 24, 3, 1, 1, deploy=use_inf),
