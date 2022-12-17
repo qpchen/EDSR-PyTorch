@@ -8,7 +8,7 @@ import torch.nn.functional as F
 from model import acb
 
 def make_model(args, parent=False):
-    return FSRCNNAC(args)
+    return FSRCNNRAC(args)
 
 class PA(nn.Module):
     '''PA is pixel attention'''
@@ -26,7 +26,7 @@ class PA(nn.Module):
 
         return out
 
-class FSRCNNAC(nn.Module):
+class FSRCNNRAC(nn.Module):
     """
     Args:
         upscale_factor (int): Image magnification factor.
@@ -34,7 +34,7 @@ class FSRCNNAC(nn.Module):
 
     # def __init__(self, upscale_factor: int) -> None:
     def __init__(self, args):
-        super(FSRCNNAC, self).__init__()
+        super(FSRCNNRAC, self).__init__()
 
         num_channels = args.n_colors
         self.scale = args.scale[0]
@@ -75,45 +75,45 @@ class FSRCNNAC(nn.Module):
         )
 
         # Deconvolution layer.
-        # self.deconv = nn.ConvTranspose2d(56, num_channels, (9, 9), (self.scale, self.scale),
-        #                                  (4, 4), (self.scale - 1, self.scale - 1))
+        self.deconv = nn.ConvTranspose2d(56, num_channels, (9, 9), (self.scale, self.scale),
+                                         (4, 4), (self.scale - 1, self.scale - 1))
 
         # Initialize model weights.
         # self._initialize_weights()
 
         #### IU: upsampling interpolate version
-        # self.upconv1 = nn.Sequential(
-        #     nn.Conv2d(56, 24, 3, 1, 1, bias=True),
-        #     PA(24),
-        #     nn.PReLU(24),
-        #     nn.Conv2d(24, 24, 3, 1, 1, bias=True),
-        #     nn.PReLU(24),
-        #     nn.Conv2d(24, num_channels, 3, 1, 1, bias=True)
-        # )
-
         self.upconv1 = nn.Sequential(
-            acb.ACBlock(56, 24, 3, 1, 1, deploy=use_inf),
+            nn.Conv2d(56, 24, 3, 1, 1, bias=True),
             PA(24),
             nn.PReLU(24),
-            acb.ACBlock(24, 24, 3, 1, 1, deploy=use_inf),
+            nn.Conv2d(24, 24, 3, 1, 1, bias=True),
             nn.PReLU(24),
-            acb.ACBlock(24, num_channels, 3, 1, 1, deploy=use_inf)
+            nn.Conv2d(24, num_channels, 3, 1, 1, bias=True)
         )
 
+        # self.upconv1 = nn.Sequential(
+        #     acb.ACBlock(56, 24, 3, 1, 1, deploy=use_inf),
+        #     PA(24),
+        #     nn.PReLU(24),
+        #     acb.ACBlock(24, 24, 3, 1, 1, deploy=use_inf),
+        #     nn.PReLU(24),
+        #     acb.ACBlock(24, num_channels, 3, 1, 1, deploy=use_inf)
+        # )
+
     def forward(self, x):
-        x = self.sub_mean(x)
+        # x = self.sub_mean(x)
 
         out = self.feature_extraction(x)
         out = self.shrink(out)
         out = self.map(out)
-        out = self.expand(out)
+        out = self.expand(out) + x
         # out = self.deconv(out)
         out = self.upconv1(F.interpolate(out, scale_factor=self.scale, mode='nearest'))
 
         # a: add interpolate
-        out = out + F.interpolate(x, scale_factor=self.scale, mode='bicubic')
+        # out = out + F.interpolate(x, scale_factor=self.scale, mode='bicubic')
 
-        out = self.add_mean(out)
+        # out = self.add_mean(out)
 
         return out
 

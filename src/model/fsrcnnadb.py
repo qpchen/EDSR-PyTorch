@@ -75,8 +75,8 @@ class FSRCNNADB(nn.Module):
         )
 
         # Deconvolution layer.
-        # self.deconv = nn.ConvTranspose2d(56, num_channels, (9, 9), (upscale_factor, upscale_factor),
-        #                                  (4, 4), (upscale_factor - 1, upscale_factor - 1))
+        # self.deconv = nn.ConvTranspose2d(56, num_channels, (9, 9), (self.scale, self.scale),
+        #                                  (4, 4), (self.scale - 1, self.scale - 1))
 
         # Initialize model weights.
         # self._initialize_weights()
