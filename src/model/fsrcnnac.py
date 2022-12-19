@@ -101,7 +101,7 @@ class FSRCNNAC(nn.Module):
         )
 
     def forward(self, x):
-        x = self.sub_mean(x)
+        # x = self.sub_mean(x)
 
         out = self.feature_extraction(x)
         out = self.shrink(out)
@@ -113,7 +113,7 @@ class FSRCNNAC(nn.Module):
         # a: add interpolate
         out = out + F.interpolate(x, scale_factor=self.scale, mode='bicubic')
 
-        out = self.add_mean(out)
+        # out = self.add_mean(out)
 
         return out
 
