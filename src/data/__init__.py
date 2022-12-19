@@ -29,6 +29,7 @@ class Data:
                 shuffle=True,
                 pin_memory=not args.cpu,
                 num_workers=args.n_threads,
+                prefetch_factor=24,
             )
 
         self.loader_test = []
