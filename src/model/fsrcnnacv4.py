@@ -38,8 +38,8 @@ class FSRCNNACV4(nn.Module):
         super(FSRCNNACV4, self).__init__()
 
         num_channels = args.n_colors
-        num_feat = 56
-        num_up_feat = 24
+        num_feat = args.n_feat
+        num_up_feat = args.n_up_feat
         self.scale = args.scale[0]
         use_inf = args.load_inf
 

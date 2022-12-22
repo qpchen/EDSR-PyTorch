@@ -155,6 +155,11 @@ parser.add_argument('--load_inf', action='store_true',
 parser.add_argument('--inf_switch', action='store_true',
                     help='When test_only, load training-time Block, then switch to inference-time model and save it')
 
+# Fast SRACNet settings
+parser.add_argument('--n_feat', type=int, default=56,
+                    help='number of residual blocks')
+parser.add_argument('--n_up_feat', type=int, default=24,
+                    help='number of feature maps')
 
 args = parser.parse_args()
 template.set_template(args)
