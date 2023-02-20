@@ -246,13 +246,13 @@ class Trainer():
                         if self.args.n_colors == 1 and i_dim == 3:
                             sr_cb = F.interpolate(cb, scale_factor=scale, mode='bicubic')
                             sr_cr = F.interpolate(cr, scale_factor=scale, mode='bicubic')
-                            # sr = torch.cat((sr, sr_cb, sr_cr), 2)
-                            sr, sr_cb, sr_cr = [common.tensor2Np(i, rgb_range=self.args.rgb_range) for i in [sr, sr_cb, sr_cr]]
+                            p_sr = [sr, sr_cb, sr_cr]
+                            sr, sr_cb, sr_cr = [common.tensor2Np(i, rgb_range=self.args.rgb_range) for i in p_sr]
                             sr = common.y2rgb(sr[0], sr_cb[0], sr_cr[0])
                             p_sr = [sr]
                             p_sr_t = common.np2Tensor(*p_sr, rgb_range=self.args.rgb_range)
                             sr = p_sr_t[0].unsqueeze(0)
-                            sr, = self.prepare(sr,)
+                            sr, = self.prepare(sr)
                             sr = utility.quantize(sr, self.args.rgb_range)
                             save_list.extend([sr])
                         ########################################################
