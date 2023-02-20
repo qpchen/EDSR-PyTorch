@@ -46,6 +46,18 @@ def set_channel(*args, n_channels=3):
 
     return [_set_channel(a) for a in args]
 
+
+def rgb2cbcr(img):
+    ycbcr = sc.rgb2ycbcr(img)
+    cb = np.expand_dims(ycbcr[:, :, 1], 2)
+    cr = np.expand_dims(ycbcr[:, :, 2], 2)
+    return [cb, cr]
+
+
+def y2rgb(y_output, cb_output, cr_output):
+    ycbcr_output = np.concatenate([y_output, cb_output, cr_output], 2)
+    return sc.ycbcr2rgb(ycbcr_output)*255
+
 def np2Tensor(*args, rgb_range=255):
     def _np2Tensor(img):
         np_transpose = np.ascontiguousarray(img.transpose((2, 0, 1)))
@@ -55,6 +67,14 @@ def np2Tensor(*args, rgb_range=255):
         return tensor
 
     return [_np2Tensor(a) for a in args]
+
+def tensor2Np(*args, rgb_range=255):
+    def _tensor2Np(img):
+        normalized = img[0].mul(255 / rgb_range)
+        tensor_cpu = normalized.permute(1, 2, 0).cpu().numpy()
+
+        return tensor_cpu
+    return [_tensor2Np(a) for a in args]
 
 def augment(*args, hflip=True, rot=True):
     hflip = hflip and random.random() < 0.5

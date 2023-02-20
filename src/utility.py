@@ -151,8 +151,10 @@ class checkpoint():
                 'results-{}'.format(dataset.dataset.name),
                 '{}_x{}_'.format(filename, scale)
             )
-
-            postfix = ('SR', 'LR', 'HR')
+            if len(save_list) == 2 or len(save_list) == 4:
+                postfix = ('SR_Y', 'SR_RGB', 'LR', 'HR')
+            else:
+                postfix = ('SR', 'LR', 'HR')
             for v, p in zip(save_list, postfix):
                 normalized = v[0].mul(255 / self.args.rgb_range)
                 tensor_cpu = normalized.byte().permute(1, 2, 0).cpu()

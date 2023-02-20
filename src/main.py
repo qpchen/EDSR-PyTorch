@@ -56,6 +56,7 @@ def main():
             # print('%s total parameters: %.2fM (%d)' % (args.model, param / 1e6, param))
             _batch_size = args.batch_size if not args.test_only else 1
             checkpoint.write_log(str(summary(_model, [(_batch_size, args.n_colors, args.patch_size, args.patch_size), args.scale])))
+            # checkpoint.write_log(str(summary(_model, [(_batch_size, args.n_colors, 1280, 720), args.scale])))
             t = Trainer(args, loader, _model, _loss, checkpoint, downmodel)
             while not t.terminate():
                 t.train()
