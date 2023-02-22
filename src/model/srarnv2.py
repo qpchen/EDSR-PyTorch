@@ -111,8 +111,8 @@ class SRARNV2(nn.Module):
         super(SRARNV2, self).__init__()
 
         num_channels = args.n_colors
-        num_feat = args.n_feat
-        num_map_feat = args.n_map_feat
+        # num_feat = args.n_feat
+        # num_map_feat = args.n_map_feat
         num_up_feat = args.n_up_feat
         self.scale = args.scale[0]
         use_inf = args.load_inf
@@ -201,9 +201,17 @@ class SRARNV2(nn.Module):
 
 
     def _init_weights(self, m):
-        if isinstance(m, (nn.Conv2d, nn.Linear)):
+        # init from ConvNeXt Net:
+        # if isinstance(m, (nn.Conv2d, nn.Linear)):  # seems Conv2d in ACBlock have no bias
+        if isinstance(m, nn.Linear):
             trunc_normal_(m.weight, std=.02)
             nn.init.constant_(m.bias, 0)
+        # init from ACBlock's main func (P.S. adding this seems degrade the performance)
+        # if isinstance(m, nn.BatchNorm2d):
+        #     nn.init.uniform_(m.running_mean, 0, 0.1)
+        #     nn.init.uniform_(m.running_var, 0, 0.2)
+        #     nn.init.uniform_(m.weight, 0, 0.3)
+        #     nn.init.uniform_(m.bias, 0, 0.4)
 
     def forward_feature(self, x):
         # out = self.feature_extraction(x)
