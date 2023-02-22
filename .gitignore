@@ -82,3 +82,6 @@ src/*.sh
 # Temporally Test IRN net
 src/model/irn.py
 src/model/modules/
+
+# tree of model experiment files
+srarn

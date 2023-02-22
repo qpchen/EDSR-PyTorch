@@ -4,10 +4,24 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-def default_conv(in_channels, out_channels, kernel_size, bias=True):
+from model import acb
+
+def default_conv(in_channels, out_channels, kernel_size, bias=True, deploy=False):
     return nn.Conv2d(
         in_channels, out_channels, kernel_size,
         padding=(kernel_size//2), bias=bias)
+
+def default_acb(in_channels, out_channels, kernel_size, stride=1, padding=-1, dilation=1, 
+                groups=1, bias=True, padding_mode='zeros', use_original_conv=False, deploy=False):
+    if padding == -1:
+        padding = (kernel_size//2)
+    if use_original_conv or kernel_size == 1 or kernel_size == (1, 1) or kernel_size >= 7:
+        return nn.Conv2d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, 
+                        dilation=dilation, groups=groups, bias=bias, padding_mode=padding_mode)
+    else:
+        return acb.ACBlock(in_channels, out_channels, kernel_size, stride=stride, padding=padding, 
+                        dilation=dilation, groups=groups, padding_mode=padding_mode, deploy=deploy)
+
 
 class MeanShift(nn.Conv2d):
     def __init__(
@@ -58,12 +72,12 @@ class ResBlock(nn.Module):
         return res
 
 class Upsampler(nn.Sequential):
-    def __init__(self, conv, scale, n_feats, bn=False, act=False, bias=True):
+    def __init__(self, conv, scale, n_feats, bn=False, act=False, bias=True, deploy=False):
 
         m = []
         if (scale & (scale - 1)) == 0:    # Is scale = 2^n?
             for _ in range(int(math.log(scale, 2))):
-                m.append(conv(n_feats, 4 * n_feats, 3, bias))
+                m.append(conv(n_feats, 4 * n_feats, 3, bias=bias, deploy=deploy))
                 m.append(nn.PixelShuffle(2))
                 if bn:
                     m.append(nn.BatchNorm2d(n_feats))
@@ -71,9 +85,11 @@ class Upsampler(nn.Sequential):
                     m.append(nn.ReLU(True))
                 elif act == 'prelu':
                     m.append(nn.PReLU(n_feats))
+                elif act == 'gelu':
+                    m.append(nn.GELU())
 
         elif scale == 3:
-            m.append(conv(n_feats, 9 * n_feats, 3, bias))
+            m.append(conv(n_feats, 9 * n_feats, 3, bias=bias, deploy=deploy))
             m.append(nn.PixelShuffle(3))
             if bn:
                 m.append(nn.BatchNorm2d(n_feats))
@@ -81,6 +97,8 @@ class Upsampler(nn.Sequential):
                 m.append(nn.ReLU(True))
             elif act == 'prelu':
                 m.append(nn.PReLU(n_feats))
+            elif act == 'gelu':
+                m.append(nn.GELU())
         else:
             raise NotImplementedError
 

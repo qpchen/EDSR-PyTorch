@@ -13,7 +13,7 @@
                 "--scale",
                 "2",
                 "--patch_size",
-                "144",
+                "128",
                 "--batch_size",
                 "32",
                 "--data_test",
@@ -30,15 +30,36 @@
                 "1e6",
                 "--epochs",
                 "3000",
+                "--depths",
+                // "2+4+2",  //a
+                // "2+2+4+2",  //b
+                "2+2+6+2",  //c // SwinIR level when training params 612K
+                // "3+3+9+3",  //d // SwinIR level
+                // "3+3+27+3",  //e // Swin level
+                "--dims",
+                // "12+24+48",  //1
+                // "12+24+48+96",  //2
+                "16+32+64+128",  //3 // SwinIR level
+                // "24+48+96+192",  //4
+                // "128+256+512+1024",  //5 // Swin level
+                // "--upsampling",
+                // "Nearest",
+                // "Deconv",
+                // "PixelShuffle",
                 "--model",
-                "SRARN",
-                "--save",
-                "srarn/srarn_x2",
-                "--reset"
+                "SRARNV2",
+                // "--save",
+                "--load",
+                // "srarn/srarn_v2t_x2",
+                // "srarn/srarn_v2s_x2",
+                "srarn/srarn_v2c3_x2",
+                // "--reset"
+                "--resume",
+                "-1"
             ],
             "env": {
                 "PYTHONUNBUFFERED": "1",
-                "CUDA_VISIBLE_DEVICES": "1"
+                "CUDA_VISIBLE_DEVICES": "0"
             },
             "console": "integratedTerminal",
             "justMyCode": true

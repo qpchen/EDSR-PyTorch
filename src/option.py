@@ -173,6 +173,11 @@ parser.add_argument('--drop_path_rate', type=float, default=0.,
 parser.add_argument('--layer_init_scale', type=float, default=1e-6,
                     help='Init value for Layer Scale')
 
+# UpSampling Function setting
+parser.add_argument('--upsampling', default='Nearest',
+                    choices=('Nearest', 'Deconv', 'PixelShuffle'),
+                    help='optimizer to use (Nearest | Deconv | PixelShuffle)')
+
 args = parser.parse_args()
 template.set_template(args)
 
