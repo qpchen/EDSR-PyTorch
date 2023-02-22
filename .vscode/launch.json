@@ -25,7 +25,8 @@
                 "--n_colors",
                 "1",
                 "--optimizer",
-                "ADAM",
+                // "ADAM",
+                "AdamW",    // ConvNeXt
                 "--skip_threshold",
                 "1e6",
                 "--epochs",
@@ -34,18 +35,26 @@
                 "2+2",  //test
                 // "2+4+2",  //a
                 // "2+2+4+2",  //b
-                // "2+2+6+2",  //c // SwinIR level when training params 612K
-                // "3+3+9+3",  //d // SwinIR level
-                // "3+3+27+3",  //e // Swin level
+                // "2+2+6+2",  //c              // SwinIR level when training params 612K
+                // "3+3+9+3",  //d              // ConvNeXt-T  // SwinIR level?
+                // "3+3+27+3",  //e             // ConvNeXt-S/B/L/XL  // Swin level
                 "--dims",
                 "6+12",  // test
                 // "12+24+48",  //1
                 // "12+24+48+96",  //2
-                // "16+32+64+128",  //3 // SwinIR level
+                // "16+32+64+128",  //3         // SwinIR level
                 // "24+48+96+192",  //4
                 // "48+96+192+384",  //5
-                // "96+192+384+768",  //6
-                // "128+256+512+1024",  //7 // Swin level
+                // "96+192+384+768",  //6       // ConvNeXt-T/S
+                // "128+256+512+1024",  //7     // ConvNeXt-B  // Swin level
+                // "192+384+768+1536",  //8     // ConvNeXt-L
+                // "256+512+1024+2048",  //9    // ConvNeXt-XL
+                // "--drop_path_rate",  // Seems degrade the SR performance
+                // "0.01",
+                // "0.05",
+                // "0.1",  // ConvNeXt-T
+                // "0.4",  // ConvNeXt-S
+                // "0.5",  // ConvNeXt-B/L
                 // "--upsampling",
                 // "Nearest",
                 // "Deconv",

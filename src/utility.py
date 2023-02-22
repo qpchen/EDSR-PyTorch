@@ -200,6 +200,10 @@ def make_optimizer(args, target):
     elif args.optimizer == 'RMSprop':
         optimizer_class = optim.RMSprop
         kwargs_optimizer['eps'] = args.epsilon
+    elif args.optimizer == 'AdamW':
+        optimizer_class = optim.AdamW
+        kwargs_optimizer['betas'] = args.betas
+        kwargs_optimizer['eps'] = args.epsilon
 
     # scheduler
     milestones = list(map(lambda x: int(x), args.decay.split('-')))
