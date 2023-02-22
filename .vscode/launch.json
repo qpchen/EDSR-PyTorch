@@ -16,35 +16,47 @@
                 "128",
                 "--batch_size",
                 "32",
+                "--data_train",
+                // "DIV2K",
+                // "Flickr2K",
+                "DF2K",
+                "--data_range",
+                // "1-900",
+                // "1-2650",
+                "1-3550",
                 "--data_test",
-                "Set5",
+                // "Set5",
+                "Set5+Set14",
                 "--loss",
                 "1*SmoothL1",
                 "--lr",
-                "1e-3",
+                // "1e-3",
+                "4e-3",    // ConvNeXt
                 "--n_colors",
                 "1",
                 "--optimizer",
                 // "ADAM",
                 "AdamW",    // ConvNeXt
+                "--weight_decay",
+                "0.05",     // ConvNeXt
                 "--skip_threshold",
                 "1e6",
                 "--epochs",
                 "3000",
                 "--depths",
-                "2+2",  //test
+                // "2+2",  //test
                 // "2+4+2",  //a
                 // "2+2+4+2",  //b
                 // "2+2+6+2",  //c              // SwinIR level when training params 612K
-                // "3+3+9+3",  //d              // ConvNeXt-T  // SwinIR level?
+                "3+3+9+3",  //d              // ConvNeXt-T  // SwinIR level?
                 // "3+3+27+3",  //e             // ConvNeXt-S/B/L/XL  // Swin level
                 "--dims",
-                "6+12",  // test
+                // "6+12",  // test
                 // "12+24+48",  //1
                 // "12+24+48+96",  //2
                 // "16+32+64+128",  //3         // SwinIR level
                 // "24+48+96+192",  //4
-                // "48+96+192+384",  //5
+                "48+96+192+384",  //5
                 // "96+192+384+768",  //6       // ConvNeXt-T/S
                 // "128+256+512+1024",  //7     // ConvNeXt-B  // Swin level
                 // "192+384+768+1536",  //8     // ConvNeXt-L
