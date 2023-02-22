@@ -158,13 +158,27 @@ parser.add_argument('--inf_switch', action='store_true',
 # Fast SRACNet settings
 parser.add_argument('--n_feat', type=int, default=56,
                     help='number of residual blocks')
+parser.add_argument('--n_map_feat', type=int, default=12,
+                    help='number of residual blocks')
 parser.add_argument('--n_up_feat', type=int, default=24,
                     help='number of feature maps')
+
+# ConvNeXt Block settings
+parser.add_argument('--depths', type=str, default='3+3',
+                    help='Number of blocks at each stage')
+parser.add_argument('--dims', type=str, default='12+24',
+                    help='Feature dimension at each stage')
+parser.add_argument('--drop_path_rate', type=float, default=0.,
+                    help='Stochastic depth rate')
+parser.add_argument('--layer_init_scale', type=float, default=1e-6,
+                    help='Init value for Layer Scale')
 
 args = parser.parse_args()
 template.set_template(args)
 
 args.scale = list(map(lambda x: int(x), args.scale.split('+')))
+args.depths = list(map(lambda x: int(x), args.depths.split('+')))
+args.dims = list(map(lambda x: int(x), args.dims.split('+')))
 args.data_train = args.data_train.split('+')
 args.data_test = args.data_test.split('+')
 
