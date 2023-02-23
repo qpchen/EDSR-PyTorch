@@ -58,7 +58,7 @@ def main():
             checkpoint.write_log(str(
                 summary(_model, 
                         input_size = [(_batch_size, args.n_colors, args.patch_size, args.patch_size), args.scale],
-                        col_names = ("kernel_size", "output_size", "num_params", "params_percent", "mult_adds"),
+                        col_names = ("output_size", "num_params", "params_percent", "mult_adds"),
                         depth = 3, 
                         mode = "eval", 
                         row_settings = ("depth", "var_names"))))
