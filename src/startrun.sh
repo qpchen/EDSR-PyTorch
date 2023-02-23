@@ -23,8 +23,8 @@
 # yhrun -n 1 -N 1-1 -p gpu_v100 python main.py --n_GPUs 2 --scale 2 --patch_size 128 --batch_size 32 --skip_threshold 1e6 --epochs 3000 --data_train DF2K --data_range 1-3550 --data_test Set5+Set14 --loss 1*SmoothL1 --lr 4e-3 --n_colors 1 --optimizer AdamW --weight_decay 0.05 --depths 3+3+9+3 --dims 48+96+192+384 --model SRARNV2 --save ../srarn/srarn_v2d5_df_opt_x2 --reset
 
 # 得分比较高的设置
-# nohup python main.py --n_GPUs 2 --scale 2 --patch_size 128 --batch_size 32 --data_test Set5 --loss 1*SmoothL1 --lr 1e-3 --n_colors 1 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --n_up_feat 64 --depths 3+3+9+3 --dims 48+96+192+384 --model SRARNV2 --save ../srarn/srarn_v2d5_x2 --reset > ../srarn/v2d5.log 2>&1 &
+# nohup python main.py --n_GPUs 2 --scale 2 --patch_size 128 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 1e-3 --n_colors 1 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --n_up_feat 64 --depths 3+3+9+3 --dims 48+96+192+384 --model SRARNV2 --save ../srarn/srarn_v2d5_x2 --reset > ../srarn/v2d5.log 2>&1 &
 
 
-# nohup python main.py --n_GPUs 2 --scale 2 --patch_size 128 --batch_size 32 --data_test Set5 --loss 1*SmoothL1 --lr 1e-3 --n_colors 1 --optimizer ADAM --skip_threshold 1e6 --epochs 3000  --srarn_up_feat 64 --depths 3+3+9+3 --dims 48+96+192+384 --model SRARNV3 --save ../srarn/srarn_v3d5_x2 --reset > ../srarn/v3d5.log 2>&1 &
+# nohup python main.py --n_GPUs 2 --scale 2 --patch_size 128 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 1e-3 --n_colors 1 --optimizer ADAM --skip_threshold 1e6 --epochs 3000  --srarn_up_feat 64 --depths 3+3+9+3 --dims 48+96+192+384 --model SRARNV3 --save ../srarn/srarn_v3d5_x2 --reset > ../srarn/v3d5_x2.log 2>&1 &
 
