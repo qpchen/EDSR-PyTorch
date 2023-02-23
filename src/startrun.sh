@@ -36,3 +36,7 @@
 # SRARN settings like SwinIR, but the params is too large, which is 60M
 # nohup python main.py --n_GPUs 4 --scale 2 --patch_size 96 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000  --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --model SRARNV3 --save ../srarn/srarn_v3g12_x2 --reset > ../srarn/v3g12_x2.log 2>&1 &
 
+# python main.py --n_GPUs 4 --scale 2 --patch_size 96 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000  --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --model SRARNV3 --save ../srarn/srarn_v3g12_x2 --pre_train ../srarn/srarn_v3g12_x2/model/model_best.pt --test_only --save_result --inf_switch
+
+# python main.py --n_GPUs 4 --scale 2 --patch_size 96 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000  --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --model SRARNV3 --save ../srarn/srarn_v3g12_x2 --pre_train ../srarn/srarn_v3g12_x2/model/inf_model.pt --test_only --save_result --load_inf
+

@@ -59,7 +59,7 @@ def main():
                 summary(_model, 
                         input_size = [(_batch_size, args.n_colors, args.patch_size, args.patch_size), args.scale],
                         col_names = ("output_size", "num_params", "params_percent", "mult_adds"),
-                        depth = 4, 
+                        depth = 5, 
                         mode = "eval", 
                         row_settings = ("depth", "var_names"))))
             # checkpoint.write_log(str(summary(_model, [(_batch_size, args.n_colors, 1280, 720), args.scale])))
