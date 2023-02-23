@@ -157,17 +157,19 @@ parser.add_argument('--inf_switch', action='store_true',
 
 # Fast SRACNet settings
 parser.add_argument('--n_feat', type=int, default=56,
-                    help='number of residual blocks')
+                    help='number of channels in feature extraction layers')
 parser.add_argument('--n_map_feat', type=int, default=12,
-                    help='number of residual blocks')
+                    help='number of channels in mapping layers')
 parser.add_argument('--n_up_feat', type=int, default=24,
-                    help='number of feature maps')
+                    help='number of channels in upsampling layers')
 
-# ConvNeXt Block settings
+# SRARN Block settings
 parser.add_argument('--depths', type=str, default='3+3',
                     help='Number of blocks at each stage')
 parser.add_argument('--dims', type=str, default='12+24',
                     help='Feature dimension at each stage')
+parser.add_argument('--srarn_up_feat', type=int, default=0,
+                    help='number of feature maps in upsampling layers (default means same as dims[0])')
 parser.add_argument('--drop_path_rate', type=float, default=0.,
                     help='Stochastic depth rate')
 parser.add_argument('--layer_init_scale', type=float, default=1e-6,

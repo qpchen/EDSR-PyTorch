@@ -12,7 +12,7 @@ from model import acb
 # mainly copied from the fsrcnnacv4 model
 
 def make_model(args, parent=False):
-    return SRARNV2(args)
+    return SRARNV3(args)
 
 class PA(nn.Module):
     '''PA is pixel attention'''
@@ -100,7 +100,7 @@ class LayerNorm(nn.Module):
 
 ########################################
 
-class SRARNV2(nn.Module):
+class SRARNV3(nn.Module):
     """
     Args:
         upscale_factor (int): Image magnification factor.
@@ -108,18 +108,22 @@ class SRARNV2(nn.Module):
 
     # def __init__(self, upscale_factor: int) -> None:
     def __init__(self, args):
-        super(SRARNV2, self).__init__()
+        super(SRARNV3, self).__init__()
 
         num_channels = args.n_colors
         # num_feat = args.n_feat
         # num_map_feat = args.n_map_feat
-        num_up_feat = args.n_up_feat
+        # num_up_feat = args.n_up_feat
         self.scale = args.scale[0]
         use_inf = args.load_inf
 
         depths = args.depths
         dims = args.dims
         self.num_stages = len(depths)
+        if args.srarn_up_feat == 0:
+            num_up_feat = dims[0]
+        else:
+            num_up_feat = args.srarn_up_feat
         drop_path_rate = args.drop_path_rate
         layer_scale_init_value = args.layer_init_scale
         self.upsampling = args.upsampling
@@ -128,17 +132,19 @@ class SRARNV2(nn.Module):
         # self.sub_mean = common.MeanShift(args.rgb_range)
         # self.add_mean = common.MeanShift(args.rgb_range, sign=1)
 
-        # Shrinking layer.
-        shrink = nn.Sequential(
+        # ##################################################################################
+        # Shallow Feature Resolution.
+        self.shallow = nn.Sequential(
             # nn.Conv2d(num_channels, dims[0], 3, 1, 1),
             acb.ACBlock(num_channels, dims[0], 3, 1, 1, deploy=use_inf),
             LayerNorm(dims[0], eps=1e-6, data_format="channels_first")
-            # ,nn.GELU()  # srarnv3
+            ,nn.GELU()  # srarnv3
         )
 
-        # Feature resolution layers.
+        # ##################################################################################
+        # Deep Feature Resolution layers.
         self.expand_layers = nn.ModuleList()  # shrink and multiple channel modifying conv layers
-        self.expand_layers.append(shrink)
+        # self.expand_layers.append(shallow)
         for i in range(self.num_stages - 1):
             expand_layer = nn.Sequential(
                     LayerNorm(dims[i], eps=1e-6, data_format="channels_first"),
@@ -158,23 +164,30 @@ class SRARNV2(nn.Module):
             self.stages.append(stage)
             cur += depths[i]
 
+        self.preup = nn.Sequential(
+            LayerNorm(dims[-1], eps=1e-6, data_format="channels_first"),
+            acb.ACBlock(dims[-1], dims[0], 3, 1, 1, deploy=use_inf)
+        )
+
+        # ##################################################################################
+        # Upsampling
+        # if custom the channel setting in upsampling, convert to it
+        if num_up_feat != dims[0]:
+            self.upfea = nn.Conv2d(dims[0], num_up_feat, 1, 1, 0)
+        
         # Upsampling layer.
         if self.upsampling == 'Deconv':
             # Deconvolution layer.
-            self.deconv = nn.ConvTranspose2d(dims[-1], num_channels, (9, 9), (self.scale, self.scale),
+            self.deconv = nn.ConvTranspose2d(num_up_feat, num_channels, (9, 9), (self.scale, self.scale),
                                              (4, 4), (self.scale - 1, self.scale - 1))
         elif self.upsampling == 'PixelShuffle':
             acblock = common.default_acb
             self.pixelshuffle = nn.Sequential(
-                common.Upsampler(acblock, self.scale, dims[-1], act='gelu', deploy=use_inf), #False),
-                acblock(dims[-1], num_channels, 3, 1, 1, deploy=use_inf)
+                common.Upsampler(acblock, self.scale, num_up_feat, act='gelu', deploy=use_inf), #False),
+                acblock(num_up_feat, num_channels, 3, 1, 1, deploy=use_inf)
             )
         elif self.upsampling == 'Nearest':
             # Nearest + Conv/ACBlock
-            self.preup = nn.Sequential(
-                LayerNorm(dims[-1], eps=1e-6, data_format="channels_first"),
-                acb.ACBlock(dims[-1], num_up_feat, 3, 1, 1, deploy=use_inf)
-            )
             if (self.scale & (self.scale - 1)) == 0:  # 缩放因子等于 2^n
                 for i in range(int(log(self.scale, 2))):  #  循环 n 次
                     self.add_module(f'up{i}', acb.ACBlock(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf))
@@ -228,14 +241,25 @@ class SRARNV2(nn.Module):
     def forward(self, x):
         # x = self.sub_mean(x)
 
-        out = self.forward_feature(x)
+        # out = self.forward_feature(x)
+        out = self.shallow(x)
+        s = out
+        for i in range(self.num_stages):
+            out = self.stages[i](out)
+            if i < self.num_stages - 1:
+                out = self.expand_layers[i](out)
+        
+        out = self.preup(out)
+        out = out + s
+
+        if hasattr(self, 'upfea'):
+            out = self.upfea(out)
         
         if self.upsampling == 'Deconv':
             out = self.deconv(out)
         elif self.upsampling == 'PixelShuffle':
             out = self.pixelshuffle(out)
         elif self.upsampling == 'Nearest':
-            out = self.preup(out)
             if (self.scale & (self.scale - 1)) == 0:  # 缩放因子等于 2^n
                 for i in range(int(log(self.scale, 2))):  #  循环 n 次
                     out = getattr(self, f'up{i}')(F.interpolate(out, scale_factor=2, mode='nearest'))
