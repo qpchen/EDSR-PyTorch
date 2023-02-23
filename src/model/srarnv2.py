@@ -101,9 +101,12 @@ class LayerNorm(nn.Module):
 ########################################
 
 class SRARNV2(nn.Module):
-    """
+    """ 去除V1中的FSRCNN架构,改成shallow+deep特征分析层(类似SwinIR)
+    另外给出三种不同upsampling的选项
     Args:
-        upscale_factor (int): Image magnification factor.
+        scale (int): Image magnification factor.
+        num_stages (int): The number of stages in deep feature resolution.
+        upsampling (str): The choice of upsampling method.
     """
 
     # def __init__(self, upscale_factor: int) -> None:

@@ -101,9 +101,10 @@ class LayerNorm(nn.Module):
 ########################################
 
 class SRARN(nn.Module):
-    """
+    """ 直接替换map层为ConvNeXt+ACBlock
     Args:
-        upscale_factor (int): Image magnification factor.
+        scale (int): Image magnification factor.
+        num_stages (int): The number of stages in deep feature resolution.
     """
 
     # def __init__(self, upscale_factor: int) -> None:

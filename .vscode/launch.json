@@ -12,8 +12,16 @@
                 "1",
                 "--scale",
                 "2",
+                // "3",
+                // "4",
                 "--patch_size",
-                "128",
+                "32",
+                // "96",
+                // "144",
+                // "192",
+                // "128",               // A2N/SwinIR-L for larger dataset like Flickr2K
+                // "192",
+                // "256",
                 "--batch_size",
                 "32",
                 "--data_train",
@@ -30,10 +38,12 @@
                 "--loss",
                 "1*SmoothL1",
                 "--lr",
-                // "1e-3",
-                "4e-3",    // ConvNeXt, but with lr decay, which is not found here
+                "1e-3",
+                // "5e-4",     // A2N
+                // "2e-4",    // ConvNeXt, but with lr decay, which is not found here
                 "--n_colors",
-                "1",
+                // "1",
+                "3",        // SwinIR/A2N
                 "--optimizer",
                 "ADAM",
                 // "AdamW",    // ConvNeXt, but seems not accelerate the convergence
@@ -50,6 +60,9 @@
                 // "2+2+6+2",  //c              // SwinIR level when training params 612K
                 // "3+3+9+3",  //d              // ConvNeXt-T  // SwinIR level?
                 // "3+3+27+3",  //e             // ConvNeXt-S/B/L/XL  // Swin level
+                // "6+6+6+6",  //f             // SwinIR-S
+                // "6+6+6+6+6+6",  //g(=e)             // SwinIR-C
+                // "6+6+6+6+6+6+6+6+6",  //h             // SwinIR-L
                 "--dims",
                 "6+12",  // test
                 // "12+24+48",  //1
@@ -57,10 +70,14 @@
                 // "16+32+64+128",  //3         // SwinIR level
                 // "24+48+96+192",  //4
                 // "48+96+192+384",  //5
-                // "96+192+384+768",  //6       // ConvNeXt-T/S
-                // "128+256+512+1024",  //7     // ConvNeXt-B  // Swin level
-                // "192+384+768+1536",  //8     // ConvNeXt-L
-                // "256+512+1024+2048",  //9    // ConvNeXt-XL
+                // "64+128+256+512",  //6
+                // "96+192+384+768",  //7       // ConvNeXt-T/S
+                // "128+256+512+1024",  //8     // ConvNeXt-B  // Swin level
+                // "192+384+768+1536",  //9     // ConvNeXt-L
+                // "256+512+1024+2048",  //10    // ConvNeXt-XL
+                // "180+180+180+180",  //11         // SwinIR-S
+                // "180+180+180+180+180+180",  //12 // SwinIR-C
+                // "240+240+240+240+240+240+240+240+240", //13      SwinIR-L
                 // "--drop_path_rate",  // Seems degrade the SR performance
                 // "0.01",
                 // "0.05",
@@ -73,6 +90,7 @@
                 // "PixelShuffle",
                 "--srarn_up_feat",
                 "24",       // default 0, means same as dims[0]
+                // "64",       // SwinIR
                 "--model",
                 "SRARNV3",
                 "--save",
@@ -80,9 +98,16 @@
                 // "srarn/srarn_v2t_x2",
                 // "srarn/srarn_v2s_x2",
                 "srarn/test",
-                "--reset"
+                "--test_only",
+                "--save_result",
+                // "--reset"
                 // "--resume",
                 // "-1"
+                "--pre_train",
+                // "../experiment/srarn/test/model/model_best.pt",
+                // "--inf_switch"
+                "../experiment/srarn/test/model/inf_model.pt",
+                "--load_inf"
             ],
             "env": {
                 "PYTHONUNBUFFERED": "1",
