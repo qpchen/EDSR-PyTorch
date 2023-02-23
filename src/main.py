@@ -55,7 +55,13 @@ def main():
             # param = utility.count_param(_model, args.model)
             # print('%s total parameters: %.2fM (%d)' % (args.model, param / 1e6, param))
             _batch_size = args.batch_size if not args.test_only else 1
-            checkpoint.write_log(str(summary(_model, [(_batch_size, args.n_colors, args.patch_size, args.patch_size), args.scale])))
+            checkpoint.write_log(str(
+                summary(_model, 
+                        input_size = [(_batch_size, args.n_colors, args.patch_size, args.patch_size), args.scale],
+                        col_names = ("kernel_size", "output_size", "num_params", "params_percent", "mult_adds"),
+                        depth = 3, 
+                        mode = "eval", 
+                        row_settings = ("depth", "var_names"))))
             # checkpoint.write_log(str(summary(_model, [(_batch_size, args.n_colors, 1280, 720), args.scale])))
             t = Trainer(args, loader, _model, _loss, checkpoint, downmodel)
             while not t.terminate():
