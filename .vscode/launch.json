@@ -98,11 +98,11 @@
                 // "srarn/srarn_v2t_x2",
                 // "srarn/srarn_v2s_x2",
                 "srarn/test",
-                "--test_only",
-                "--save_result",
                 // "--reset"
                 // "--resume",
                 // "-1"
+                "--test_only",
+                "--save_result",
                 "--pre_train",
                 // "../experiment/srarn/test/model/model_best.pt",
                 // "--inf_switch"
