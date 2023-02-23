@@ -101,9 +101,12 @@ class LayerNorm(nn.Module):
 ########################################
 
 class SRARNV3(nn.Module):
-    """
+    """ 在V2基础上给shallow层之后增加激活,并给整个deep特征分析层外增加一个残差连接
+    另外由于残差连接需要的通道数相同,调整了上采样层fea数量的赋值方式
     Args:
-        upscale_factor (int): Image magnification factor.
+        scale (int): Image magnification factor.
+        num_stages (int): The number of stages in deep feature resolution.
+        upsampling (str): The choice of upsampling method.
     """
 
     # def __init__(self, upscale_factor: int) -> None:
@@ -129,8 +132,9 @@ class SRARNV3(nn.Module):
         self.upsampling = args.upsampling
 
         # RGB mean for DIV2K
-        # self.sub_mean = common.MeanShift(args.rgb_range)
-        # self.add_mean = common.MeanShift(args.rgb_range, sign=1)
+        if num_channels == 3:
+            self.sub_mean = common.MeanShift(args.rgb_range)
+            self.add_mean = common.MeanShift(args.rgb_range, sign=1)
 
         # ##################################################################################
         # Shallow Feature Resolution.
@@ -226,20 +230,21 @@ class SRARNV3(nn.Module):
         #     nn.init.uniform_(m.weight, 0, 0.3)
         #     nn.init.uniform_(m.bias, 0, 0.4)
 
-    def forward_feature(self, x):
-        # out = self.feature_extraction(x)
-        # out = self.ext_act(out)
-        # out = self.shrink(out)
-        # out = self.shr_act(out)
-        for i in range(self.num_stages):
-            x = self.expand_layers[i](x)
-            x = self.stages[i](x)
-        # out = self.expand(out)
-        # out = self.exp_act(out)
-        return x
+    # def forward_feature(self, x):
+    #     # out = self.feature_extraction(x)
+    #     # out = self.ext_act(out)
+    #     # out = self.shrink(out)
+    #     # out = self.shr_act(out)
+    #     for i in range(self.num_stages):
+    #         x = self.expand_layers[i](x)
+    #         x = self.stages[i](x)
+    #     # out = self.expand(out)
+    #     # out = self.exp_act(out)
+    #     return x
 
     def forward(self, x):
-        # x = self.sub_mean(x)
+        if hasattr(self, 'sub_mean'):
+            x = self.sub_mean(x)
 
         # out = self.forward_feature(x)
         out = self.shallow(x)
@@ -270,17 +275,18 @@ class SRARNV3(nn.Module):
         # a: add interpolate
         out = out + F.interpolate(x, scale_factor=self.scale, mode='bicubic')
 
-        # out = self.add_mean(out)
+        if hasattr(self, 'add_mean'):
+            out = self.add_mean(out)
 
         return out
 
-    # The filter weight of each layer is a Gaussian distribution with zero mean and
-    # standard deviation initialized by random extraction 0.001 (deviation is 0).
-    def _initialize_weights(self) -> None:
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                nn.init.normal_(m.weight.data, mean=0.0, std=sqrt(2 / (m.out_channels * m.weight.data[0][0].numel())))
-                nn.init.zeros_(m.bias.data)
+    # # The filter weight of each layer is a Gaussian distribution with zero mean and
+    # # standard deviation initialized by random extraction 0.001 (deviation is 0).
+    # def _initialize_weights(self) -> None:
+    #     for m in self.modules():
+    #         if isinstance(m, nn.Conv2d):
+    #             nn.init.normal_(m.weight.data, mean=0.0, std=sqrt(2 / (m.out_channels * m.weight.data[0][0].numel())))
+    #             nn.init.zeros_(m.bias.data)
 
-        nn.init.normal_(self.deconv.weight.data, mean=0.0, std=0.001)
-        nn.init.zeros_(self.deconv.bias.data)
+    #     nn.init.normal_(self.deconv.weight.data, mean=0.0, std=0.001)
+    #     nn.init.zeros_(self.deconv.bias.data)

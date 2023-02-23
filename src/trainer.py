@@ -216,8 +216,8 @@ class Trainer():
             for idx_scale, scale in enumerate(self.scale):
                 d.dataset.set_scale(idx_scale)
                 if self.args.model == 'DFSRCNN' or self.args.model == 'DFSRCNNPS':
-                    for lr, hr, cb, cr, i_dim, filename in tqdm(d, ncols=80):
-                        lr, hr, cb, cr = self.prepare(lr, hr, cb, cr)
+                    for lr, hr, i_dim, filename in tqdm(d, ncols=80):
+                        lr, hr = self.prepare(lr, hr, cb, cr)
                         br = self.model(hr, idx_scale)
                         br = utility.quantize(br, self.args.rgb_range)
 
@@ -231,38 +231,53 @@ class Trainer():
                         if self.args.save_results:
                             self.ckp.save_results(d, filename[0], save_list, scale)
                 else:
-                    for lr, hr, cb, cr, i_dim, filename in tqdm(d, ncols=80):
-                        lr, hr, cb, cr = self.prepare(lr, hr, cb, cr)
-                        sr = self.model(lr, idx_scale)
-                        sr = utility.quantize(sr, self.args.rgb_range)
-
-                        save_list = [sr]
-                        self.ckp.log[-1, idx_data, idx_scale] += utility.calc_psnr(
-                            sr, hr, scale, self.args.rgb_range, dataset=d
-                        )
-
-                        ########################################################
-                        # Add by CQP: if model output only Y channel, convert to RGB version.
-                        if self.args.n_colors == 1 and i_dim == 3:
-                            sr_cb = F.interpolate(cb, scale_factor=scale, mode='bicubic')
-                            sr_cr = F.interpolate(cr, scale_factor=scale, mode='bicubic')
-                            p_sr = [sr, sr_cb, sr_cr]
-                            sr, sr_cb, sr_cr = [common.tensor2Np(i, rgb_range=self.args.rgb_range) for i in p_sr]
-                            sr = common.y2rgb(sr[0], sr_cb[0], sr_cr[0])
-                            p_sr = [sr]
-                            p_sr_t = common.np2Tensor(*p_sr, rgb_range=self.args.rgb_range)
-                            sr = p_sr_t[0].unsqueeze(0)
-                            sr, = self.prepare(sr)
+                    if self.args.n_colors == 1:
+                        for lr, hr, cb, cr, i_dim, filename in tqdm(d, ncols=80):
+                            lr, hr, cb, cr = self.prepare(lr, hr, cb, cr)
+                            sr = self.model(lr, idx_scale)
                             sr = utility.quantize(sr, self.args.rgb_range)
-                            save_list.extend([sr])
-                        ########################################################
 
+                            save_list = [sr]
+                            self.ckp.log[-1, idx_data, idx_scale] += utility.calc_psnr(
+                                sr, hr, scale, self.args.rgb_range, dataset=d
+                            )
 
-                        if self.args.save_gt:
-                            save_list.extend([lr, hr])
+                            ########################################################
+                            # Add by CQP: if model output only Y channel, convert to RGB version.
+                            if self.args.n_colors == 1 and i_dim == 3:
+                                sr_cb = F.interpolate(cb, scale_factor=scale, mode='bicubic')
+                                sr_cr = F.interpolate(cr, scale_factor=scale, mode='bicubic')
+                                p_sr = [sr, sr_cb, sr_cr]
+                                sr, sr_cb, sr_cr = [common.tensor2Np(i, rgb_range=self.args.rgb_range) for i in p_sr]
+                                sr = common.y2rgb(sr[0], sr_cb[0], sr_cr[0])
+                                p_sr = [sr]
+                                p_sr_t = common.np2Tensor(*p_sr, rgb_range=self.args.rgb_range)
+                                sr = p_sr_t[0].unsqueeze(0)
+                                sr, = self.prepare(sr)
+                                sr = utility.quantize(sr, self.args.rgb_range)
+                                save_list.extend([sr])
+                            ########################################################
+                            if self.args.save_gt:
+                                save_list.extend([lr, hr])
 
-                        if self.args.save_results:
-                            self.ckp.save_results(d, filename[0], save_list, scale)
+                            if self.args.save_results:
+                                self.ckp.save_results(d, filename[0], save_list, scale)
+                    else:
+                        for lr, hr, filename in tqdm(d, ncols=80):
+                            lr, hr = self.prepare(lr, hr)
+                            sr = self.model(lr, idx_scale)
+                            sr = utility.quantize(sr, self.args.rgb_range)
+
+                            save_list = [sr]
+                            self.ckp.log[-1, idx_data, idx_scale] += utility.calc_psnr(
+                                sr, hr, scale, self.args.rgb_range, dataset=d
+                            )
+
+                            if self.args.save_gt:
+                                save_list.extend([lr, hr])
+
+                            if self.args.save_results:
+                                self.ckp.save_results(d, filename[0], save_list, scale)
 
                 self.ckp.log[-1, idx_data, idx_scale] /= len(d)
                 best = self.ckp.log.max(0)
