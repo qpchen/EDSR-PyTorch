@@ -101,12 +101,12 @@ parser.add_argument('--gan_k', type=int, default=1,
                     help='k value for adversarial loss')
 
 # Optimization specifications
-parser.add_argument('--lr', type=float, default=1e-4,
+parser.add_argument('--lr', type=float, default=2e-4,
                     help='learning rate')
 parser.add_argument('--lr_class', default='MultiStepLR',
                     choices=('MultiStepLR'),
                     help='learning rate decay function (MultiStepLR)')
-parser.add_argument('--decay', type=str, default='1500-2000-2500-2750',
+parser.add_argument('--decay', type=str, default='1250-2000-2500-2750',
                     help='learning rate decay type')
 parser.add_argument('--gamma', type=float, default=0.5,
                     help='learning rate decay factor for step decay')
