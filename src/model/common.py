@@ -104,6 +104,14 @@ class Upsampler(nn.Sequential):
 
         super(Upsampler, self).__init__(*m)
 
+class UpsamplerDirect(nn.Sequential):
+    def __init__(self, conv, scale, n_feats, n_out_ch, bias=True, deploy=False):
+
+        m = []
+        m.append(conv(n_feats, (scale ** 2) * n_out_ch, 3, bias=bias, deploy=deploy))
+        m.append(nn.PixelShuffle(scale))
+        super(UpsamplerDirect, self).__init__(*m)
+
 class Downsampler(nn.Sequential):
     def __init__(self, conv, scale, n_feats, bn=False, act=False, bias=True):
 

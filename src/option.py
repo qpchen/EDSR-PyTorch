@@ -177,11 +177,14 @@ parser.add_argument('--drop_path_rate', type=float, default=0.,
                     help='Stochastic depth rate')
 parser.add_argument('--layer_init_scale', type=float, default=1e-6,
                     help='Init value for Layer Scale')
+parser.add_argument('--res_connect', default='1acb3',
+                    choices=('1acb3', '3acb3', '1conv1'),
+                    help='last conv to use before residual connect (1acb3 | 3acb3 | 1conv1)')
 
 # UpSampling Function setting
 parser.add_argument('--upsampling', default='Nearest',
-                    choices=('Nearest', 'Deconv', 'PixelShuffle'),
-                    help='optimizer to use (Nearest | Deconv | PixelShuffle)')
+                    choices=('Nearest', 'Deconv', 'PixelShuffle', 'PixelShuffleDirect'),
+                    help='Upsampling to use (Nearest | Deconv | PixelShuffle | PixelShuffleDirect)')
 
 args = parser.parse_args()
 template.set_template(args)

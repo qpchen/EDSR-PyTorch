@@ -12,7 +12,7 @@ from model import acb
 # mainly copied from the fsrcnnacv4 model
 
 def make_model(args, parent=False):
-    return SRARNV4(args)
+    return SRARNV5(args)
 
 class PA(nn.Module):
     '''PA is pixel attention'''
@@ -139,21 +139,70 @@ class LayerNorm(nn.Module):
             return x
 
 ########################################
+class RACB(nn.Module):
+    r"""Residual Asymmetric ConvNeXt Block (RACB), consisting of ACLs. 
+    There are two equivalent implementations of ConvNeXt Block:
+    (1) DwConv -> LayerNorm (channels_first) -> 1x1 Conv -> GELU -> 1x1 Conv; all in (N, C, H, W)
+    (2) DwConv -> Permute to (N, H, W, C); LayerNorm (channels_last) -> Linear -> GELU -> Linear; Permute back
+    ConvNeXt use (2) as they find it slightly faster in PyTorch. 
+    So we use (2) to implement ACL.
+    
+    Args:
+        dim (int): Number of input channels.
+        drop_path (float): Stochastic depth rate. Default: 0.0
+        layer_scale_init_value (float): Init value for Layer Scale. Default: 1e-6.
+    """
+    def __init__(self, num_layers, dim_in, dim_out, dp_rates, dp_rate_cur, layer_scale_init_value=1e-6,
+                    res_connect="1acb3", deploy=False):
+        super(RACB, self).__init__()
+        self.layer = nn.Sequential(
+                *[ACL(dim=dim_in, drop_path=dp_rates[dp_rate_cur + j], 
+                layer_scale_init_value=layer_scale_init_value, deploy=deploy) 
+                for j in range(num_layers)]
+        )
+        # conv layers for enhancing the translational equivariance 
+        if res_connect == "1conv1":
+            self.layer_head = nn.Sequential(
+                        LayerNorm(dim_in, eps=1e-6, data_format="channels_first"),
+                        nn.Conv2d(dim_in, dim_in, kernel_size=1, stride=1)
+            )
+        elif res_connect == "1acb3":
+            self.layer_head = nn.Sequential(
+                        LayerNorm(dim_in, eps=1e-6, data_format="channels_first"),
+                        acb.ACBlock(dim_in, dim_in, 3, 1, 1, deploy=deploy)
+            )
+        elif res_connect == "3acb3":
+            self.layer_head = nn.Sequential(
+                        LayerNorm(dim_in, eps=1e-6, data_format="channels_first"),
+                        acb.ACBlock(dim_in, dim_in // 4, 3, 1, 1, deploy=deploy),
+                        nn.GELU(),
+                        nn.Conv2d(dim_in // 4, dim_in // 4, 1, 1, 0),
+                        nn.GELU(),
+                        acb.ACBlock(dim_in // 4, dim_in, 3, 1, 1, deploy=deploy)
+            )
+        
+        if dim_in != dim_out:
+            self.channel_modify = nn.Conv2d(dim_in, dim_out, kernel_size=1, stride=1)
+    def forward(self, x):
+        input = x
+        x = self.layer(x)
+        x = self.layer_head(x) + input
+        if hasattr(self, 'channel_modify'):
+            x = self.channel_modify(x)
+        return x
 
-class SRARNV4(nn.Module):
+class SRARNV5(nn.Module):
     """ 
-    在V3基础上给deep特征分析层中每个block增加一个残差连接
+    在V4基础上将残差连接前的主干上的最后一层Conv从1*1x1conv改成1*3x3abc或者3*3x3abc
     Args:
         scale (int): Image magnification factor.
         num_blocks (int): The number of RACB blocks in deep feature extraction.
         upsampling (str): The choice of upsampling method.
     """
 
-    # TODO: Conv before Residual connect change to 1*3x3conv or 3*3x3conv(save params for too large kernel), same as SwinIR-L setting
-
     # def __init__(self, upscale_factor: int) -> None:
     def __init__(self, args):
-        super(SRARNV4, self).__init__()
+        super(SRARNV5, self).__init__()
 
         num_channels = args.n_colors
         # num_feat = args.n_feat
@@ -171,6 +220,7 @@ class SRARNV4(nn.Module):
             num_up_feat = args.srarn_up_feat
         drop_path_rate = args.drop_path_rate
         layer_scale_init_value = args.layer_init_scale
+        res_connect = args.res_connect
         self.upsampling = args.upsampling
 
         # RGB mean for DIV2K
@@ -181,33 +231,20 @@ class SRARNV4(nn.Module):
         # ##################################################################################
         # Shallow Feature Extraction.
         self.shallow = nn.Sequential(
-            # nn.Conv2d(num_channels, dims[0], 3, 1, 1),
             acb.ACBlock(num_channels, dims[0], 3, 1, 1, deploy=use_inf),
-            LayerNorm(dims[0], eps=1e-6, data_format="channels_first")
-            ,nn.GELU()  # srarnv3
+            LayerNorm(dims[0], eps=1e-6, data_format="channels_first"),
+            nn.GELU()  # srarnv3
         )
 
         # ##################################################################################
         # Deep Feature Extraction.
-        self.expand_layers = nn.ModuleList()  # shrink and multiple channel modifying conv layers
-        # self.expand_layers.append(shallow)
-        for i in range(self.num_blocks - 1):
-            expand_layer = nn.Sequential(
-                    LayerNorm(dims[i], eps=1e-6, data_format="channels_first"),
-                    nn.Conv2d(dims[i], dims[i+1], kernel_size=1, stride=1),
-            )
-            self.expand_layers.append(expand_layer)
-
         self.RACBs = nn.ModuleList()  # Residual Asymmetric ConvNeXt Block (RACB), consisting of ACLs
         dp_rates=[x.item() for x in torch.linspace(0, drop_path_rate, sum(depths))] 
         cur = 0
         for i in range(self.num_blocks):
-            RACB = nn.Sequential(
-                *[ACL(dim=dims[i], drop_path=dp_rates[cur + j], 
-                layer_scale_init_value=layer_scale_init_value, deploy=use_inf) 
-                for j in range(depths[i])]
-            )
-            self.RACBs.append(RACB)
+            next_i = i if i == self.num_blocks - 1 else i + 1
+            block = RACB(depths[i], dims[i], dims[next_i], dp_rates, cur, layer_scale_init_value, res_connect, use_inf)
+            self.RACBs.append(block)
             cur += depths[i]
 
 
@@ -255,71 +292,46 @@ class SRARNV4(nn.Module):
 
             self.postup = nn.Sequential(
                 PA(num_up_feat),
-                # nn.PReLU(num_up_feat),
                 nn.GELU(),
                 acb.ACBlock(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf),
-                # nn.PReLU(num_up_feat),
                 nn.GELU(),
                 acb.ACBlock(num_up_feat, num_channels, 3, 1, 1, deploy=use_inf)
             )
 
         # Initialize model weights.
-        # self._initialize_weights()
-
         # self.apply(self._init_weights)
 
 
     def _init_weights(self, m):
-        # init from ConvNeXt Net:
-        # if isinstance(m, (nn.Conv2d, nn.Linear)):  # seems Conv2d in ACBlock have no bias
         if isinstance(m, nn.Linear):
             trunc_normal_(m.weight, std=.02)
             nn.init.constant_(m.bias, 0)
-        # init from ACBlock's main func (P.S. adding this seems degrade the performance)
-        # if isinstance(m, nn.BatchNorm2d):
-        #     nn.init.uniform_(m.running_mean, 0, 0.1)
-        #     nn.init.uniform_(m.running_var, 0, 0.2)
-        #     nn.init.uniform_(m.weight, 0, 0.3)
-        #     nn.init.uniform_(m.bias, 0, 0.4)
 
-    # def forward_feature(self, x):
-    #     # out = self.feature_extraction(x)
-    #     # out = self.ext_act(out)
-    #     # out = self.shrink(out)
-    #     # out = self.shr_act(out)
-    #     for i in range(self.num_blocks):
-    #         x = self.expand_layers[i](x)
-    #         x = self.RACBs[i](x)
-    #     # out = self.expand(out)
-    #     # out = self.exp_act(out)
-    #     return x
+    def forward_feature(self, x):
+        input = x
+        for i in range(self.num_blocks):
+            x = self.RACBs[i](x)
+        x = self.preup(x)
+        x = input + x   # Residual of the whole deep feature Extraction
+        return x
 
     def forward(self, x):
         if hasattr(self, 'sub_mean'):
             x = self.sub_mean(x)
 
-        # out = self.forward_feature(x)
         out = self.shallow(x)
-        s = out
-        for i in range(self.num_blocks):
-            input = out
-            out = self.RACBs[i](out)
-            out = input + out   # Residual inside each RACB
-            if i < self.num_blocks - 1:
-                out = self.expand_layers[i](out)
-        
-        out = self.preup(out)
-        out = out + s   # Residual of the whole deep feature Extraction
+
+        out = self.forward_feature(out)
 
         if hasattr(self, 'upfea'):
             out = self.upfea(out)
         
         if self.upsampling == 'Deconv':
             out = self.deconv(out)
-        elif self.upsampling == 'PixelShuffle':
-            out = self.pixelshuffle(out)
         elif self.upsampling == 'PixelShuffleDirect':
             out = self.pixelshuffledirect(out)
+        elif self.upsampling == 'PixelShuffle':
+            out = self.pixelshuffle(out)
         elif self.upsampling == 'Nearest':
             if (self.scale & (self.scale - 1)) == 0:  # 缩放因子等于 2^n
                 for i in range(int(log(self.scale, 2))):  #  循环 n 次
@@ -335,14 +347,3 @@ class SRARNV4(nn.Module):
             out = self.add_mean(out)
 
         return out
-
-    # # The filter weight of each layer is a Gaussian distribution with zero mean and
-    # # standard deviation initialized by random extraction 0.001 (deviation is 0).
-    # def _initialize_weights(self) -> None:
-    #     for m in self.modules():
-    #         if isinstance(m, nn.Conv2d):
-    #             nn.init.normal_(m.weight.data, mean=0.0, std=sqrt(2 / (m.out_channels * m.weight.data[0][0].numel())))
-    #             nn.init.zeros_(m.bias.data)
-
-    #     nn.init.normal_(self.deconv.weight.data, mean=0.0, std=0.001)
-    #     nn.init.zeros_(self.deconv.bias.data)
