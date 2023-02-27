@@ -44,6 +44,7 @@ class Trainer():
         timer_data, timer_model = utility.timer(), utility.timer()
         # TEMP
         self.loader_train.dataset.set_scale(0)
+        accumulation_loss = 0
         for batch, (lr, hr, _,) in enumerate(self.loader_train):
             lr, hr = self.prepare(lr, hr)
             timer_data.hold()
@@ -177,22 +178,32 @@ class Trainer():
             else:
                 sr = self.model(lr, 0)
                 loss = self.loss(sr, hr)
-            loss = loss/self.accumulation_step  # use gradient accumulation
+            loss = loss / self.accumulation_step  # use gradient accumulation
+            accumulation_loss += loss.item()
+
             loss.backward()  # compute gradient
-            if self.args.gclip > 0:
-                utils.clip_grad_value_(
-                    self.model.parameters(),
-                    self.args.gclip
-                )
+
+            
+            # self.optimizer.step()  # update parameters
             if (batch + 1) % self.accumulation_step == 0:
-                self.optimizer.step()  # update parameters
+                if accumulation_loss < self.args.skip_threshold * self.error_last:
+                    if self.args.gclip > 0:
+                        utils.clip_grad_value_(
+                            self.model.parameters(),
+                            self.args.gclip
+                        )
+                    self.optimizer.step()  # update parameters
+                else:
+                    print('Skip this batch {}! (Loss: {})'.format(
+                        (batch + 1) // self.accumulation_step, loss.item()
+                    ))
                 self.optimizer.zero_grad()  # reset gradient
 
             timer_model.hold()
 
-            if (batch + 1) % self.args.print_every == 0:
+            if (batch + 1) % self.accumulation_step == 0 and ((batch + 1) // self.accumulation_step) % self.args.print_every == 0:
                 self.ckp.write_log('[{}/{}]\t{}\t{:.1f}+{:.1f}s'.format(
-                    (batch + 1) * self.args.batch_size,
+                    ((batch + 1) // self.accumulation_step) * self.args.batch_size,
                     len(self.loader_train.dataset),
                     self.loss.display_loss(batch),
                     timer_model.release(),
@@ -331,3 +342,4 @@ class Trainer():
         else:
             epoch = self.optimizer.get_last_epoch() + 1
             return epoch >= self.args.epochs
+            # return epoch >= (self.args.epochs * self.accumulation_step)

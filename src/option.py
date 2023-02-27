@@ -200,6 +200,10 @@ args.data_test = args.data_test.split('+')
 if args.epochs == 0:
     args.epochs = 1e8
 
+if args.batch_size % args.accumulation_step != 0:
+    raise ValueError('accumulation_step {} must divides into batch_size {}.'
+                        .format(args.accumulation_step, args.batch_size))
+
 for arg in vars(args):
     if vars(args)[arg] == 'True':
         vars(args)[arg] = True

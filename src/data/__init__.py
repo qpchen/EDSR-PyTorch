@@ -25,7 +25,7 @@ class Data:
 
             self.loader_train = dataloader.DataLoader(
                 MyConcatDataset(datasets),
-                batch_size=args.batch_size,
+                batch_size=args.batch_size // args.accumulation_step,
                 shuffle=True,
                 pin_memory=not args.cpu,
                 num_workers=args.n_threads,
