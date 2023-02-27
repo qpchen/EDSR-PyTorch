@@ -15,6 +15,7 @@ class Trainer():
     def __init__(self, args, loader, my_model, my_loss, ckp, ref_model=None):
         self.args = args
         self.scale = args.scale
+        self.accumulation_step = args.accumulation_step
 
         self.ckp = ckp
         self.loader_train = loader.loader_train
@@ -48,7 +49,7 @@ class Trainer():
             timer_data.hold()
             timer_model.tic()
 
-            self.optimizer.zero_grad()
+            # self.optimizer.zero_grad()  # reset gradient
             if self.args.model == 'BISRCNN' or self.args.model == 'BICNNV2' \
                     or self.args.model == 'BIAANV3' or self.args.model == 'BIAANV3B' \
                     or self.args.model == 'BIAANV3D' or self.args.model == 'BIAANV9' \
@@ -176,13 +177,16 @@ class Trainer():
             else:
                 sr = self.model(lr, 0)
                 loss = self.loss(sr, hr)
-            loss.backward()
+            loss = loss/self.accumulation_step  # use gradient accumulation
+            loss.backward()  # compute gradient
             if self.args.gclip > 0:
                 utils.clip_grad_value_(
                     self.model.parameters(),
                     self.args.gclip
                 )
-            self.optimizer.step()
+            if (batch + 1) % self.accumulation_step == 0:
+                self.optimizer.step()  # update parameters
+                self.optimizer.zero_grad()  # reset gradient
 
             timer_model.hold()
 
