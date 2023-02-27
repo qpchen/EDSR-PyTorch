@@ -54,13 +54,15 @@ def main():
             _loss = loss.Loss(args, checkpoint) if not args.test_only else None
             # param = utility.count_param(_model, args.model)
             # print('%s total parameters: %.2fM (%d)' % (args.model, param / 1e6, param))
-            _batch_size = args.batch_size if not args.test_only else 1
+            _is_test = True#args.test_only
+            _batch_size = args.batch_size if not _is_test else 1
+            _mode = "train" if not _is_test else "eval"
             checkpoint.write_log(str(
                 summary(_model, 
                         input_size = [(_batch_size, args.n_colors, args.patch_size, args.patch_size), args.scale],
                         col_names = ("output_size", "num_params", "params_percent", "mult_adds"),
                         depth = 6, 
-                        mode = "eval", 
+                        mode = _mode, 
                         row_settings = ("depth", "var_names"))))
             # checkpoint.write_log(str(summary(_model, [(_batch_size, args.n_colors, 1280, 720), args.scale])))
             t = Trainer(args, loader, _model, _loss, checkpoint, downmodel)
