@@ -75,30 +75,39 @@
 
 # #####################################
 # like SwinIR-B
-# nohup python main.py --n_GPUs 4 --scale 2 --patch_size 96 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --res_connect 1acb3 --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --model SRARNV5 --save ../srarn/srarn_v5_g12_x2 --reset > ../srarn/v5_g12_x2.log 2>&1 &
-# python main.py --n_GPUs 4 --scale 2 --patch_size 96 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --res_connect 1acb3 --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --model SRARNV5 --save ../srarn/srarn_v5_g12_x2 --pre_train ../srarn/srarn_v5_g12_x2/model/model_best.pt --test_only --save_result --inf_switch
-# python main.py --n_GPUs 4 --scale 2 --patch_size 96 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --res_connect 1acb3 --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --model SRARNV5 --save ../srarn/srarn_v5_g12_x2 --pre_train ../srarn/srarn_v5_g12_x2/model/inf_model.pt --test_only --save_result --load_inf
+# nohup python main.py --n_GPUs 4 --scale 2 --patch_size 96 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --res_connect 1acb3 --upsampling PixelShuffle --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --model SRARNV5 --save ../srarn/srarn_v5_ps_g12_x2 --reset > ../srarn/v5_ps_g12_x2.log 2>&1 &
+# python main.py --n_GPUs 4 --scale 2 --patch_size 96 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --res_connect 1acb3 --upsampling PixelShuffle --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --model SRARNV5 --save ../srarn/srarn_v5_ps_g12_x2 --pre_train ../srarn/srarn_v5_ps_g12_x2/model/model_best.pt --test_only --save_result --inf_switch
+# python main.py --n_GPUs 4 --scale 2 --patch_size 96 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --res_connect 1acb3 --upsampling PixelShuffle --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --model SRARNV5 --save ../srarn/srarn_v5_ps_g12_x2 --pre_train ../srarn/srarn_v5_ps_g12_x2/model/inf_model.pt --test_only --save_result --load_inf
 
-# nohup python main.py --n_GPUs 4 --scale 3 --patch_size 144 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --res_connect 1acb3 --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --model SRARNV5 --save ../srarn/srarn_v5_g12_x3 --reset > ../srarn/v5_g12_x3.log 2>&1 &
+# nohup python main.py --n_GPUs 2 --scale 3 --patch_size 144 --batch_size 32 --accumulation_step 2 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --res_connect 1acb3 --upsampling PixelShuffle --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --model SRARNV5 --save ../srarn/srarn_v5_ps_g12_x3 --reset > ../srarn/v5_ps_g12_x3.log 2>&1 &
 
-# nohup python main.py --n_GPUs 4 --scale 4 --patch_size 192 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --res_connect 1acb3 --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --model SRARNV5 --save ../srarn/srarn_v5_g12_x4 --reset > ../srarn/v5_g12_x4.log 2>&1 &
+# nohup python main.py --n_GPUs 2 --scale 4 --patch_size 192 --batch_size 32 --accumulation_step 2 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --res_connect 1acb3 --upsampling PixelShuffle --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --model SRARNV5 --save ../srarn/srarn_v5_ps_g12_x4 --reset > ../srarn/v5_ps_g12_x4.log 2>&1 &
 
 # #####################################
 # like SwinIR-S
-# nohup python main.py --n_GPUs 1 --scale 2 --patch_size 96 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --res_connect 1acb3 --srarn_up_feat 60 --depths 6+6+6+6 --dims 60+60+60+60 --model SRARNV5 --save ../srarn/srarn_v5s_f11_x2 --reset > ../srarn/v5s_f11_x2.log 2>&1 &
+# nohup python main.py --n_GPUs 1 --scale 2 --patch_size 96 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --res_connect 1acb3 --srarn_up_feat 60 --depths 6+6+6+6 --dims 60+60+60+60 --model SRARNV5 --save ../srarn/srarn_v5s_f11_x2 --reset > ../srarn/v5s_f11_x2.log 2>&1 
 
 # nohup python main.py --n_GPUs 1 --scale 3 --patch_size 144 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --res_connect 1acb3 --srarn_up_feat 60 --depths 6+6+6+6 --dims 60+60+60+60 --model SRARNV5 --save ../srarn/srarn_v5s_f11_x3 --reset > ../srarn/v5s_f11_x3.log 2>&1 &
 
-# nohup python main.py --n_GPUs 3 --scale 4 --patch_size 192 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --res_connect 1acb3 --srarn_up_feat 60 --depths 6+6+6+6 --dims 60+60+60+60 --model SRARNV5 --save ../srarn/srarn_v5s_f11_x4 --reset > ../srarn/v5s_f11_x4.log 2>&1 &
+# nohup python main.py --n_GPUs 1 --scale 4 --patch_size 192 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --res_connect 1acb3 --srarn_up_feat 60 --depths 6+6+6+6 --dims 60+60+60+60 --model SRARNV5 --save ../srarn/srarn_v5s_f11_x4 --reset > ../srarn/v5s_f11_x4.log 2>&1 &
 
 
 # #####################################
-# for tiny size (T)
+# for tiny size (T) c14
 # nohup python main.py --n_GPUs 1 --scale 2 --patch_size 96 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --res_connect 1acb3 --srarn_up_feat 30 --depths 2+2+6+2 --dims 30+30+30+30 --model SRARNV5 --save ../srarn/srarn_v5t_c14_x2 --reset > ../srarn/v5t_c14_x2.log 2>&1 &
 
 # nohup python main.py --n_GPUs 1 --scale 3 --patch_size 144 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --res_connect 1acb3 --srarn_up_feat 30 --depths 2+2+6+2 --dims 30+30+30+30 --model SRARNV5 --save ../srarn/srarn_v5t_c14_x3 --reset > ../srarn/v5t_c14_x3.log 2>&1 &
 
 # nohup python main.py --n_GPUs 1 --scale 4 --patch_size 192 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --res_connect 1acb3 --srarn_up_feat 30 --depths 2+2+6+2 --dims 30+30+30+30 --model SRARNV5 --save ../srarn/srarn_v5t_c14_x4 --reset > ../srarn/v5t_c14_x4.log 2>&1 &
+
+
+# for tiny size (T) i14
+# nohup python main.py --n_GPUs 1 --scale 2 --patch_size 96 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --res_connect 1acb3 --srarn_up_feat 30 --depths 3+3+3+3 --dims 30+30+30+30 --model SRARNV5 --save ../srarn/srarn_v5t_i14_x2 --reset > ../srarn/v5t_i14_x2.log 2>&1 &
+
+# nohup python main.py --n_GPUs 1 --scale 3 --patch_size 144 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --res_connect 1acb3 --srarn_up_feat 30 --depths 3+3+3+3 --dims 30+30+30+30 --model SRARNV5 --save ../srarn/srarn_v5t_i14_x3 --reset > ../srarn/v5t_i14_x3.log 2>&1 &
+
+# nohup python main.py --n_GPUs 1 --scale 4 --patch_size 192 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --res_connect 1acb3 --srarn_up_feat 30 --depths 3+3+3+3 --dims 30+30+30+30 --model SRARNV5 --save ../srarn/srarn_v5t_i14_x4 --reset > ../srarn/v5t_i14_x4.log 2>&1 &
+
 
 # #####################################
 # for extremly tiny size (XT) inf:K

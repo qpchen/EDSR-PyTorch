@@ -24,6 +24,8 @@
                 // "256",
                 "--batch_size",
                 "32",
+                "--accumulation_step",
+                "2",
                 "--data_train",
                 "DIV2K",
                 // "Flickr2K",
@@ -93,13 +95,13 @@
                 // "0.4",  // ConvNeXt-S
                 // "0.5",  // ConvNeXt-B/L
                 "--upsampling",
-                // "Nearest",
+                // "PixelShuffleDirect",
                 // "Deconv",
+                "Nearest",
                 // "PixelShuffle",
-                "PixelShuffleDirect",
                 "--res_connect",
-                // "1acb3",
-                "3acb3",
+                "1acb3",
+                // "3acb3",
                 // "1conv1",
                 // "--srarn_up_feat",
                 // "24",       // default 0, means same as dims[0]
@@ -128,7 +130,7 @@
             ],
             "env": {
                 "PYTHONUNBUFFERED": "1",
-                "CUDA_VISIBLE_DEVICES": "1"
+                "CUDA_VISIBLE_DEVICES": "0"
             },
             "console": "integratedTerminal",
             "justMyCode": true
