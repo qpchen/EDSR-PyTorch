@@ -208,9 +208,16 @@ def make_optimizer(args, target):
         kwargs_optimizer['eps'] = args.epsilon
 
     # scheduler
-    milestones = list(map(lambda x: int(x), args.decay.split('-')))
-    kwargs_scheduler = {'milestones': milestones, 'gamma': args.gamma}
-    scheduler_class = lrs.MultiStepLR
+    if args.lr_class == 'CosineWarmRestart':
+        kwargs_scheduler = {'T_0': args.T_0, 'T_mult': args.T_mult}
+        scheduler_class = lrs.CosineAnnealingWarmRestarts
+    elif args.lr_class == 'CosineWarm':
+        kwargs_scheduler = {'T_max': args.T_max}
+        scheduler_class = lrs.CosineAnnealingLR
+    else:
+        milestones = list(map(lambda x: int(x), args.decay.split('-')))
+        kwargs_scheduler = {'milestones': milestones, 'gamma': args.gamma}
+        scheduler_class = lrs.MultiStepLR
 
     class CustomOptimizer(optimizer_class):
         def __init__(self, *args, **kwargs):

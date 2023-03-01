@@ -106,12 +106,18 @@ parser.add_argument('--accumulation_step', type=int, default=1,
 parser.add_argument('--lr', type=float, default=2e-4,
                     help='learning rate')
 parser.add_argument('--lr_class', default='MultiStepLR',
-                    choices=('MultiStepLR'),
-                    help='learning rate decay function (MultiStepLR)')
+                    choices=('MultiStepLR', 'CosineWarm', 'CosineWarmRestart'),
+                    help='learning rate decay function (MultiStepLR | CosineWarm)')
 parser.add_argument('--decay', type=str, default='1250-2000-2500-2750',
-                    help='learning rate decay type')
+                    help='learning rate decay type for MultiStepLR milestone')
 parser.add_argument('--gamma', type=float, default=0.5,
                     help='learning rate decay factor for step decay')
+parser.add_argument('--T_max', type=int, default=3000,
+                    help='Maximum number of iterations from for CosineWarm, usually use epochs')
+parser.add_argument('--T_0', type=int, default=5,
+                    help='Number of iterations for the first restart of SGDR')
+parser.add_argument('--T_mult', type=int, default=2,
+                    help='A factor increases Ti after a restart of SGDR')
 parser.add_argument('--optimizer', default='ADAM',
                     choices=('SGD', 'ADAM', 'RMSprop', 'AdamW'),
                     help='optimizer to use (SGD | ADAM | RMSprop | AdamW)')
