@@ -210,6 +210,7 @@ def make_optimizer(args, target):
     # scheduler
     # the default two pytorch cosines seems have no warm-up before init lr
     # TODO: add warm-up, same as ConvNeXt, which do not use PyTorch scheduler
+    # But to be noticed, SwinIR does not use warm-up strategy
     if args.lr_class == 'CosineWarmRestart':
         kwargs_scheduler = {'T_0': args.T_0, 'T_mult': args.T_mult}
         scheduler_class = lrs.CosineAnnealingWarmRestarts
