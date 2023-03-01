@@ -112,8 +112,8 @@ parser.add_argument('--decay', type=str, default='1250-2000-2500-2750',
                     help='learning rate decay type for MultiStepLR milestone')
 parser.add_argument('--gamma', type=float, default=0.5,
                     help='learning rate decay factor for step decay')
-parser.add_argument('--T_max', type=int, default=3000,
-                    help='Maximum number of iterations from for CosineWarm, usually use epochs')
+# parser.add_argument('--T_max', type=int, default=3000,
+#                     help='Maximum number of iterations from for CosineWarm, usually use epochs')
 parser.add_argument('--T_0', type=int, default=5,
                     help='Number of iterations for the first restart of SGDR')
 parser.add_argument('--T_mult', type=int, default=2,

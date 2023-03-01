@@ -212,7 +212,7 @@ def make_optimizer(args, target):
         kwargs_scheduler = {'T_0': args.T_0, 'T_mult': args.T_mult}
         scheduler_class = lrs.CosineAnnealingWarmRestarts
     elif args.lr_class == 'CosineWarm':
-        kwargs_scheduler = {'T_max': args.T_max}
+        kwargs_scheduler = {'T_max': args.epochs}#.T_max}
         scheduler_class = lrs.CosineAnnealingLR
     else:
         milestones = list(map(lambda x: int(x), args.decay.split('-')))
