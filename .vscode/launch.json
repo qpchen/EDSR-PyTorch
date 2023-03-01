@@ -23,7 +23,8 @@
                 // "192",
                 // "256",
                 "--batch_size",
-                "32",
+                "4",  // test
+                // "32",
                 "--accumulation_step",
                 "2",
                 "--data_train",
@@ -53,12 +54,14 @@
                 // "AdamW",    // ConvNeXt, but seems not accelerate the convergence
                 // "--weight_decay",
                 // "0.05",     // ConvNeXt, but seems not accelerate the convergence
+                // "--lr_class",
+                // "CosineWarmRestart",
                 "--skip_threshold",
                 "1e6",
                 "--epochs",
                 "3000",
                 "--depths",
-                // "2+2",  //test
+                "2+2",  //test
                 // "3+3",  //0
                 // "2+4+2",  //a
                 // "2+2+4+2",  //b
@@ -69,9 +72,9 @@
                 // "6+6+6+6+6+6",  //g(=e)             // SwinIR-C
                 // "6+6+6+6+6+6+6+6+6",  //h             // SwinIR-L
                 // "3+3+3+3",  //i              // SRARN-T
-                "2+2+2+2",  //j              // SRARN-XT
+                // "2+2+2+2",  //j              // SRARN-XT
                 "--dims",
-                // "6+12",  // test
+                "6+12",  // test
                 // "12+24",  //0
                 // "12+24+48",  //1
                 // "12+24+48+96",  //2
@@ -87,7 +90,7 @@
                 // "180+180+180+180+180+180",  //12 // SwinIR-C
                 // "240+240+240+240+240+240+240+240+240", //13      SwinIR-L
                 // "30+30+30+30",  //14         // SRARN-T
-                "24+24+24+24",  //15         // SRARN-XT
+                // "24+24+24+24",  //15         // SRARN-XT
                 // "--drop_path_rate",  // Seems degrade the SR performance
                 // "0.01",
                 // "0.05",
@@ -100,9 +103,9 @@
                 "Nearest",
                 // "PixelShuffle",
                 "--res_connect",
-                "1acb3",
+                // "1acb3",
                 // "3acb3",
-                // "1conv1",
+                "1conv1",
                 // "--srarn_up_feat",
                 // "24",       // default 0, means same as dims[0]
                 // "32",       // SRARN-T

@@ -208,6 +208,8 @@ def make_optimizer(args, target):
         kwargs_optimizer['eps'] = args.epsilon
 
     # scheduler
+    # the default two pytorch cosines seems have no warm-up before init lr
+    # TODO: add warm-up, same as ConvNeXt, which do not use PyTorch scheduler
     if args.lr_class == 'CosineWarmRestart':
         kwargs_scheduler = {'T_0': args.T_0, 'T_mult': args.T_mult}
         scheduler_class = lrs.CosineAnnealingWarmRestarts
