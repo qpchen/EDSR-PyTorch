@@ -87,7 +87,7 @@ parser.add_argument('--reset', action='store_true',
                     help='reset the training')
 parser.add_argument('--test_every', type=int, default=1000,
                     help='do test per every N batches')
-parser.add_argument('--epochs', type=int, default=3000,
+parser.add_argument('--epochs', type=int, default=500,
                     help='number of epochs to train')
 parser.add_argument('--batch_size', type=int, default=16,
                     help='input batch size for training')
@@ -108,7 +108,7 @@ parser.add_argument('--lr', type=float, default=2e-4,
 parser.add_argument('--lr_class', default='MultiStepLR',
                     choices=('MultiStepLR', 'CosineWarm', 'CosineWarmRestart'),
                     help='learning rate decay function (MultiStepLR | CosineWarm)')
-parser.add_argument('--decay', type=str, default='1250-2000-2500-2750',
+parser.add_argument('--decay', type=str, default='250-400-450-475',
                     help='learning rate decay type for MultiStepLR milestone')
 parser.add_argument('--gamma', type=float, default=0.5,
                     help='learning rate decay factor for step decay')
