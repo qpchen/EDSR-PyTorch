@@ -59,7 +59,18 @@
                 "--skip_threshold",
                 "1e6",
                 "--epochs",
-                "3000",
+                "500",  // SwinIR setting
+                // "1000",  // SRARN-B
+                // "1500",  // SRARN-S
+                // "2000",  // SRARN-T
+                // "3000",  // SRARN-XT
+                "--decay",
+                "5-10",  // test
+                // "250-400-450-475",  // SwinIR setting
+                // "500-800-900-950",  // SRARN-B
+                // "750-1200-1350-1425",  // SRARN-S
+                // "1000-1600-1800-1900",  // SRARN-T
+                // "1500-2400-2700-2850",  // SRARN-XT
                 "--depths",
                 "2+2",  //test
                 // "3+3",  //0
@@ -112,15 +123,15 @@
                 // "64",       // SwinIR
                 "--model",
                 "SRARNV5",
-                "--save",
-                // "--load",
+                // "--save",
+                "--load",
                 // "srarn/srarn_v2t_x2",
                 // "srarn/srarn_v2s_x2",
                 "srarn/test",
                 // "../srarn/srarn_x2",
-                "--reset"
-                // "--resume",
-                // "-1"
+                // "--reset"
+                "--resume",
+                "-1"
                 // "--test_only",
                 // "--save_result",
                 // "--pre_train",
