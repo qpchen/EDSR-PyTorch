@@ -63,8 +63,8 @@ target/
 *.png
 *.txt
 *.swp
-.vscode
 !.vscode/launch.json
+.vscode/*.json
 
 # PyCharm
 .idea
@@ -72,8 +72,9 @@ target/
 # Starlight HPC file
 *.out
 #src/continuerun.sh
-!src/startrun.sh
-src/*.sh
+!src/scripts/startrun.sh
+!src/scripts/train*.sh
+src/scripts/*.sh
 *.tar
 
 # Jupyter temp file
