@@ -54,7 +54,7 @@ patch_hr=`expr $patch \* $scale`
 
 # #####################################
 # prepare program options parameters
-run_command="python main.py --n_GPUs $n_device --scale $scale --patch_size $patch_hr $options --loss 1*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --model SRARNV6"
+run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options --loss 1*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --model SRARNV6"
 save_dir="../srarn_v6/v6${size}_x${scale}"
 log_file="../srarn_v6/logs/v6${size}_x${scale}.log"
 
