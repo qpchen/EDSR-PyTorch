@@ -3,6 +3,7 @@
 ################################################################################
 ######################      SRARN V6       ######################
 ################################################################################
+# ./train_srarn.sh [mode] [cuda_device] [accummulation_step] [model_size] [sr_scale] [lr_patch_size]
 # run example as: ./train_srarn.sh train 0,1 1 test 2 48
 # run example for v6b_x2: ./train_srarn.sh train 1,2,3 1 b 2 48
 # run example for v6b_x3: ./train_srarn.sh train 0,1 2 b 3 48
@@ -30,6 +31,8 @@ accum=$3
 size=$4
 if [ $size = "b" ]; then
   options="--epochs 1000 --decay 500-800-900-950 --res_connect 1acb3 --upsampling PixelShuffle --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --batch_size 32"
+elif [ $size = "bn" ]; then  # model_b with nearest+conv upsampling
+  options="--epochs 1000 --decay 500-800-900-950 --res_connect 1acb3 --upsampling Nearest --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --batch_size 32"
 elif [ $size = "s" ]; then
   options="--epochs 1500 --decay 750-1200-1350-1425 --res_connect 1acb3 --upsampling Nearest --srarn_up_feat 60 --depths 6+6+6+6 --dims 60+60+60+60 --batch_size 32"
 elif [ $size = "t" ]; then
