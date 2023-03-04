@@ -166,7 +166,7 @@ parser.add_argument('--load_inf', action='store_true',
 parser.add_argument('--inf_switch', action='store_true',
                     help='When test_only, load training-time Block, then switch to inference-time model and save it')
 
-# Fast SRACNet settings
+# SRACN settings
 parser.add_argument('--n_feat', type=int, default=56,
                     help='number of channels in feature extraction layers')
 parser.add_argument('--n_map_feat', type=int, default=12,
@@ -174,7 +174,7 @@ parser.add_argument('--n_map_feat', type=int, default=12,
 parser.add_argument('--n_up_feat', type=int, default=24,
                     help='number of channels in upsampling layers')
 
-# SRARN Block settings
+# SRARN deep extraction module settings
 parser.add_argument('--depths', type=str, default='3+3',
                     help='Number of blocks at each stage')
 parser.add_argument('--dims', type=str, default='12+24',
@@ -189,10 +189,15 @@ parser.add_argument('--res_connect', default='1acb3',
                     choices=('1acb3', '3acb3', '1conv1'),
                     help='last conv to use before residual connect (1acb3 | 3acb3 | 1conv1)')
 
-# UpSampling Function setting
+# SRARN UpSampling Function setting
 parser.add_argument('--upsampling', default='Nearest',
                     choices=('Nearest', 'Deconv', 'PixelShuffle', 'PixelShuffleDirect'),
                     help='Upsampling to use (Nearest | Deconv | PixelShuffle | PixelShuffleDirect)')
+parser.add_argument('--no_act_ps', action='store_true',
+                    help='do not use activate function GELU in PixelShuffle')
+                    
+parser.add_argument('--no_bicubic', action='store_true',
+                    help='do not add bicubic interpolation of input to output')
 
 args = parser.parse_args()
 template.set_template(args)

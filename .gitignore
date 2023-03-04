@@ -75,6 +75,7 @@ target/
 src/scripts/*.sh
 !src/scripts/startrun.sh
 !src/scripts/train_srarn.sh
+!src/scripts/train_srarn_v7.sh
 *.tar
 
 # Jupyter temp file

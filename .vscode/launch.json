@@ -111,8 +111,8 @@
                 "--upsampling",
                 // "PixelShuffleDirect",
                 // "Deconv",
-                "Nearest",
-                // "PixelShuffle",
+                // "Nearest",
+                "PixelShuffle",
                 "--res_connect",
                 // "1acb3",
                 // "3acb3",
@@ -121,20 +121,23 @@
                 // "24",       // default 0, means same as dims[0]
                 // "32",       // SRARN-T
                 // "64",       // SwinIR
+                "--no_bicubic",
+                // "--no_act_ps",
                 "--model",
-                "SRARNV5",
-                // "--save",
-                "--load",
+                "SRARNV7",
+                "--save",
+                // "--load",
                 // "srarn/srarn_v2t_x2",
                 // "srarn/srarn_v2s_x2",
                 "srarn/test",
                 // "../srarn/srarn_x2",
-                // "--reset"
-                "--resume",
-                "-1"
+                "--reset"
+                // "--resume",
+                // "-1"
                 // "--test_only",
                 // "--save_result",
                 // "--pre_train",
+                // "../experiment/srarn/test/model/model_latest.pt"
                 // "../srarn/srarn_x2/model/model_best.pt",
                 // "../experiment/srarn/test/model/model_best.pt",
                 // "--inf_switch"
