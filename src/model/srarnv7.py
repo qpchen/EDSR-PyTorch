@@ -265,7 +265,7 @@ class SRARNV7(nn.Module):
             )
 
         # ##################################################################################
-        # Deep Feature Extraction.
+        # Deep Feature Extraction. Must use LayerNorm, or the output just use the bicubic, with PSNR fixed
         self.RACBs = nn.ModuleList()  # Residual Asymmetric ConvNeXt Block (RACB), consisting of ACLs
         dp_rates=[x.item() for x in torch.linspace(0, drop_path_rate, sum(depths))] 
         cur = 0
