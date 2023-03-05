@@ -3,21 +3,21 @@
 ################################################################################
 ######################      SRARN V7       ######################
 ################################################################################
-# ./train_srarn_v7.sh [mode] [cuda_device] [accummulation_step] [model_size] [use_bicubic] [sr_scale] [lr_patch_size]
-# run example for v7test_x2: ./train_srarn_v7.sh train 0 1 test nb 2 48
-# run example for v7b_x2: ./scripts/train_srarn_v7.sh train 0,1 2 ba ab 2 48
-# run example for v7b_x2: ./train_srarn_v7.sh train 0,1,2,3 1 b ab 2 48
-# run example for v7b_x3: ./train_srarn_v7.sh train 0,1 2 b ab 3 48
-# run example for v7b_x4: ./train_srarn_v7.sh train 0,1 2 b ab 4 48
-# run example for v7s_x2: ./train_srarn_v7.sh train 0 1 s ab 2 48
-# run example for v7s_x3: ./train_srarn_v7.sh train 1 1 s ab 3 48
-# run example for v7s_x4: ./train_srarn_v7.sh train 0 1 s ab 4 48
-# run example for v7t_x2: ./train_srarn_v7.sh train 1 1 t ab 2 48
-# run example for v7t_x3: ./train_srarn_v7.sh train 0 1 t ab 3 48
-# run example for v7t_x4: ./train_srarn_v7.sh train 1 1 t ab 4 48
-# run example for v7xt_x2: ./train_srarn_v7.sh train 0 1 xt ab 2 48
-# run example for v7xt_x3: ./train_srarn_v7.sh train 1 1 xt ab 3 48
-# run example for v7xt_x4: ./train_srarn_v7.sh train 0 1 xt ab 4 48
+# ./scripts/train_srarn_v7.sh [mode] [cuda_device] [accummulation_step] [model_size] [use_bicubic] [sr_scale] [lr_patch_size]
+# run example for v7test_x2: ./scripts/train_srarn_v7.sh train 0 1 test nb 2 48
+# run example for v7ba_x2: ./scripts/train_srarn_v7.sh train 0,1 1 ba ab 2 48
+# run example for v7b_x2: ./scripts/train_srarn_v7.sh train 0,1,2,3 1 b ab 2 48
+# run example for v7b_x3: ./scripts/train_srarn_v7.sh train 0,1 1 b ab 3 48
+# run example for v7b_x4: ./scripts/train_srarn_v7.sh train 0,1 1 b ab 4 48
+# run example for v7s_x2: ./scripts/train_srarn_v7.sh train 0 1 s ab 2 48
+# run example for v7s_x3: ./scripts/train_srarn_v7.sh train 1 1 s ab 3 48
+# run example for v7s_x4: ./scripts/train_srarn_v7.sh train 0 1 s ab 4 48
+# run example for v7t_x2: ./scripts/train_srarn_v7.sh train 1 1 t ab 2 48
+# run example for v7t_x3: ./scripts/train_srarn_v7.sh train 0 1 t ab 3 48
+# run example for v7t_x4: ./scripts/train_srarn_v7.sh train 1 1 t ab 4 48
+# run example for v7xt_x2: ./scripts/train_srarn_v7.sh train 0 1 xt ab 2 48
+# run example for v7xt_x3: ./scripts/train_srarn_v7.sh train 1 1 xt ab 3 48
+# run example for v7xt_x4: ./scripts/train_srarn_v7.sh train 0 1 xt ab 4 48
 
 # #####################################
 # accept input
@@ -56,8 +56,10 @@ fi
 # if the output add bicubic interpolation of input
 use_bicubic=$5
 if [ $use_bicubic = "ab" ]; then
+  bicubic_print=""
   bicubic=""
 elif [ $use_bicubic = "nb" ]; then
+  bicubic_print="_nb"
   bicubic="--no_bicubic"
 else
   echo "no valid $use_bicubic ! Please input (ab | nb)."
@@ -73,8 +75,8 @@ patch_hr=`expr $patch \* $scale`
 # #####################################
 # prepare program options parameters
 run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $bicubic --loss 1*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --model SRARNV7"
-save_dir="../srarn_v7/v7${size}_${use_bicubic}_x${scale}"
-log_file="../srarn_v7/logs/v7${size}_${use_bicubic}_x${scale}.log"
+save_dir="../srarn_v7/v7${size}${bicubic_print}_x${scale}"
+log_file="../srarn_v7/logs/v7${size}${bicubic_print}_x${scale}.log"
 
 if [ ! -d "../srarn_v7" ]; then
   mkdir "../srarn_v7"
