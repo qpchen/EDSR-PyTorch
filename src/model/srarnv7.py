@@ -243,7 +243,7 @@ class SRARNV7(nn.Module):
         res_connect = args.res_connect
         self.upsampling = args.upsampling
         self.no_bicubic = args.no_bicubic
-        use_norm = args.use_norm
+        use_norm = not args.no_layernorm
 
         # RGB mean for DIV2K
         if num_channels == 3:

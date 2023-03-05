@@ -198,8 +198,8 @@ parser.add_argument('--no_act_ps', action='store_true',
                     
 parser.add_argument('--no_bicubic', action='store_true',
                     help='do not add bicubic interpolation of input to output')
-parser.add_argument('--use_norm', action='store_true',
-                    help='add layer normalization for each acl/racb')
+parser.add_argument('--no_layernorm', action='store_true',
+                    help='delete layer normalization for each acl/racb')
 
 args = parser.parse_args()
 template.set_template(args)

@@ -119,13 +119,14 @@
                 // "1acb3",
                 // "3acb3",
                 "1conv1",
-                // "--srarn_up_feat",
+                "--srarn_up_feat",
+                "8",     //test
                 // "24",       // default 0, means same as dims[0]
                 // "32",       // SRARN-T
                 // "64",       // SwinIR
                 "--no_act_ps",
                 // "--no_bicubic",
-                // "--use_norm",
+                // "--no_layernorm",
                 "--model",
                 "SRARNV7",
                 "--save",
