@@ -124,8 +124,8 @@
                 // "32",       // SRARN-T
                 // "64",       // SwinIR
                 // "--no_act_ps",
-                "--no_bicubic",
-                // "--layer_norm",
+                // "--no_bicubic",
+                // "--use_norm",
                 "--model",
                 "SRARNV7",
                 "--save",

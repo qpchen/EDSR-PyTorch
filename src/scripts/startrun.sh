@@ -90,6 +90,8 @@
 # #####################################
 # like SwinIR-S
 # nohup python main.py --n_GPUs 1 --scale 2 --patch_size 96 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 2000 --decay 1250-1500-1750-1875 --res_connect 1acb3 --srarn_up_feat 60 --depths 6+6+6+6 --dims 60+60+60+60 --model SRARNV5 --save ../srarn/srarn_v5s_f11_x2 --reset > ../srarn/v5s_f11_x2.log 2>&1 &
+# python main.py --n_GPUs 1 --scale 2 --patch_size 96 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 2000 --decay 1250-1500-1750-1875 --res_connect 1acb3 --srarn_up_feat 60 --depths 6+6+6+6 --dims 60+60+60+60 --model SRARNV5 --save ../srarn/srarn_v5s_f11_x2 --pre_train ../srarn/srarn_v5s_f11_x2/model/model_best.pt --test_only --inf_switch
+# python main.py --n_GPUs 1 --scale 2 --patch_size 96 --batch_size 32 --data_test Set5+Set14+B100+Urban100 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 2000 --decay 1250-1500-1750-1875 --res_connect 1acb3 --srarn_up_feat 60 --depths 6+6+6+6 --dims 60+60+60+60 --model SRARNV5 --save ../srarn/srarn_v5s_f11_x2 --pre_train ../srarn/srarn_v5s_f11_x2/model/inf_model.pt --test_only --save_result --load_inf
 
 # nohup python main.py --n_GPUs 1 --scale 3 --patch_size 144 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 2000 --decay 1250-1500-1750-1875 --res_connect 1acb3 --srarn_up_feat 60 --depths 6+6+6+6 --dims 60+60+60+60 --model SRARNV5 --save ../srarn/srarn_v5s_f11_x3 --reset > ../srarn/v5s_f11_x3.log 2>&1 &
 
@@ -107,6 +109,8 @@
 
 # for tiny size (T) i14
 # nohup python main.py --n_GPUs 1 --scale 2 --patch_size 96 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --res_connect 1acb3 --srarn_up_feat 30 --depths 3+3+3+3 --dims 30+30+30+30 --model SRARNV5 --save ../srarn/srarn_v5t_i14_x2 --reset > ../srarn/v5t_i14_x2.log 2>&1 &
+# python main.py --n_GPUs 1 --scale 2 --patch_size 96 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --res_connect 1acb3 --srarn_up_feat 30 --depths 3+3+3+3 --dims 30+30+30+30 --model SRARNV5 --save ../srarn/srarn_v5t_i14_x2_test --pre_train ../srarn/srarn_v5t_i14_x2/model/model_best.pt --test_only --inf_switch
+# python main.py --n_GPUs 1 --scale 2 --patch_size 96 --batch_size 32 --data_test Set5+Set14+B100+Urban100 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --res_connect 1acb3 --srarn_up_feat 30 --depths 3+3+3+3 --dims 30+30+30+30 --model SRARNV5 --save ../srarn/srarn_v5t_i14_x2_test --pre_train ../srarn/srarn_v5t_i14_x2_test/model/inf_model.pt --test_only --save_result --load_inf
 
 # nohup python main.py --n_GPUs 1 --scale 3 --patch_size 144 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --res_connect 1acb3 --srarn_up_feat 30 --depths 3+3+3+3 --dims 30+30+30+30 --model SRARNV5 --save ../srarn/srarn_v5t_i14_x3 --reset > ../srarn/v5t_i14_x3.log 2>&1 &
 
@@ -116,6 +120,8 @@
 # #####################################
 # for extremly tiny size (XT) inf:K
 # nohup python main.py --n_GPUs 1 --scale 2 --patch_size 96 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --decay 2750 --res_connect 1acb3 --srarn_up_feat 24 --depths 2+2+2+2 --dims 24+24+24+24 --model SRARNV5 --save ../srarn/srarn_v5xt_j15_x2 --reset > ../srarn/v5xt_j15_x2.log 2>&1 &
+# python main.py --n_GPUs 1 --scale 2 --patch_size 96 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --decay 2750 --res_connect 1acb3 --srarn_up_feat 24 --depths 2+2+2+2 --dims 24+24+24+24 --model SRARNV5 --save ../srarn/srarn_v5xt_j15_x2 --pre_train ../srarn/srarn_v5xt_j15_x2/model/model_best.pt --test_only --inf_switch
+# python main.py --n_GPUs 1 --scale 2 --patch_size 96 --batch_size 32 --data_test Set5+Set14+B100+Urban100 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --decay 2750 --res_connect 1acb3 --srarn_up_feat 24 --depths 2+2+2+2 --dims 24+24+24+24 --model SRARNV5 --save ../srarn/srarn_v5xt_j15_x2 --pre_train ../srarn/srarn_v5xt_j15_x2/model/inf_model.pt --test_only --save_result --load_inf
 
 # nohup python main.py --n_GPUs 1 --scale 3 --patch_size 144 --batch_size 32 --data_test Set5 --loss 1\*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --epochs 3000 --res_connect 1acb3 --srarn_up_feat 24 --depths 2+2+2+2 --dims 24+24+24+24 --model SRARNV5 --save ../srarn/srarn_v5xt_j15_x3 --reset > ../srarn/v5xt_j15_x3.log 2>&1 &
 

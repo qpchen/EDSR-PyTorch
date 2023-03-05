@@ -199,7 +199,7 @@ parser.add_argument('--no_act_ps', action='store_true',
 parser.add_argument('--no_bicubic', action='store_true',
                     help='do not add bicubic interpolation of input to output')
 parser.add_argument('--use_norm', action='store_true',
-                    help='add batch and layer normalization for each conv/acb/acl/racb')
+                    help='add layer normalization for each acl/racb')
 
 args = parser.parse_args()
 template.set_template(args)

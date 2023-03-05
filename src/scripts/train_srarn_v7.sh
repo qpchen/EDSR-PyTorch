@@ -5,7 +5,8 @@
 ################################################################################
 # ./train_srarn_v7.sh [mode] [cuda_device] [accummulation_step] [model_size] [use_bicubic] [sr_scale] [lr_patch_size]
 # run example for v7test_x2: ./train_srarn_v7.sh train 0 1 test nb 2 48
-# run example for v7b_x2: ./train_srarn_v7.sh train 1,2,3 1 b ab 2 48
+# run example for v7b_x2: ./scripts/train_srarn_v7.sh train 0,1 2 ba ab 2 48
+# run example for v7b_x2: ./train_srarn_v7.sh train 0,1,2,3 1 b ab 2 48
 # run example for v7b_x3: ./train_srarn_v7.sh train 0,1 2 b ab 3 48
 # run example for v7b_x4: ./train_srarn_v7.sh train 0,1 2 b ab 4 48
 # run example for v7s_x2: ./train_srarn_v7.sh train 0 1 s ab 2 48
@@ -30,7 +31,9 @@ accum=$3
 # forth is model size
 size=$4
 # ############## model_b #############
-if [ $size = "b" ]; then
+if [ $size = "b" ]; then  # model_b use PixelShuffle upsampling with no activate layer
+  options="--epochs 1000 --decay 500-800-900-950 --res_connect 1acb3 --upsampling PixelShuffle --no_act_ps --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --batch_size 32"
+elif [ $size = "ba" ]; then  # model_b use PixelShuffle upsampling with activate layer
   options="--epochs 1000 --decay 500-800-900-950 --res_connect 1acb3 --upsampling PixelShuffle --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --batch_size 32"
 elif [ $size = "bn" ]; then  # model_b with nearest+conv upsampling
   options="--epochs 1000 --decay 500-800-900-950 --res_connect 1acb3 --upsampling Nearest --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --batch_size 32"

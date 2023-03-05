@@ -212,7 +212,8 @@ class SRARNV7(nn.Module):
     在V5基础上(相对V6默认保留Pixel Shuffle中的激活层,但也增加参数选择可去掉激活层)
     增加是否在最终输出上合并双三次插值的选项(默认不合并,即不计算插值并和上采样求和)
     并考虑去除主干网络中所有除了ACL(ConvNext block)以外的激活层,但影响似乎不大,未执行
-    提供去掉LN层的选项。
+    提供去掉LN层的选项(建议不使用LN,因LN虽然训练会收敛,但不仅开始有影响,收敛趋势也不好)
+    同时固定去除acb中的BN(BN对结果影响极大从开始就极差,且完全不收敛)
     Args:
         scale (int): Image magnification factor.
         num_blocks (int): The number of RACB blocks in deep feature extraction.
@@ -253,13 +254,13 @@ class SRARNV7(nn.Module):
         # Shallow Feature Extraction.
         if use_norm:
             self.shallow = nn.Sequential(
-                acb.ACBlock(num_channels, dims[0], 3, 1, 1, deploy=use_inf, norm=use_norm),
+                acb.ACBlock(num_channels, dims[0], 3, 1, 1, deploy=use_inf, bn=False),
                 LayerNorm(dims[0], eps=1e-6, data_format="channels_first")
                 ,nn.GELU()
             )
         else:
             self.shallow = nn.Sequential(
-                acb.ACBlock(num_channels, dims[0], 3, 1, 1, deploy=use_inf, norm=use_norm)
+                acb.ACBlock(num_channels, dims[0], 3, 1, 1, deploy=use_inf, bn=False)
                 ,nn.GELU()
             )
 
@@ -286,7 +287,7 @@ class SRARNV7(nn.Module):
             else:
                 self.preup = nn.Sequential(
                     LayerNorm(dims[-1], eps=1e-6, data_format="channels_first"),
-                    acb.ACBlock(dims[-1], dims[0], 3, 1, 1, deploy=use_inf, norm=use_norm)
+                    acb.ACBlock(dims[-1], dims[0], 3, 1, 1, deploy=use_inf, bn=False)
                     ,nn.GELU()
                 )
                 # if custom the channel setting in upsampling, convert to it
@@ -297,7 +298,7 @@ class SRARNV7(nn.Module):
                 self.preup = nn.Conv2d(dims[-1], dims[0], 1, 1, 0)
             else:
                 self.preup = nn.Sequential(
-                    acb.ACBlock(dims[-1], dims[0], 3, 1, 1, deploy=use_inf, norm=use_norm)
+                    acb.ACBlock(dims[-1], dims[0], 3, 1, 1, deploy=use_inf, bn=False)
                     ,nn.GELU()
                 )
                 # if custom the channel setting in upsampling, convert to it
@@ -311,26 +312,26 @@ class SRARNV7(nn.Module):
                                              (4, 4), (self.scale - 1, self.scale - 1))
         elif self.upsampling == 'PixelShuffleDirect':
             acblock = common.default_acb
-            self.pixelshuffledirect = common.UpsamplerDirect(acblock, self.scale, dims[0], num_channels, deploy=use_inf, bn=use_norm) #False)
+            self.pixelshuffledirect = common.UpsamplerDirect(acblock, self.scale, dims[0], num_channels, deploy=use_inf, bn=False) #False)
         elif self.upsampling == 'PixelShuffle':
             acblock = common.default_acb
             if args.no_act_ps:
                 self.pixelshuffle = nn.Sequential(
-                    common.Upsampler(acblock, self.scale, num_up_feat, act=False, deploy=use_inf, bn=use_norm), #act='gelu' for v5
-                    acblock(num_up_feat, num_channels, 3, 1, 1, deploy=use_inf, norm=use_norm)
+                    common.Upsampler(acblock, self.scale, num_up_feat, act=False, deploy=use_inf, bn=False), #act='gelu' for v5
+                    acblock(num_up_feat, num_channels, 3, 1, 1, deploy=use_inf, bn=False)
                 )
             else:  # default option
                 self.pixelshuffle = nn.Sequential(
-                    common.Upsampler(acblock, self.scale, num_up_feat, act='gelu', deploy=use_inf, bn=use_norm),
-                    acblock(num_up_feat, num_channels, 3, 1, 1, deploy=use_inf, norm=use_norm)
+                    common.Upsampler(acblock, self.scale, num_up_feat, act='gelu', deploy=use_inf, bn=False),
+                    acblock(num_up_feat, num_channels, 3, 1, 1, deploy=use_inf, bn=False)
                 )
         elif self.upsampling == 'Nearest':
             # Nearest + Conv/ACBlock
             if (self.scale & (self.scale - 1)) == 0:  # 缩放因子等于 2^n
                 for i in range(int(log(self.scale, 2))):  #  循环 n 次
-                    self.add_module(f'up{i}', acb.ACBlock(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf, norm=use_norm))
+                    self.add_module(f'up{i}', acb.ACBlock(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf, bn=False))
             elif self.scale == 3:  # 缩放因子等于 3
-                self.up = acb.ACBlock(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf, norm=use_norm)
+                self.up = acb.ACBlock(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf, bn=False)
             else:
                 # 报错，缩放因子不对
                 raise ValueError(f'scale {self.sscale} is not supported. ' 'Supported scales: 2^n and 3.')
@@ -338,9 +339,9 @@ class SRARNV7(nn.Module):
             self.postup = nn.Sequential(
                 PA(num_up_feat),
                 nn.GELU(),
-                acb.ACBlock(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf, norm=use_norm),
+                acb.ACBlock(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf, bn=False),
                 nn.GELU(),
-                acb.ACBlock(num_up_feat, num_channels, 3, 1, 1, deploy=use_inf, norm=use_norm)
+                acb.ACBlock(num_up_feat, num_channels, 3, 1, 1, deploy=use_inf, bn=False)
             )
 
         # Initialize model weights.
