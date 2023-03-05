@@ -172,29 +172,29 @@ class RACB(nn.Module):
             elif res_connect == "1acb3":
                 self.layer_head = nn.Sequential(
                             LayerNorm(dim_in, eps=1e-6, data_format="channels_first"),
-                            acb.ACBlock(dim_in, dim_in, 3, 1, 1, deploy=deploy)
+                            acb.ACBlock(dim_in, dim_in, 3, 1, 1, deploy=deploy, bn=False)
                 )
             elif res_connect == "3acb3":
                 self.layer_head = nn.Sequential(
                             LayerNorm(dim_in, eps=1e-6, data_format="channels_first"),
-                            acb.ACBlock(dim_in, dim_in // 4, 3, 1, 1, deploy=deploy),
+                            acb.ACBlock(dim_in, dim_in // 4, 3, 1, 1, deploy=deploy, bn=False),
                             nn.GELU(),
                             nn.Conv2d(dim_in // 4, dim_in // 4, 1, 1, 0),
                             nn.GELU(),
-                            acb.ACBlock(dim_in // 4, dim_in, 3, 1, 1, deploy=deploy)
+                            acb.ACBlock(dim_in // 4, dim_in, 3, 1, 1, deploy=deploy, bn=False)
                 )
         else:
             if res_connect == "1conv1":
                 self.layer_head = nn.Conv2d(dim_in, dim_in, kernel_size=1, stride=1)
             elif res_connect == "1acb3":
-                self.layer_head = acb.ACBlock(dim_in, dim_in, 3, 1, 1, deploy=deploy)
+                self.layer_head = acb.ACBlock(dim_in, dim_in, 3, 1, 1, deploy=deploy, bn=False)
             elif res_connect == "3acb3":
                 self.layer_head = nn.Sequential(
-                            acb.ACBlock(dim_in, dim_in // 4, 3, 1, 1, deploy=deploy),
+                            acb.ACBlock(dim_in, dim_in // 4, 3, 1, 1, deploy=deploy, bn=False),
                             nn.GELU(),
                             nn.Conv2d(dim_in // 4, dim_in // 4, 1, 1, 0),
                             nn.GELU(),
-                            acb.ACBlock(dim_in // 4, dim_in, 3, 1, 1, deploy=deploy)
+                            acb.ACBlock(dim_in // 4, dim_in, 3, 1, 1, deploy=deploy, bn=False)
                 )
         
         if dim_in != dim_out:
@@ -275,30 +275,58 @@ class SRARNV7(nn.Module):
             self.RACBs.append(block)
             cur += depths[i]
 
-
+        # conv layers for enhancing the translational equivariance 
+        # define head of deep feature, input channel dims[-1] to output dims[0]
+        # the output receive the residual connect from stem of deep feature
+        if use_norm:
+            if res_connect == "1conv1":
+                self.deep_head = nn.Sequential(
+                            LayerNorm(dims[-1], eps=1e-6, data_format="channels_first"),
+                            nn.Conv2d(dims[-1], dims[0], kernel_size=1, stride=1)
+                )
+            elif res_connect == "1acb3":
+                self.deep_head = nn.Sequential(
+                            LayerNorm(dims[-1], eps=1e-6, data_format="channels_first"),
+                            acb.ACBlock(dims[-1], dims[0], 3, 1, 1, deploy=use_inf, bn=False)
+                )
+            elif res_connect == "3acb3":
+                self.deep_head = nn.Sequential(
+                            LayerNorm(dims[-1], eps=1e-6, data_format="channels_first"),
+                            acb.ACBlock(dims[-1], dims[-1] // 4, 3, 1, 1, deploy=use_inf, bn=False),
+                            nn.GELU(),
+                            nn.Conv2d(dims[-1] // 4, dims[-1] // 4, 1, 1, 0),
+                            nn.GELU(),
+                            acb.ACBlock(dims[-1] // 4, dims[0], 3, 1, 1, deploy=use_inf, bn=False)
+                )
+        else:
+            if res_connect == "1conv1":
+                self.deep_head = nn.Conv2d(dims[-1], dims[0], kernel_size=1, stride=1)
+            elif res_connect == "1acb3":
+                self.deep_head = acb.ACBlock(dims[-1], dims[0], 3, 1, 1, deploy=use_inf, bn=False)
+            elif res_connect == "3acb3":
+                self.deep_head = nn.Sequential(
+                            acb.ACBlock(dims[-1], dims[-1] // 4, 3, 1, 1, deploy=use_inf, bn=False),
+                            nn.GELU(),
+                            nn.Conv2d(dims[-1] // 4, dims[-1] // 4, 1, 1, 0),
+                            nn.GELU(),
+                            acb.ACBlock(dims[-1] // 4, dims[0], 3, 1, 1, deploy=use_inf, bn=False)
+                )
         # ##################################################################################
         # Upsampling
         if use_norm:
-            if self.upsampling == 'PixelShuffleDirect' or self.upsampling == 'Deconv':
+            if self.upsampling != 'PixelShuffleDirect' and self.upsampling != 'Deconv':
                 self.preup = nn.Sequential(
-                    LayerNorm(dims[-1], eps=1e-6, data_format="channels_first"),
-                    nn.Conv2d(dims[-1], dims[0], 1, 1, 0)
-                )
-            else:
-                self.preup = nn.Sequential(
-                    LayerNorm(dims[-1], eps=1e-6, data_format="channels_first"),
-                    acb.ACBlock(dims[-1], num_up_feat, 3, 1, 1, deploy=use_inf, bn=False)
+                    LayerNorm(dims[0], eps=1e-6, data_format="channels_first"),
+                    acb.ACBlock(dims[0], num_up_feat, 3, 1, 1, deploy=use_inf, bn=False)
                     ,nn.GELU()
                 )
                 # if custom the channel setting in upsampling, convert to it
                 # if num_up_feat != dims[0]:
                 #     self.upfea = nn.Conv2d(dims[0], num_up_feat, 1, 1, 0)
         else:
-            if self.upsampling == 'PixelShuffleDirect' or self.upsampling == 'Deconv':
-                self.preup = nn.Conv2d(dims[-1], dims[0], 1, 1, 0)
-            else:
+            if self.upsampling != 'PixelShuffleDirect' and self.upsampling != 'Deconv':
                 self.preup = nn.Sequential(
-                    acb.ACBlock(dims[-1], num_up_feat, 3, 1, 1, deploy=use_inf, bn=False)
+                    acb.ACBlock(dims[0], num_up_feat, 3, 1, 1, deploy=use_inf, bn=False)
                     ,nn.GELU()
                 )
                 # if custom the channel setting in upsampling, convert to it
@@ -359,7 +387,7 @@ class SRARNV7(nn.Module):
         input = x
         for i in range(self.num_blocks):
             x = self.RACBs[i](x)
-        x = self.preup(x)
+        x = self.deep_head(x)
         x = input + x   # Residual of the whole deep feature Extraction
         return x
 
@@ -379,8 +407,10 @@ class SRARNV7(nn.Module):
         elif self.upsampling == 'PixelShuffleDirect':
             out = self.pixelshuffledirect(out)
         elif self.upsampling == 'PixelShuffle':
+            out = self.preup(out)
             out = self.pixelshuffle(out)
         elif self.upsampling == 'Nearest':
+            out = self.preup(out)
             if (self.scale & (self.scale - 1)) == 0:  # 缩放因子等于 2^n
                 for i in range(int(log(self.scale, 2))):  #  循环 n 次
                     out = getattr(self, f'up{i}')(F.interpolate(out, scale_factor=2, mode='nearest'))
