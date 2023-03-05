@@ -5,9 +5,10 @@ import torch
 class ACBlock(nn.Module):
 
     def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0, dilation=1, groups=1, padding_mode='zeros', deploy=False,
-                 use_affine=True, reduce_gamma=False, gamma_init=None ):
+                 use_affine=True, reduce_gamma=False, gamma_init=None, norm=False):
         super(ACBlock, self).__init__()
         self.deploy = deploy
+        self.norm = norm
         if deploy:
             self.fused_conv = nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=(kernel_size,kernel_size), stride=stride,
                                       padding=padding, dilation=dilation, groups=groups, bias=True, padding_mode=padding_mode)
@@ -16,7 +17,8 @@ class ACBlock(nn.Module):
                                          kernel_size=(kernel_size, kernel_size), stride=stride,
                                          padding=padding, dilation=dilation, groups=groups, bias=False,
                                          padding_mode=padding_mode)
-            self.square_bn = nn.BatchNorm2d(num_features=out_channels, affine=use_affine)
+            if norm:
+                self.square_bn = nn.BatchNorm2d(num_features=out_channels, affine=use_affine)
 
 
             if padding - kernel_size // 2 >= 0:
@@ -41,8 +43,9 @@ class ACBlock(nn.Module):
                                       stride=stride,
                                       padding=hor_padding, dilation=dilation, groups=groups, bias=False,
                                       padding_mode=padding_mode)
-            self.ver_bn = nn.BatchNorm2d(num_features=out_channels, affine=use_affine)
-            self.hor_bn = nn.BatchNorm2d(num_features=out_channels, affine=use_affine)
+            if norm:
+                self.ver_bn = nn.BatchNorm2d(num_features=out_channels, affine=use_affine)
+                self.hor_bn = nn.BatchNorm2d(num_features=out_channels, affine=use_affine)
 
             if reduce_gamma:
                 self.init_gamma(1.0 / 3)
@@ -51,7 +54,7 @@ class ACBlock(nn.Module):
                 assert not reduce_gamma
                 self.init_gamma(gamma_init)
 
-
+    # ############## when use batch norm #################
     def _fuse_bn_tensor(self, conv, bn):
         std = (bn.running_var + bn.eps).sqrt()
         t = (bn.weight / std).reshape(-1, 1, 1, 1)
@@ -66,12 +69,21 @@ class ACBlock(nn.Module):
                 square_w // 2 - asym_w // 2: square_w // 2 - asym_w // 2 + asym_w] += asym_kernel
 
     def get_equivalent_kernel_bias(self):
-        hor_k, hor_b = self._fuse_bn_tensor(self.hor_conv, self.hor_bn)
-        ver_k, ver_b = self._fuse_bn_tensor(self.ver_conv, self.ver_bn)
-        square_k, square_b = self._fuse_bn_tensor(self.square_conv, self.square_bn)
+        if self.norm:
+            hor_k, hor_b = self._fuse_bn_tensor(self.hor_conv, self.hor_bn)
+            ver_k, ver_b = self._fuse_bn_tensor(self.ver_conv, self.ver_bn)
+            square_k, square_b = self._fuse_bn_tensor(self.square_conv, self.square_bn)
+        else:
+            square_k = self.square_conv.weight
+            square_b = self.square_conv.bias
+            hor_k = self.hor_conv.weight
+            hor_b = self.hor_conv.bias
+            ver_k = self.ver_conv.weight
+            ver_b = self.ver_conv.bias
         self._add_to_square_kernel(square_k, hor_k)
         self._add_to_square_kernel(square_k, ver_k)
         return square_k, hor_b + ver_b + square_b
+    # ###################################################
 
 
     def switch_to_deploy(self):
@@ -82,11 +94,12 @@ class ACBlock(nn.Module):
                                     padding=self.square_conv.padding, dilation=self.square_conv.dilation, groups=self.square_conv.groups, bias=True,
                                     padding_mode=self.square_conv.padding_mode)
         self.__delattr__('square_conv')
-        self.__delattr__('square_bn')
         self.__delattr__('hor_conv')
-        self.__delattr__('hor_bn')
         self.__delattr__('ver_conv')
-        self.__delattr__('ver_bn')
+        if self.norm:
+            self.__delattr__('square_bn')
+            self.__delattr__('hor_bn')
+            self.__delattr__('ver_bn')
         self.fused_conv.weight.data = deploy_k
         self.fused_conv.bias.data = deploy_b
 
@@ -108,7 +121,8 @@ class ACBlock(nn.Module):
             return self.fused_conv(input)
         else:
             square_outputs = self.square_conv(input)
-            square_outputs = self.square_bn(square_outputs)
+            if self.norm:
+                square_outputs = self.square_bn(square_outputs)
             if self.crop > 0:
                 ver_input = input[:, :, :, self.crop:-self.crop]
                 hor_input = input[:, :, self.crop:-self.crop, :]
@@ -116,9 +130,11 @@ class ACBlock(nn.Module):
                 ver_input = input
                 hor_input = input
             vertical_outputs = self.ver_conv(ver_input)
-            vertical_outputs = self.ver_bn(vertical_outputs)
+            if self.norm:
+                vertical_outputs = self.ver_bn(vertical_outputs)
             horizontal_outputs = self.hor_conv(hor_input)
-            horizontal_outputs = self.hor_bn(horizontal_outputs)
+            if self.norm:
+                horizontal_outputs = self.hor_bn(horizontal_outputs)
             result = square_outputs + vertical_outputs + horizontal_outputs
             return result
 

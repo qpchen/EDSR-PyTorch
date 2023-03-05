@@ -42,6 +42,8 @@
                 // "Set5+Set14+B100+Urban100+DIV2K",
                 "--loss",
                 "1*SmoothL1",
+                // "1*L1",
+                // "1*MSE",
                 "--lr",
                 // "1e-3",
                 // "5e-4",     // A2N
@@ -111,8 +113,8 @@
                 "--upsampling",
                 // "PixelShuffleDirect",
                 // "Deconv",
-                // "Nearest",
-                "PixelShuffle",
+                "Nearest",
+                // "PixelShuffle",
                 "--res_connect",
                 // "1acb3",
                 // "3acb3",
@@ -121,8 +123,9 @@
                 // "24",       // default 0, means same as dims[0]
                 // "32",       // SRARN-T
                 // "64",       // SwinIR
-                "--no_bicubic",
                 // "--no_act_ps",
+                "--no_bicubic",
+                // "--layer_norm",
                 "--model",
                 "SRARNV7",
                 "--save",
