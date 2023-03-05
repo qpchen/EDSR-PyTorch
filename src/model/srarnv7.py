@@ -313,28 +313,32 @@ class SRARNV7(nn.Module):
                 )
         # ##################################################################################
         # Upsampling
-        if use_norm:
-            if self.upsampling != 'PixelShuffleDirect' and self.upsampling != 'Deconv':
-                self.preup = nn.Sequential(
-                    LayerNorm(dims[0], eps=1e-6, data_format="channels_first"),
-                    acb.ACBlock(dims[0], num_up_feat, 3, 1, 1, deploy=use_inf, bn=False)
-                    ,nn.GELU()
-                )
-                # if custom the channel setting in upsampling, convert to it
-                # if num_up_feat != dims[0]:
-                #     self.upfea = nn.Conv2d(dims[0], num_up_feat, 1, 1, 0)
-        else:
-            if self.upsampling != 'PixelShuffleDirect' and self.upsampling != 'Deconv':
-                self.preup = nn.Sequential(
-                    acb.ACBlock(dims[0], num_up_feat, 3, 1, 1, deploy=use_inf, bn=False)
-                    ,nn.GELU()
-                )
-                # if custom the channel setting in upsampling, convert to it
-                # TODO: 搞清楚是不是这里导致b和test模型在去掉norm后，在几十epoch内某时刻，psnr值突然固定某个数完全不变了
-                # TODO：因为只有这两个规模激活了下面的upfea，也暂时只有这俩有这个psnr固定的现象，或者突然从37降到34上不去
-                # if num_up_feat != dims[0]:
-                #     self.upfea = nn.Conv2d(dims[0], num_up_feat, 1, 1, 0)
-        
+        # if use_norm:
+        #     if self.upsampling != 'PixelShuffleDirect' and self.upsampling != 'Deconv':
+        #         self.preup = nn.Sequential(
+        #             LayerNorm(dims[0], eps=1e-6, data_format="channels_first"),
+        #             acb.ACBlock(dims[0], num_up_feat, 3, 1, 1, deploy=use_inf, bn=False)
+        #             ,nn.GELU()
+        #         )
+        #         # if custom the channel setting in upsampling, convert to it
+        #         # if num_up_feat != dims[0]:
+        #         #     self.upfea = nn.Conv2d(dims[0], num_up_feat, 1, 1, 0)
+        # else:
+        #     if self.upsampling != 'PixelShuffleDirect' and self.upsampling != 'Deconv':
+        #         self.preup = nn.Sequential(
+        #             acb.ACBlock(dims[0], num_up_feat, 3, 1, 1, deploy=use_inf, bn=False)
+        #             ,nn.GELU()
+        #         )
+        #         # if custom the channel setting in upsampling, convert to it
+        #         # TODO: 搞清楚是不是这里导致b和test模型在去掉norm后，在几十epoch内某时刻，psnr值突然固定某个数完全不变了
+        #         # TODO：因为只有这两个规模激活了下面的upfea，也暂时只有这俩有这个psnr固定的现象，或者突然从37降到34上不去
+        #         # if num_up_feat != dims[0]:
+        #         #     self.upfea = nn.Conv2d(dims[0], num_up_feat, 1, 1, 0)
+        if self.upsampling != 'PixelShuffleDirect' and self.upsampling != 'Deconv':
+            self.preup = nn.Sequential(
+                acb.ACBlock(dims[0], num_up_feat, 3, 1, 1, deploy=use_inf, bn=False)
+                ,nn.GELU()
+            )
         # Upsampling layer.
         if self.upsampling == 'Deconv':
             # Deconvolution layer.
