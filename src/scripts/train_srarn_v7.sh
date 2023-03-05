@@ -5,13 +5,15 @@
 ################################################################################
 # ./scripts/train_srarn_v7.sh [mode] [cuda_device] [accummulation_step] [model_size] [use_bicubic] [sr_scale] [lr_patch_size]
 # run example for v7test_x2: ./scripts/train_srarn_v7.sh train 0 1 test nb 2 48
+# ########### training commands ###########
 # run example for v7ba_x2: ./scripts/train_srarn_v7.sh train 0,1 1 ba ab 2 48
-# run example for v7b_x2: ./scripts/train_srarn_v7.sh train 0,1,2,3 1 b ab 2 48
-# run example for v7b_x3: ./scripts/train_srarn_v7.sh train 0,1 1 b ab 3 48
-# run example for v7b_x4: ./scripts/train_srarn_v7.sh train 0,1 1 b ab 4 48
+# run example for v7b_x2: ./scripts/train_srarn_v7.sh train 0,1 1 b ab 2 48
+# run example for v7bn_x2: ./scripts/train_srarn_v7.sh train 2,3 1 bn ab 2 48
+# run example for v7bn_x3: ./scripts/train_srarn_v7.sh train 0,1 1 bn ab 3 48
+# run example for v7bn_x4: ./scripts/train_srarn_v7.sh train 0,1 1 bn ab 4 48
 # run example for v7s_x2: ./scripts/train_srarn_v7.sh train 0 1 s ab 2 48
 # run example for v7s_x3: ./scripts/train_srarn_v7.sh train 1 1 s ab 3 48
-# run example for v7s_x4: ./scripts/train_srarn_v7.sh train 0 1 s ab 4 48
+# run example for v7s_x4: ./scripts/train_srarn_v7.sh train 1 1 s ab 4 48
 # run example for v7t_x2: ./scripts/train_srarn_v7.sh train 1 1 t ab 2 48
 # run example for v7t_x3: ./scripts/train_srarn_v7.sh train 0 1 t ab 3 48
 # run example for v7t_x4: ./scripts/train_srarn_v7.sh train 1 1 t ab 4 48

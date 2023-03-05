@@ -113,8 +113,8 @@
                 "--upsampling",
                 // "PixelShuffleDirect",
                 // "Deconv",
-                "Nearest",
-                // "PixelShuffle",
+                // "Nearest",
+                "PixelShuffle",
                 "--res_connect",
                 // "1acb3",
                 // "3acb3",
@@ -123,7 +123,7 @@
                 // "24",       // default 0, means same as dims[0]
                 // "32",       // SRARN-T
                 // "64",       // SwinIR
-                // "--no_act_ps",
+                "--no_act_ps",
                 // "--no_bicubic",
                 // "--use_norm",
                 "--model",
