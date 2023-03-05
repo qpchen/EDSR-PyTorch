@@ -7,10 +7,12 @@
 # run example for v7test_x2: ./scripts/train_srarn_v7.sh train 0 1 test nb 2 48
 # ########### training commands ###########
 # run example for v7ba_x2: ./scripts/train_srarn_v7.sh train 0,1 1 ba ab 2 48
-# run example for v7b_x2: ./scripts/train_srarn_v7.sh train 0,1 1 b ab 2 48
-# run example for v7bn_x2: ./scripts/train_srarn_v7.sh train 2,3 1 bn ab 2 48
+# run example for v7bn_nb_x2: ./scripts/train_srarn_v7.sh train 0,1 1 bn nb 2 48
+
+# run example for v7bn_x2: ./scripts/train_srarn_v7.sh train 0,1 1 bn ab 2 48
 # run example for v7bn_x3: ./scripts/train_srarn_v7.sh train 0,1 1 bn ab 3 48
-# run example for v7bn_x4: ./scripts/train_srarn_v7.sh train 0,1 1 bn ab 4 48
+# run example for v7bn_x4: ./scripts/train_srarn_v7.sh train 2,3 1 bn ab 4 48
+# run example for v7b_x2: ./scripts/train_srarn_v7.sh train 0,1 1 b ab 2 48
 # run example for v7b_nb_x2: ./scripts/train_srarn_v7.sh train 0,1 1 b nb 2 48
 # run example for v7s_x2: ./scripts/train_srarn_v7.sh train 0 1 s ab 2 48
 # run example for v7s_x3: ./scripts/train_srarn_v7.sh train 1 1 s ab 3 48
@@ -77,7 +79,8 @@ patch_hr=`expr $patch \* $scale`
 
 # #####################################
 # prepare program options parameters
-run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $bicubic --loss 1*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --model SRARNV7"
+# v7 must use layernorm
+run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $bicubic --loss 1*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --model SRARNV7 --use_norm"
 save_dir="../srarn_v7/v7${size}${bicubic_print}_x${scale}"
 log_file="../srarn_v7/logs/v7${size}${bicubic_print}_x${scale}.log"
 
