@@ -287,23 +287,25 @@ class SRARNV7(nn.Module):
             else:
                 self.preup = nn.Sequential(
                     LayerNorm(dims[-1], eps=1e-6, data_format="channels_first"),
-                    acb.ACBlock(dims[-1], dims[0], 3, 1, 1, deploy=use_inf, bn=False)
+                    acb.ACBlock(dims[-1], num_up_feat, 3, 1, 1, deploy=use_inf, bn=False)
                     ,nn.GELU()
                 )
                 # if custom the channel setting in upsampling, convert to it
-                if num_up_feat != dims[0]:
-                    self.upfea = nn.Conv2d(dims[0], num_up_feat, 1, 1, 0)
+                # if num_up_feat != dims[0]:
+                #     self.upfea = nn.Conv2d(dims[0], num_up_feat, 1, 1, 0)
         else:
             if self.upsampling == 'PixelShuffleDirect' or self.upsampling == 'Deconv':
                 self.preup = nn.Conv2d(dims[-1], dims[0], 1, 1, 0)
             else:
                 self.preup = nn.Sequential(
-                    acb.ACBlock(dims[-1], dims[0], 3, 1, 1, deploy=use_inf, bn=False)
+                    acb.ACBlock(dims[-1], num_up_feat, 3, 1, 1, deploy=use_inf, bn=False)
                     ,nn.GELU()
                 )
                 # if custom the channel setting in upsampling, convert to it
-                if num_up_feat != dims[0]:
-                    self.upfea = nn.Conv2d(dims[0], num_up_feat, 1, 1, 0)
+                # TODO: 搞清楚是不是这里导致b和test模型在去掉norm后，在几十epoch内某时刻，psnr值突然固定某个数完全不变了
+                # TODO：因为只有这两个规模激活了下面的upfea，也暂时只有这俩有这个psnr固定的现象，或者突然从37降到34上不去
+                # if num_up_feat != dims[0]:
+                #     self.upfea = nn.Conv2d(dims[0], num_up_feat, 1, 1, 0)
         
         # Upsampling layer.
         if self.upsampling == 'Deconv':
@@ -369,8 +371,8 @@ class SRARNV7(nn.Module):
 
         out = self.forward_feature(out)
 
-        if hasattr(self, 'upfea'):
-            out = self.upfea(out)
+        # if hasattr(self, 'upfea'):
+        #     out = self.upfea(out)
         
         if self.upsampling == 'Deconv':
             out = self.deconv(out)
