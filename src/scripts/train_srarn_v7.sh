@@ -11,15 +11,16 @@
 # run example for v7bn_x2: ./scripts/train_srarn_v7.sh train 2,3 1 bn ab 2 48
 # run example for v7bn_x3: ./scripts/train_srarn_v7.sh train 0,1 1 bn ab 3 48
 # run example for v7bn_x4: ./scripts/train_srarn_v7.sh train 0,1 1 bn ab 4 48
+# run example for v7b_nb_x2: ./scripts/train_srarn_v7.sh train 0,1 1 b nb 2 48
 # run example for v7s_x2: ./scripts/train_srarn_v7.sh train 0 1 s ab 2 48
 # run example for v7s_x3: ./scripts/train_srarn_v7.sh train 1 1 s ab 3 48
 # run example for v7s_x4: ./scripts/train_srarn_v7.sh train 1 1 s ab 4 48
-# run example for v7t_x2: ./scripts/train_srarn_v7.sh train 1 1 t ab 2 48
 # run example for v7t_x3: ./scripts/train_srarn_v7.sh train 0 1 t ab 3 48
-# run example for v7t_x4: ./scripts/train_srarn_v7.sh train 1 1 t ab 4 48
+# run example for v7t_x4: ./scripts/train_srarn_v7.sh train 0 1 t ab 4 48
+# run example for v7t_x2: ./scripts/train_srarn_v7.sh train 0 1 t ab 2 48
 # run example for v7xt_x2: ./scripts/train_srarn_v7.sh train 0 1 xt ab 2 48
 # run example for v7xt_x3: ./scripts/train_srarn_v7.sh train 1 1 xt ab 3 48
-# run example for v7xt_x4: ./scripts/train_srarn_v7.sh train 0 1 xt ab 4 48
+# run example for v7xt_x4: ./scripts/train_srarn_v7.sh train 1 1 xt ab 4 48
 
 # #####################################
 # accept input
@@ -33,7 +34,7 @@ accum=$3
 # forth is model size
 size=$4
 # ############## model_b #############
-if [ $size = "b" ]; then  # model_b use PixelShuffle upsampling with no activate layer
+if [ $size = "b" ]; then  # model_b use PixelShuffle upsampling with no activate layer, same as SwinIR
   options="--epochs 1000 --decay 500-800-900-950 --res_connect 1acb3 --upsampling PixelShuffle --no_act_ps --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --batch_size 32"
 elif [ $size = "ba" ]; then  # model_b use PixelShuffle upsampling with activate layer
   options="--epochs 1000 --decay 500-800-900-950 --res_connect 1acb3 --upsampling PixelShuffle --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --batch_size 32"
