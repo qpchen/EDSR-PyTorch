@@ -61,6 +61,7 @@ target/
 *.pt
 *.pdf
 *.png
+*.bmp
 *.txt
 *.swp
 .vscode/*.json
@@ -90,3 +91,37 @@ data/
 test/
 # tree of model experiment files
 srarn
+srarn_v6
+srarn_v7
+
+matlab/*
+!matlab/Evaluate_PSNR_SSIM_SRACN.m
+!matlab/Prepare_TestData_HR_LR.m
+!matlab/Move_SR_img.ipynb
+!matlab/rename_forEDSR.ipynb
+# !matlab/PSNR_SSIM_Results_BI_model.txt
+!matlab/PSNR_SSIM_Means_Results_BI_model.txt
+
+!matlab/HR
+matlab/HR/*
+!matlab/HR/Set5
+matlab/HR/Set5/*
+!matlab/HR/Set5/x2
+!matlab/HR/Set5/x2/baby*
+
+!matlab/SR
+matlab/SR/*
+!matlab/SR/BI
+matlab/SR/BI/*
+!matlab/SR/BI/v5xt_j15
+matlab/SR/BI/v5xt_j15/*
+!matlab/SR/BI/v5xt_j15/Set5
+matlab/SR/BI/v5xt_j15/Set5/*
+!matlab/SR/BI/v5xt_j15/Set5/x2
+!matlab/SR/BI/v5xt_j15/Set5/x2/baby*
+
+!matlab/OriginalTestData
+matlab/OriginalTestData/*
+!matlab/OriginalTestData/Set5
+!matlab/OriginalTestData/Set5/baby.bmp
+
