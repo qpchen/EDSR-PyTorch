@@ -93,8 +93,8 @@ then
 elif [ $mode = "eval" ]
 then
   echo "load inference version of acb to eval:"
-  echo "$run_command --data_test Set5+Set14+B100+Urban100 --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf"
-  $run_command --data_test Set5+Set14+B100+Urban100 --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf
+  echo "$run_command --data_test Set5+Set14+B100+Urban100+Manga109 --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf"
+  $run_command --data_test Set5+Set14+B100+Urban100+Manga109 --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf
 else
   echo "invalid value, it only accpet train, resume, switch, eval!"
 fi
