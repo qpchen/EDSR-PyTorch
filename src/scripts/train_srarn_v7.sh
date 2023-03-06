@@ -24,6 +24,11 @@
 # run example for v7xt_x3: ./scripts/train_srarn_v7.sh train 1 1 xt ab 3 48
 # run example for v7xt_x4: ./scripts/train_srarn_v7.sh train 1 1 xt ab 4 48
 
+
+# run example for v7lt_x2: ./scripts/train_srarn_v7.sh train 0 1 lt ab 2 48
+# run example for v7lt_x3: ./scripts/train_srarn_v7.sh train 1 1 lt ab 3 48
+# run example for v7lt_x4: ./scripts/train_srarn_v7.sh train 1 1 lt ab 4 48
+
 # #####################################
 # accept input
 # input 2 params, first is run mode, 
@@ -45,6 +50,9 @@ elif [ $size = "bn" ]; then  # model_b with nearest+conv upsampling
 # ############## model_s #############
 elif [ $size = "s" ]; then
   options="--epochs 1500 --decay 750-1200-1350-1425 --res_connect 1acb3 --upsampling Nearest --srarn_up_feat 60 --depths 6+6+6+6 --dims 60+60+60+60 --batch_size 32"
+# ############## model_lt larger tiny #############
+elif [ $size = "lt" ]; then
+  options="--epochs 2000 --decay 1000-1600-1800-1900 --res_connect 1acb3 --upsampling Nearest --srarn_up_feat 42 --depths 4+4+4+4 --dims 42+42+42+42 --batch_size 32"
 # ############## model_t #############
 elif [ $size = "t" ]; then
   options="--epochs 2000 --decay 1000-1600-1800-1900 --res_connect 1acb3 --upsampling Nearest --srarn_up_feat 30 --depths 3+3+3+3 --dims 30+30+30+30 --batch_size 32"
@@ -119,8 +127,8 @@ then
 elif [ $mode = "eval" ]
 then
   echo "load inference version of acb to eval:"
-  echo "$run_command --data_test Set5+Set14+B100+Urban100 --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf"
-  $run_command --data_test Set5+Set14+B100+Urban100 --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf
+  echo "$run_command --data_test Set5+Set14+B100+Urban100+Manga109 --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf"
+  $run_command --data_test Set5+Set14+B100+Urban100+Manga109 --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf
 else
   echo "invalid value, it only accpet train, resume, switch, eval!"
 fi
