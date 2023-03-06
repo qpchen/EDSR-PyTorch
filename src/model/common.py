@@ -38,7 +38,7 @@ class MeanShift(nn.Conv2d):
 class BasicBlock(nn.Sequential):
     def __init__(
         self, conv, in_channels, out_channels, kernel_size, stride=1, bias=False,
-        bn=True, act=nn.ReLU(True)):
+        bn=False, act=nn.ReLU(True)):
 
         m = [conv(in_channels, out_channels, kernel_size, bias=bias)]
         if bn:
@@ -72,12 +72,12 @@ class ResBlock(nn.Module):
         return res
 
 class Upsampler(nn.Sequential):
-    def __init__(self, conv, scale, n_feats, bn=False, act=False, bias=True, deploy=False):
+    def __init__(self, conv, scale, n_feats, bn=False, act=False, bias=True, deploy=False, conv_bn=True):
 
         m = []
         if (scale & (scale - 1)) == 0:    # Is scale = 2^n?
             for _ in range(int(math.log(scale, 2))):
-                m.append(conv(n_feats, 4 * n_feats, 3, bias=bias, deploy=deploy, bn=bn))
+                m.append(conv(n_feats, 4 * n_feats, 3, bias=bias, deploy=deploy, bn=conv_bn))
                 m.append(nn.PixelShuffle(2))
                 if bn:
                     m.append(nn.BatchNorm2d(n_feats))
@@ -89,7 +89,7 @@ class Upsampler(nn.Sequential):
                     m.append(nn.GELU())
 
         elif scale == 3:
-            m.append(conv(n_feats, 9 * n_feats, 3, bias=bias, deploy=deploy, bn=bn))
+            m.append(conv(n_feats, 9 * n_feats, 3, bias=bias, deploy=deploy, bn=conv_bn))
             m.append(nn.PixelShuffle(3))
             if bn:
                 m.append(nn.BatchNorm2d(n_feats))
@@ -105,10 +105,10 @@ class Upsampler(nn.Sequential):
         super(Upsampler, self).__init__(*m)
 
 class UpsamplerDirect(nn.Sequential):
-    def __init__(self, conv, scale, n_feats, n_out_ch, bias=True, deploy=False, bn=False):
+    def __init__(self, conv, scale, n_feats, n_out_ch, bias=True, deploy=False, conv_bn=True):
 
         m = []
-        m.append(conv(n_feats, (scale ** 2) * n_out_ch, 3, bias=bias, deploy=deploy, bn=bn))
+        m.append(conv(n_feats, (scale ** 2) * n_out_ch, 3, bias=bias, deploy=deploy, bn=conv_bn))
         m.append(nn.PixelShuffle(scale))
         super(UpsamplerDirect, self).__init__(*m)
 
