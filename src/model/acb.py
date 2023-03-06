@@ -5,7 +5,7 @@ import torch
 class ACBlock(nn.Module):
 
     def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0, dilation=1, groups=1, padding_mode='zeros', deploy=False,
-                 use_affine=True, reduce_gamma=False, gamma_init=None, bn=False):
+                 use_affine=True, reduce_gamma=False, gamma_init=None, bn=True):
         super(ACBlock, self).__init__()
         self.deploy = deploy
         self.bn = bn

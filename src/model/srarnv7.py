@@ -47,7 +47,7 @@ class ACL(nn.Module):
     """
     def __init__(self, dim, drop_path=0., layer_scale_init_value=1e-6, deploy=False, layer_norm=False):
         super(ACL, self).__init__()
-        self.dwconv = acb.ACBlock(dim, dim, 7, 1, padding=3, groups=dim, deploy=deploy) # depthwise AC conv
+        self.dwconv = acb.ACBlock(dim, dim, 7, 1, padding=3, groups=dim, deploy=deploy, bn=False) # depthwise AC conv
 
         if layer_norm:
             self.norm = LayerNorm(dim, eps=1e-6)
@@ -89,7 +89,7 @@ class ACLV1(nn.Module):
     """
     def __init__(self, dim, drop_path=0., layer_scale_init_value=1e-6, deploy=False):
         super(ACLV1, self).__init__()
-        self.dwconv = acb.ACBlock(dim, dim, 7, 1, padding=3, groups=dim, deploy=deploy) # depthwise AC conv
+        self.dwconv = acb.ACBlock(dim, dim, 7, 1, padding=3, groups=dim, deploy=deploy, bn=False) # depthwise AC conv
 
         self.norm = LayerNorm(dim, eps=1e-6, data_format="channels_first")
         self.pwconv1 = nn.Conv2d(dim, 4 * dim, 1, 1, 0) # pointwise/1x1 convs

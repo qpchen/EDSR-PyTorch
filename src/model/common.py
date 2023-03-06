@@ -6,13 +6,13 @@ import torch.nn.functional as F
 
 from model import acb
 
-def default_conv(in_channels, out_channels, kernel_size, bias=True, deploy=False, bn=False):
+def default_conv(in_channels, out_channels, kernel_size, bias=True, deploy=False, bn=True):
     return nn.Conv2d(
         in_channels, out_channels, kernel_size,
         padding=(kernel_size//2), bias=bias)
 
 def default_acb(in_channels, out_channels, kernel_size, stride=1, padding=-1, dilation=1, groups=1, 
-                bias=True, padding_mode='zeros', use_original_conv=False, deploy=False, bn=False):
+                bias=True, padding_mode='zeros', use_original_conv=False, deploy=False, bn=True):
     if padding == -1:
         padding = (kernel_size//2)
     if use_original_conv or kernel_size == 1 or kernel_size == (1, 1) or kernel_size >= 7:
