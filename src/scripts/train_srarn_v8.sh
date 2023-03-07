@@ -90,7 +90,20 @@ patch_hr=`expr $patch \* $scale`
 #   res="1acb3"
 #   res_print=""
 # fi
-
+# lr_class choice, default is MultiStepLR. test whether CosineWarmRestart can be better
+if [ $# == 8 ]; then
+  lr=$8
+  if [ $lr = "cosre" ]; then  # for CosineWarmRestart
+    lr_print="_CR"
+  elif [ $lr = "cos" ]; then  # for CosineWarm
+    lr_print="_C"
+  else
+    lr_print=""
+  fi
+else
+  lr="MultiStepLR"
+  lr_print=""
+fi
 
 
 # #####################################
@@ -98,8 +111,8 @@ patch_hr=`expr $patch \* $scale`
 # v8 must use layernorm
 run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $bicubic --res_connect skip --loss 1*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class MultiStepLR --model SRARNV8"
 # run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $bicubic --res_connect skip --loss 1*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class CosineWarmRestart --model SRARNV8"
-save_dir="../srarn_v8/v8${size}${bicubic_print}_x${scale}"
-log_file="../srarn_v8/logs/v8${size}${bicubic_print}_x${scale}.log"
+save_dir="../srarn_v8/v8${size}${bicubic_print}${lr_print}_x${scale}"
+log_file="../srarn_v8/logs/v8${size}${bicubic_print}${lr_print}_x${scale}.log"
 
 if [ ! -d "../srarn_v8" ]; then
   mkdir "../srarn_v8"
