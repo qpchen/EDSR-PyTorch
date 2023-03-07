@@ -140,6 +140,51 @@ class LayerNorm(nn.Module):
             x = self.weight[:, None, None] * x + self.bias[:, None, None]
             return x
 
+def create_head(dim_in, dim_out, layer_norm=True, res_connect="skip", deploy=False):
+    if layer_norm:
+        if res_connect == "1conv1":
+            head = nn.Sequential(
+                        LayerNorm(dim_in, eps=1e-6, data_format="channels_first"),
+                        nn.Conv2d(dim_in, dim_out, kernel_size=1, stride=1))
+        elif res_connect == "1acb3":
+            head = nn.Sequential(
+                        LayerNorm(dim_in, eps=1e-6, data_format="channels_first"),
+                        acb.ACBlock(dim_in, dim_out, 3, 1, 1, deploy=deploy, bn=False))
+        elif res_connect == "3acb3":
+            head = nn.Sequential(
+                        LayerNorm(dim_in, eps=1e-6, data_format="channels_first"),
+                        acb.ACBlock(dim_in, dim_in // 4, 3, 1, 1, deploy=deploy, bn=False),
+                        nn.GELU(),
+                        nn.Conv2d(dim_in // 4, dim_in // 4, 1, 1, 0),
+                        nn.GELU(),
+                        acb.ACBlock(dim_in // 4, dim_out, 3, 1, 1, deploy=deploy, bn=False))
+        elif res_connect == "skip":
+            if dim_in != dim_out:
+                head = nn.Sequential(
+                            LayerNorm(dim_in, eps=1e-6, data_format="channels_first"),
+                            nn.Conv2d(dim_in, dim_out, kernel_size=1, stride=1))
+            else:
+                head = LayerNorm(dim_in, eps=1e-6, data_format="channels_first")
+    else:
+        if res_connect == "1conv1":
+            head = nn.Conv2d(dim_in, dim_out, kernel_size=1, stride=1)
+        elif res_connect == "1acb3":
+            head = acb.ACBlock(dim_in, dim_out, 3, 1, 1, deploy=deploy, bn=False)
+        elif res_connect == "3acb3":
+            head = nn.Sequential(
+                        acb.ACBlock(dim_in, dim_in // 4, 3, 1, 1, deploy=deploy, bn=False),
+                        nn.GELU(),
+                        nn.Conv2d(dim_in // 4, dim_in // 4, 1, 1, 0),
+                        nn.GELU(),
+                        acb.ACBlock(dim_in // 4, dim_out, 3, 1, 1, deploy=deploy, bn=False))
+        elif res_connect == "skip":
+            if dim_in != dim_out:
+                head = nn.Conv2d(dim_in, dim_out, kernel_size=1, stride=1)
+            else:
+                head = None
+    return head
+
+
 ########################################
 class RACB(nn.Module):
     r"""Residual Asymmetric ConvNeXt Block (RACB), consisting of ACLs. 
@@ -163,46 +208,16 @@ class RACB(nn.Module):
                 for j in range(num_layers)]
         )
         # conv layers for enhancing the translational equivariance 
-        if layer_norm:
-            if res_connect == "1conv1":
-                self.layer_head = nn.Sequential(
-                            LayerNorm(dim_in, eps=1e-6, data_format="channels_first"),
-                            nn.Conv2d(dim_in, dim_in, kernel_size=1, stride=1)
-                )
-            elif res_connect == "1acb3":
-                self.layer_head = nn.Sequential(
-                            LayerNorm(dim_in, eps=1e-6, data_format="channels_first"),
-                            acb.ACBlock(dim_in, dim_in, 3, 1, 1, deploy=deploy, bn=False)
-                )
-            elif res_connect == "3acb3":
-                self.layer_head = nn.Sequential(
-                            LayerNorm(dim_in, eps=1e-6, data_format="channels_first"),
-                            acb.ACBlock(dim_in, dim_in // 4, 3, 1, 1, deploy=deploy, bn=False),
-                            nn.GELU(),
-                            nn.Conv2d(dim_in // 4, dim_in // 4, 1, 1, 0),
-                            nn.GELU(),
-                            acb.ACBlock(dim_in // 4, dim_in, 3, 1, 1, deploy=deploy, bn=False)
-                )
-        else:
-            if res_connect == "1conv1":
-                self.layer_head = nn.Conv2d(dim_in, dim_in, kernel_size=1, stride=1)
-            elif res_connect == "1acb3":
-                self.layer_head = acb.ACBlock(dim_in, dim_in, 3, 1, 1, deploy=deploy, bn=False)
-            elif res_connect == "3acb3":
-                self.layer_head = nn.Sequential(
-                            acb.ACBlock(dim_in, dim_in // 4, 3, 1, 1, deploy=deploy, bn=False),
-                            nn.GELU(),
-                            nn.Conv2d(dim_in // 4, dim_in // 4, 1, 1, 0),
-                            nn.GELU(),
-                            acb.ACBlock(dim_in // 4, dim_in, 3, 1, 1, deploy=deploy, bn=False)
-                )
+        self.layer_head = create_head(dim_in, dim_in, layer_norm=layer_norm, res_connect=res_connect, deploy=deploy)
         
         if dim_in != dim_out:
             self.channel_modify = nn.Conv2d(dim_in, dim_out, kernel_size=1, stride=1)
     def forward(self, x):
         input = x
         x = self.layer(x)
-        x = self.layer_head(x) + input
+        if self.layer_head is not None:
+            x = self.layer_head(x)
+        x = x + input
         if hasattr(self, 'channel_modify'):
             x = self.channel_modify(x)
         return x
@@ -278,39 +293,8 @@ class SRARNV7(nn.Module):
         # conv layers for enhancing the translational equivariance 
         # define head of deep feature, input channel dims[-1] to output dims[0]
         # the output receive the residual connect from stem of deep feature
-        if use_norm:
-            if res_connect == "1conv1":
-                self.deep_head = nn.Sequential(
-                            LayerNorm(dims[-1], eps=1e-6, data_format="channels_first"),
-                            nn.Conv2d(dims[-1], dims[0], kernel_size=1, stride=1)
-                )
-            elif res_connect == "1acb3":
-                self.deep_head = nn.Sequential(
-                            LayerNorm(dims[-1], eps=1e-6, data_format="channels_first"),
-                            acb.ACBlock(dims[-1], dims[0], 3, 1, 1, deploy=use_inf, bn=False)
-                )
-            elif res_connect == "3acb3":
-                self.deep_head = nn.Sequential(
-                            LayerNorm(dims[-1], eps=1e-6, data_format="channels_first"),
-                            acb.ACBlock(dims[-1], dims[-1] // 4, 3, 1, 1, deploy=use_inf, bn=False),
-                            nn.GELU(),
-                            nn.Conv2d(dims[-1] // 4, dims[-1] // 4, 1, 1, 0),
-                            nn.GELU(),
-                            acb.ACBlock(dims[-1] // 4, dims[0], 3, 1, 1, deploy=use_inf, bn=False)
-                )
-        else:
-            if res_connect == "1conv1":
-                self.deep_head = nn.Conv2d(dims[-1], dims[0], kernel_size=1, stride=1)
-            elif res_connect == "1acb3":
-                self.deep_head = acb.ACBlock(dims[-1], dims[0], 3, 1, 1, deploy=use_inf, bn=False)
-            elif res_connect == "3acb3":
-                self.deep_head = nn.Sequential(
-                            acb.ACBlock(dims[-1], dims[-1] // 4, 3, 1, 1, deploy=use_inf, bn=False),
-                            nn.GELU(),
-                            nn.Conv2d(dims[-1] // 4, dims[-1] // 4, 1, 1, 0),
-                            nn.GELU(),
-                            acb.ACBlock(dims[-1] // 4, dims[0], 3, 1, 1, deploy=use_inf, bn=False)
-                )
+        self.deep_head = create_head(dims[-1], dims[0], layer_norm=use_norm, res_connect=res_connect, deploy=use_inf)
+
         # ##################################################################################
         # Upsampling
         # if use_norm:
@@ -391,7 +375,8 @@ class SRARNV7(nn.Module):
         input = x
         for i in range(self.num_blocks):
             x = self.RACBs[i](x)
-        x = self.deep_head(x)
+        if self.deep_head is not None:
+            x = self.deep_head(x)
         x = input + x   # Residual of the whole deep feature Extraction
         return x
 
