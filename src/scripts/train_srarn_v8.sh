@@ -19,8 +19,8 @@
 # run example for v8s_x4: ./scripts/train_srarn_v8.sh train 1 1 s ab 4 48
 # run example for v8t_x3: ./scripts/train_srarn_v8.sh train 0 1 t ab 3 48
 # run example for v8t_x4: ./scripts/train_srarn_v8.sh train 0 1 t ab 4 48
-# run example for v8t_x2: ./scripts/train_srarn_v8.sh resume 0 1 t ab 2 48
-# run example for v8xt_x2: ./scripts/train_srarn_v8.sh resume 0 1 xt ab 2 48
+# run example for v8t_x2: ./scripts/train_srarn_v8.sh train 0 1 t ab 2 48
+# run example for v8xt_x2: ./scripts/train_srarn_v8.sh train 0 1 xt ab 2 48
 # run example for v8xt_x3: ./scripts/train_srarn_v8.sh train 1 1 xt ab 3 48
 # run example for v8xt_x4: ./scripts/train_srarn_v8.sh train 1 1 xt ab 4 48
 
@@ -96,7 +96,8 @@ patch_hr=`expr $patch \* $scale`
 # #####################################
 # prepare program options parameters
 # v8 must use layernorm
-run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $bicubic --res_connect skip --loss 1*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class CosineWarmRestart --model SRARNV8"
+run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $bicubic --res_connect skip --loss 1*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class MultiStepLR --model SRARNV8"
+# run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $bicubic --res_connect skip --loss 1*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class CosineWarmRestart --model SRARNV8"
 save_dir="../srarn_v8/v8${size}${bicubic_print}_x${scale}"
 log_file="../srarn_v8/logs/v8${size}${bicubic_print}_x${scale}.log"
 
