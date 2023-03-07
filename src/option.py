@@ -131,6 +131,10 @@ parser.add_argument('--weight_decay', type=float, default=0,
                     help='weight decay')
 parser.add_argument('--gclip', type=float, default=0,
                     help='gradient clipping threshold (0 = no clipping)')
+parser.add_argument('--warmup', action='store_true',
+                    help='Use warm up at the beginning of training')
+parser.add_argument('--last_warm', type=int, default=20,
+                    help='A factor of the last epoch of warm up, also used as period here')
 
 # Loss specifications
 parser.add_argument('--loss', type=str, default='1*L1',
@@ -186,8 +190,8 @@ parser.add_argument('--drop_path_rate', type=float, default=0.,
 parser.add_argument('--layer_init_scale', type=float, default=1e-6,
                     help='Init value for Layer Scale')
 parser.add_argument('--res_connect', default='1acb3',
-                    choices=('1acb3', '3acb3', '1conv1'),
-                    help='last conv to use before residual connect (1acb3 | 3acb3 | 1conv1)')
+                    choices=('1acb3', '3acb3', '1conv1', 'skip'),
+                    help='last conv to use before residual connect (1acb3 | 3acb3 | 1conv1 | skip)')
 
 # SRARN UpSampling Function setting
 parser.add_argument('--upsampling', default='Nearest',
@@ -200,6 +204,9 @@ parser.add_argument('--no_bicubic', action='store_true',
                     help='do not add bicubic interpolation of input to output')
 parser.add_argument('--no_layernorm', action='store_true',
                     help='delete layer normalization for each acl/racb')
+
+parser.add_argument('--no_count', action='store_true',
+                    help='Do model params and macs statistics')
 
 args = parser.parse_args()
 template.set_template(args)

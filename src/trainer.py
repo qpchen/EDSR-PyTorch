@@ -26,7 +26,7 @@ class Trainer():
         self.ref_model = ref_model
 
         if self.args.load != '':
-            # self.optimizer.step()
+            self.optimizer.step()
             self.optimizer.load(ckp.dir, epoch=len(ckp.log))
 
         self.error_last = 1e8
@@ -51,7 +51,8 @@ class Trainer():
             timer_data.hold()
             timer_model.tic()
 
-            # self.optimizer.zero_grad()  # reset gradient
+            if (batch + 1) % self.accumulation_step == 0:
+                self.optimizer.zero_grad()  # reset gradient
             if self.args.model == 'BISRCNN' or self.args.model == 'BICNNV2' \
                     or self.args.model == 'BIAANV3' or self.args.model == 'BIAANV3B' \
                     or self.args.model == 'BIAANV3D' or self.args.model == 'BIAANV9' \
@@ -198,7 +199,11 @@ class Trainer():
                     print('Skip this batch {}! (Loss: {})'.format(
                         (batch + 1) // self.accumulation_step, loss.item()
                     ))
-                self.optimizer.zero_grad()  # reset gradient
+                # self.optimizer.zero_grad()  # reset gradient
+            # if self.args.warmup:
+            #     # if batch < len(self.loader_train)-1:
+            #         with self.optimizer.warmup_scheduler.dampening():
+            #             pass
 
             timer_model.hold()
 
