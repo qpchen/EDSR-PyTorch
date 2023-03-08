@@ -37,6 +37,9 @@ class Data:
             if d in ['Set5', 'Set14', 'B100', 'Urban100', 'Manga109']:
                 m = import_module('data.benchmark')
                 testset = getattr(m, 'Benchmark')(args, train=False, name=d)
+            elif d in ['720P', '1080P', '4K']:
+                m = import_module('data.runtime')
+                testset = getattr(m, 'Runtime')(args, train=False, name=d)
             else:
                 module_name = d if d.find('DIV2K-Q') < 0 else 'DIV2KJPEG'
                 m = import_module('data.' + module_name.lower())

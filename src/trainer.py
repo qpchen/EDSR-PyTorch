@@ -286,7 +286,10 @@ class Trainer():
                     else:
                         for lr, hr, filename in tqdm(d, ncols=80):
                             lr, hr = self.prepare(lr, hr)
+                            timer_run = utility.timer()
                             sr = self.model(lr, idx_scale)
+                            if self.args.runtime:
+                                self.ckp.write_log('Runtime: {:.2f}ms\n'.format(timer_run.toc()*1e3))
                             sr = utility.quantize(sr, self.args.rgb_range)
 
                             save_list = [sr]
