@@ -19,8 +19,8 @@
 # run example for v7s_x4: ./scripts/train_srarn_v7.sh train 1 1 s ab 4 48
 # run example for v7t_x3: ./scripts/train_srarn_v7.sh train 0 1 t ab 3 48
 # run example for v7t_x4: ./scripts/train_srarn_v7.sh train 0 1 t ab 4 48
-# run example for v7t_x2: ./scripts/train_srarn_v7.sh train 0 1 t ab 2 48
-# run example for v7xt_x2: ./scripts/train_srarn_v7.sh train 0 1 xt ab 2 48
+# run example for v7t_x2: ./scripts/train_srarn_v7.sh resume 0 1 t ab 2 48
+# run example for v7xt_x2: ./scripts/train_srarn_v7.sh resume 0 1 xt ab 2 48
 # run example for v7xt_x3: ./scripts/train_srarn_v7.sh train 1 1 xt ab 3 48
 # run example for v7xt_x4: ./scripts/train_srarn_v7.sh train 1 1 xt ab 4 48
 
@@ -42,26 +42,26 @@ accum=$3
 size=$4
 # ############## model_b #############
 if [ $size = "b" ]; then  # model_b use PixelShuffle upsampling with no activate layer, same as SwinIR
-  options="--epochs 1000 --decay 500-800-900-950 --res_connect 1acb3 --upsampling PixelShuffle --no_act_ps --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --batch_size 32"
+  options="--epochs 1000 --decay 500-800-900-950 --upsampling PixelShuffle --no_act_ps --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --batch_size 32"
 elif [ $size = "ba" ]; then  # model_b use PixelShuffle upsampling with activate layer
-  options="--epochs 1000 --decay 500-800-900-950 --res_connect 1acb3 --upsampling PixelShuffle --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --batch_size 32"
+  options="--epochs 1000 --decay 500-800-900-950 --upsampling PixelShuffle --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --batch_size 32"
 elif [ $size = "bn" ]; then  # model_b with nearest+conv upsampling
-  options="--epochs 1000 --decay 500-800-900-950 --res_connect 1acb3 --upsampling Nearest --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --batch_size 32"
+  options="--epochs 1000 --decay 500-800-900-950 --upsampling Nearest --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --batch_size 32"
 # ############## model_s #############
 elif [ $size = "s" ]; then
-  options="--epochs 1500 --decay 750-1200-1350-1425 --res_connect 1acb3 --upsampling Nearest --srarn_up_feat 60 --depths 6+6+6+6 --dims 60+60+60+60 --batch_size 32"
+  options="--epochs 1500 --decay 750-1200-1350-1425 --upsampling Nearest --srarn_up_feat 60 --depths 6+6+6+6 --dims 60+60+60+60 --batch_size 32"
 # ############## model_lt larger tiny #############
 elif [ $size = "lt" ]; then
-  options="--epochs 2000 --decay 1000-1600-1800-1900 --res_connect 1acb3 --upsampling Nearest --srarn_up_feat 42 --depths 4+4+4+4 --dims 42+42+42+42 --batch_size 32"
+  options="--epochs 2000 --decay 1000-1600-1800-1900 --upsampling Nearest --srarn_up_feat 42 --depths 4+4+4+4 --dims 42+42+42+42 --batch_size 32"
 # ############## model_t #############
 elif [ $size = "t" ]; then
-  options="--epochs 2000 --decay 1000-1600-1800-1900 --res_connect 1acb3 --upsampling Nearest --srarn_up_feat 30 --depths 3+3+3+3 --dims 30+30+30+30 --batch_size 32"
+  options="--epochs 2000 --decay 1000-1600-1800-1900 --upsampling Nearest --srarn_up_feat 30 --depths 3+3+3+3 --dims 30+30+30+30 --batch_size 32"
 # ############## model_xt #############
 elif [ $size = "xt" ]; then
-  options="--epochs 3000 --decay 1500-2400-2700-2850 --res_connect 1acb3 --upsampling Nearest --srarn_up_feat 24 --depths 2+2+2+2 --dims 24+24+24+24 --batch_size 32"
+  options="--epochs 3000 --decay 1500-2400-2700-2850 --upsampling Nearest --srarn_up_feat 24 --depths 2+2+2+2 --dims 24+24+24+24 --batch_size 32"
 # ############## test_model #############
 elif [ $size = "test" ]; then  # test with lower costs
-  options="--epochs 3000 --decay 1500-2400-2700-2850 --res_connect 1acb3 --upsampling Nearest --srarn_up_feat 6 --depths 2+4 --dims 6+12 --batch_size 4"
+  options="--epochs 3000 --decay 1500-2400-2700-2850 --upsampling Nearest --srarn_up_feat 6 --depths 2+4 --dims 6+12 --batch_size 4"
 else
   echo "no this size $size !"
   exit
@@ -82,21 +82,29 @@ scale=$6
 # sixth is the LQ image patch size
 patch=$7
 patch_hr=`expr $patch \* $scale`
+# res_connect choice, default is 1acb3
+if [ $# == 8 ]; then
+  res=$8
+  res_print="_$res"
+else
+  res="1acb3"
+  res_print=""
+fi
 
 
 
 # #####################################
 # prepare program options parameters
 # v7 must use layernorm
-run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $bicubic --loss 1*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --model SRARNV7"
-save_dir="../srarn_v7/v7${size}${bicubic_print}_x${scale}"
-log_file="../srarn_v7/logs/v7${size}${bicubic_print}_x${scale}.log"
+run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $bicubic --res_connect $res --loss 1*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --model SRARNV7"
+save_dir="../srarn_v7${res_print}/v7${size}${bicubic_print}${res_print}_x${scale}"
+log_file="../srarn_v7${res_print}/logs/v7${size}${bicubic_print}${res_print}_x${scale}.log"
 
-if [ ! -d "../srarn_v7" ]; then
-  mkdir "../srarn_v7"
+if [ ! -d "../srarn_v7${res_print}" ]; then
+  mkdir "../srarn_v7${res_print}"
 fi
-if [ ! -d "../srarn_v7/logs" ]; then
-  mkdir "../srarn_v7/logs"
+if [ ! -d "../srarn_v7${res_print}/logs" ]; then
+  mkdir "../srarn_v7${res_print}/logs"
 fi
 
 
