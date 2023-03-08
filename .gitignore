@@ -101,6 +101,7 @@ matlab/*
 !matlab/Prepare_TestData_HR_LR.m
 !matlab/Move_SR_img.ipynb
 !matlab/rename_forEDSR.ipynb
+!matlab/Move_gen2dataset_dir.ipynb
 # !matlab/PSNR_SSIM_Results_BI_model.txt
 !matlab/PSNR_SSIM_Means_Results_BI_model.txt
 
