@@ -169,6 +169,9 @@ parser.add_argument('--load_inf', action='store_true',
                     help='Load ACBlock or DBBlock using inference-time Structure')
 parser.add_argument('--inf_switch', action='store_true',
                     help='When test_only, load training-time Block, then switch to inference-time model and save it')
+parser.add_argument('--acb_norm', default='v8old',
+                    choices=('batch', 'layer', 'no', 'v8old'),
+                    help='last conv to use before residual connect (batch | layer | no | v8old)')
 
 # SRACN settings
 parser.add_argument('--n_feat', type=int, default=56,
@@ -207,8 +210,12 @@ parser.add_argument('--no_layernorm', action='store_true',
 
 parser.add_argument('--no_count', action='store_true',
                     help='Do model params and macs statistics')
+parser.add_argument('--runtime', action='store_true',
+                    help='print the runtime of model for each input')
 
 args = parser.parse_args()
+# add following means receive [] as input, replace the way of main.py [], to use in jupyter notebook
+# args = parser.parse_args(args=[])
 template.set_template(args)
 
 args.scale = list(map(lambda x: int(x), args.scale.split('+')))

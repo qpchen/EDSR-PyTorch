@@ -45,9 +45,9 @@ class ACL(nn.Module):
         drop_path (float): Stochastic depth rate. Default: 0.0
         layer_scale_init_value (float): Init value for Layer Scale. Default: 1e-6.
     """
-    def __init__(self, dim, drop_path=0., layer_scale_init_value=1e-6, deploy=False, layer_norm=False):
+    def __init__(self, dim, drop_path=0., layer_scale_init_value=1e-6, deploy=False, layer_norm=False, acb_norm="no"):
         super(ACL, self).__init__()
-        self.dwconv = acb.ACBlock(dim, dim, 7, 1, padding=3, groups=dim, deploy=deploy, bn=False) # depthwise AC conv
+        self.dwconv = acb.ACBlock(dim, dim, 7, 1, padding=3, groups=dim, deploy=deploy, norm=acb_norm) # depthwise AC conv
 
         if layer_norm:
             self.norm = LayerNorm(dim, eps=1e-6)
@@ -87,9 +87,9 @@ class ACLV1(nn.Module):
         drop_path (float): Stochastic depth rate. Default: 0.0
         layer_scale_init_value (float): Init value for Layer Scale. Default: 1e-6.
     """
-    def __init__(self, dim, drop_path=0., layer_scale_init_value=1e-6, deploy=False):
+    def __init__(self, dim, drop_path=0., layer_scale_init_value=1e-6, deploy=False, acb_norm="no"):
         super(ACLV1, self).__init__()
-        self.dwconv = acb.ACBlock(dim, dim, 7, 1, padding=3, groups=dim, deploy=deploy, bn=False) # depthwise AC conv
+        self.dwconv = acb.ACBlock(dim, dim, 7, 1, padding=3, groups=dim, deploy=deploy, norm=acb_norm) # depthwise AC conv
 
         self.norm = LayerNorm(dim, eps=1e-6, data_format="channels_first")
         self.pwconv1 = nn.Conv2d(dim, 4 * dim, 1, 1, 0) # pointwise/1x1 convs
@@ -140,18 +140,18 @@ class LayerNorm(nn.Module):
             x = self.weight[:, None, None] * x + self.bias[:, None, None]
             return x
 
-def create_head(dim_in, dim_out, layer_norm=True, head_conv="skip", deploy=False):
+def create_head(dim_in, dim_out, layer_norm=True, head_conv="skip", deploy=False, acb_norm="no"):
     if head_conv == "1conv1":
         head = nn.Conv2d(dim_in, dim_out, kernel_size=1, stride=1)
     elif head_conv == "1acb3":
-        head = acb.ACBlock(dim_in, dim_out, 3, 1, 1, deploy=deploy, bn=False)
+        head = acb.ACBlock(dim_in, dim_out, 3, 1, 1, deploy=deploy, norm=acb_norm)
     elif head_conv == "3acb3":
         head = nn.Sequential(
-                    acb.ACBlock(dim_in, dim_in // 4, 3, 1, 1, deploy=deploy, bn=False),
+                    acb.ACBlock(dim_in, dim_in // 4, 3, 1, 1, deploy=deploy, norm=acb_norm),
                     nn.GELU(),
                     nn.Conv2d(dim_in // 4, dim_in // 4, 1, 1, 0),
                     nn.GELU(),
-                    acb.ACBlock(dim_in // 4, dim_out, 3, 1, 1, deploy=deploy, bn=False))
+                    acb.ACBlock(dim_in // 4, dim_out, 3, 1, 1, deploy=deploy, norm=acb_norm))
     elif head_conv == "skip":
         if dim_in != dim_out:
             head = nn.Conv2d(dim_in, dim_out, kernel_size=1, stride=1)
@@ -181,16 +181,17 @@ class RACB(nn.Module):
         layer_scale_init_value (float): Init value for Layer Scale. Default: 1e-6.
     """
     def __init__(self, num_layers, dim_in, dim_out, dp_rates, dp_rate_cur, layer_scale_init_value=1e-6,
-                    head_conv="skip", deploy=False, layer_norm=False):
+                    head_conv="skip", deploy=False, layer_norm=False, acb_norm="no"):
         super(RACB, self).__init__()
         self.layer = nn.Sequential(
                 *[ACL(dim=dim_in, drop_path=dp_rates[dp_rate_cur + j], 
-                layer_scale_init_value=layer_scale_init_value, deploy=deploy, layer_norm=layer_norm) 
+                        layer_scale_init_value=layer_scale_init_value, deploy=deploy, 
+                        layer_norm=layer_norm, acb_norm=acb_norm) 
                 for j in range(num_layers)]
         )
         # conv layers for enhancing the translational equivariance 
         self.layer_head, self.layer_norm = create_head(dim_in, dim_in, layer_norm=layer_norm, 
-                                                        head_conv=head_conv, deploy=deploy)
+                                                        head_conv=head_conv, deploy=deploy, acb_norm=acb_norm)
         
         if dim_in != dim_out:
             self.channel_modify = nn.Conv2d(dim_in, dim_out, kernel_size=1, stride=1)
@@ -241,6 +242,7 @@ class SRARNV8(nn.Module):
         self.upsampling = args.upsampling
         self.no_bicubic = args.no_bicubic
         use_norm = not args.no_layernorm
+        acb_norm = args.acb_norm
 
         # RGB mean for DIV2K
         if num_channels == 3:
@@ -251,13 +253,13 @@ class SRARNV8(nn.Module):
         # Shallow Feature Extraction.
         if use_norm:
             self.shallow = nn.Sequential(
-                acb.ACBlock(num_channels, dims[0], 3, 1, 1, deploy=use_inf, bn=False),
+                acb.ACBlock(num_channels, dims[0], 3, 1, 1, deploy=use_inf, norm=acb_norm),
                 LayerNorm(dims[0], eps=1e-6, data_format="channels_first")
                 ,nn.GELU()
             )
         else:
             self.shallow = nn.Sequential(
-                acb.ACBlock(num_channels, dims[0], 3, 1, 1, deploy=use_inf, bn=False)
+                acb.ACBlock(num_channels, dims[0], 3, 1, 1, deploy=use_inf, norm=acb_norm)
                 ,nn.GELU()
             )
 
@@ -268,14 +270,14 @@ class SRARNV8(nn.Module):
         cur = 0
         for i in range(self.num_blocks):
             next_i = i if i == self.num_blocks - 1 else i + 1
-            block = RACB(depths[i], dims[i], dims[next_i], dp_rates, cur, layer_scale_init_value, head_conv, use_inf, use_norm)
+            block = RACB(depths[i], dims[i], dims[next_i], dp_rates, cur, layer_scale_init_value, head_conv, use_inf, use_norm, acb_norm)
             self.RACBs.append(block)
             cur += depths[i]
 
         # conv layers for enhancing the translational equivariance 
         # define head of deep feature, input channel dims[-1] to output dims[0]
         # the output receive the residual connect from stem of deep feature
-        self.deep_head, self.deep_norm = create_head(dims[-1], dims[0], layer_norm=use_norm, head_conv=head_conv, deploy=use_inf)
+        self.deep_head, self.deep_norm = create_head(dims[-1], dims[0], layer_norm=use_norm, head_conv=head_conv, deploy=use_inf, acb_norm=acb_norm)
 
         # ##################################################################################
         # Upsampling
@@ -283,7 +285,7 @@ class SRARNV8(nn.Module):
         #     if self.upsampling != 'PixelShuffleDirect' and self.upsampling != 'Deconv':
         #         self.preup = nn.Sequential(
         #             LayerNorm(dims[0], eps=1e-6, data_format="channels_first"),
-        #             acb.ACBlock(dims[0], num_up_feat, 3, 1, 1, deploy=use_inf, bn=False)
+        #             acb.ACBlock(dims[0], num_up_feat, 3, 1, 1, deploy=use_inf, norm=acb_norm)
         #             ,nn.GELU()
         #         )
         #         # if custom the channel setting in upsampling, convert to it
@@ -292,7 +294,7 @@ class SRARNV8(nn.Module):
         # else:
         #     if self.upsampling != 'PixelShuffleDirect' and self.upsampling != 'Deconv':
         #         self.preup = nn.Sequential(
-        #             acb.ACBlock(dims[0], num_up_feat, 3, 1, 1, deploy=use_inf, bn=False)
+        #             acb.ACBlock(dims[0], num_up_feat, 3, 1, 1, deploy=use_inf, norm=acb_norm)
         #             ,nn.GELU()
         #         )
         #         # if custom the channel setting in upsampling, convert to it
@@ -302,7 +304,7 @@ class SRARNV8(nn.Module):
         #         #     self.upfea = nn.Conv2d(dims[0], num_up_feat, 1, 1, 0)
         if self.upsampling != 'PixelShuffleDirect' and self.upsampling != 'Deconv':
             self.preup = nn.Sequential(
-                acb.ACBlock(dims[0], num_up_feat, 3, 1, 1, deploy=use_inf, bn=False)
+                acb.ACBlock(dims[0], num_up_feat, 3, 1, 1, deploy=use_inf, norm=acb_norm)
                 ,nn.GELU()
             )
         # Upsampling layer.
@@ -312,26 +314,26 @@ class SRARNV8(nn.Module):
                                              (4, 4), (self.scale - 1, self.scale - 1))
         elif self.upsampling == 'PixelShuffleDirect':
             acblock = common.default_acb
-            self.pixelshuffledirect = common.UpsamplerDirect(acblock, self.scale, dims[0], num_channels, deploy=use_inf, bn=False) #False)
+            self.pixelshuffledirect = common.UpsamplerDirect(acblock, self.scale, dims[0], num_channels, deploy=use_inf, norm=acb_norm)
         elif self.upsampling == 'PixelShuffle':
             acblock = common.default_acb
             if args.no_act_ps:
                 self.pixelshuffle = nn.Sequential(
-                    common.Upsampler(acblock, self.scale, num_up_feat, act=False, deploy=use_inf, bn=False), #act='gelu' for v5
-                    acblock(num_up_feat, num_channels, 3, 1, 1, deploy=use_inf, bn=False)
+                    common.Upsampler(acblock, self.scale, num_up_feat, act=False, deploy=use_inf, norm=acb_norm), #act='gelu' for v5
+                    acblock(num_up_feat, num_channels, 3, 1, 1, deploy=use_inf, norm=acb_norm)
                 )
             else:  # default option
                 self.pixelshuffle = nn.Sequential(
-                    common.Upsampler(acblock, self.scale, num_up_feat, act='gelu', deploy=use_inf, bn=False),
-                    acblock(num_up_feat, num_channels, 3, 1, 1, deploy=use_inf, bn=False)
+                    common.Upsampler(acblock, self.scale, num_up_feat, act='gelu', deploy=use_inf, norm=acb_norm),
+                    acblock(num_up_feat, num_channels, 3, 1, 1, deploy=use_inf, norm=acb_norm)
                 )
         elif self.upsampling == 'Nearest':
             # Nearest + Conv/ACBlock
             if (self.scale & (self.scale - 1)) == 0:  # 缩放因子等于 2^n
                 for i in range(int(log(self.scale, 2))):  #  循环 n 次
-                    self.add_module(f'up{i}', acb.ACBlock(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf, bn=False))
+                    self.add_module(f'up{i}', acb.ACBlock(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf, norm=acb_norm))
             elif self.scale == 3:  # 缩放因子等于 3
-                self.up = acb.ACBlock(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf, bn=False)
+                self.up = acb.ACBlock(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf, norm=acb_norm)
             else:
                 # 报错，缩放因子不对
                 raise ValueError(f'scale {self.sscale} is not supported. ' 'Supported scales: 2^n and 3.')
@@ -339,9 +341,9 @@ class SRARNV8(nn.Module):
             self.postup = nn.Sequential(
                 PA(num_up_feat),
                 nn.GELU(),
-                acb.ACBlock(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf, bn=False),
+                acb.ACBlock(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf, norm=acb_norm),
                 nn.GELU(),
-                acb.ACBlock(num_up_feat, num_channels, 3, 1, 1, deploy=use_inf, bn=False)
+                acb.ACBlock(num_up_feat, num_channels, 3, 1, 1, deploy=use_inf, norm=acb_norm)
             )
 
         # Initialize model weights.

@@ -93,7 +93,7 @@ test/
 # tree of model experiment files
 srarn
 srarn_v6
-srarn_v7
+srarn_v*
 src/utility_with_warmup.py
 
 matlab/*
