@@ -208,7 +208,9 @@ class RACB(nn.Module):
 
 class SRARNV8(nn.Module):
     """ 
-    在V7基础上将head改为仅LN,并放在每个ResBlock的add of skip connect之后。
+    在V7基础上将head并放在每个ResBlock的add of skip connect之后。
+    抽离出create_head方法,其中conv增加skip选择,另增加norm的输出。
+    选择skip和使用LN时,实际在add后仅跟一个LN。
     Args:
         scale (int): Image magnification factor.
         num_blocks (int): The number of RACB blocks in deep feature extraction.
