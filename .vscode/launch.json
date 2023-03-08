@@ -36,6 +36,7 @@
                 // "1-2650",
                 // "1-3550",
                 "--data_test",
+                // "720P",
                 "Set5",
                 // "Set5+Set14",
                 // "Set5+Set14+B100+Urban100",
@@ -113,38 +114,47 @@
                 "--upsampling",
                 // "PixelShuffleDirect",
                 // "Deconv",
-                // "Nearest",
-                "PixelShuffle",
+                "Nearest",
+                // "PixelShuffle",
                 "--res_connect",
                 // "1acb3",
                 // "3acb3",
-                "1conv1",
+                // "1conv1",
+                "skip",
                 "--srarn_up_feat",
                 "8",     //test
                 // "24",       // default 0, means same as dims[0]
                 // "32",       // SRARN-T
                 // "64",       // SwinIR
+                "--acb_norm",
+                // "batch",
+                // "layer",
+                "no",
                 "--no_act_ps",
                 // "--no_bicubic",
                 // "--no_layernorm",
+                "--no_count",
                 "--model",
-                "SRARNV7",
+                // "SRARNV5",
+                "SRARNV8",
                 "--save",
-                // "--load",
                 // "srarn/srarn_v2t_x2",
                 // "srarn/srarn_v2s_x2",
-                "srarn/test",
                 // "../srarn/srarn_x2",
-                "--reset"
+                // "srarn/v5_test",
+                "srarn/test",
+                // "--reset"
+                // "--load",
                 // "--resume",
                 // "-1"
-                // "--test_only",
-                // "--save_result",
-                // "--pre_train",
+                "--test_only",
+                "--save_result",
+                "--pre_train",
+                "../experiment/srarn/test/model/model_best.pt",
+                "--inf_switch"
+                // "../experiment/srarn/v5_test/model/model_best.pt",
                 // "../experiment/srarn/test/model/model_latest.pt"
                 // "../srarn/srarn_x2/model/model_best.pt",
-                // "../experiment/srarn/test/model/model_best.pt",
-                // "--inf_switch"
                 // "../srarn/srarn_x2/model/inf_model.pt",
                 // "../experiment/srarn/test/model/inf_model.pt",
                 // "--load_inf"
