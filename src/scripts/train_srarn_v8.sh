@@ -143,7 +143,7 @@ fi
 # #####################################
 # run train/eval program
 export CUDA_VISIBLE_DEVICES=$device
-echo "CUDA GPUs use: $CUDA_VISIBLE_DEVICES devices."
+echo "CUDA GPUs use: No.'$CUDA_VISIBLE_DEVICES' devices."
 
 if [ $mode = "train" ]
 then
@@ -169,6 +169,11 @@ then
   echo "load inference version of acb to eval:"
   echo "$run_command --data_test Set5+Set14+B100+Urban100+Manga109 --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf"
   $run_command --data_test Set5+Set14+B100+Urban100+Manga109 --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf
+elif [ $mode = "runtime" ]
+then
+  # echo "load inference version of acb to test the runtime:"
+  # echo "$run_command --data_test 720P --runtime --no_count --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf"
+  $run_command --data_test 720P --runtime --no_count --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf --times ${11}
 else
   echo "invalid value, it only accpet train, resume, switch, eval!"
 fi
