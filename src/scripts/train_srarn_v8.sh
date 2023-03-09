@@ -89,6 +89,12 @@ scale=$6
 # sixth is the LQ image patch size
 patch=$7
 patch_hr=`expr $patch \* $scale`
+if [ $patch = 48 ]; then
+  patch_print=""
+else
+  patch_print="_s$patch"
+fi
+
 # lr_class choice, default is MultiStepLR. test whether CosineWarmRestart can be better
 # if [ $# == 8 ]; then
   lr=$8
@@ -129,14 +135,14 @@ fi
 # v8 must use layernorm
 run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $bicubic --res_connect $res --acb_norm $acb --loss 1*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class $lr_class --model SRARNV8"
 # run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $bicubic --res_connect $res --loss 1*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class CosineWarmRestart --model SRARNV8"
-save_dir="../srarn_v8${acb_print}/v8${size}${bicubic_print}${res_print}${lr_print}_x${scale}"
-log_file="../srarn_v8${acb_print}/logs/v8${size}${bicubic_print}${res_print}${lr_print}_x${scale}.log"
+save_dir="../srarn_v8${patch_print}${acb_print}/v8${size}${bicubic_print}${res_print}${lr_print}_x${scale}"
+log_file="../srarn_v8${patch_print}${acb_print}/logs/v8${size}${bicubic_print}${res_print}${lr_print}_x${scale}.log"
 
-if [ ! -d "../srarn_v8${acb_print}" ]; then
-  mkdir "../srarn_v8${acb_print}"
+if [ ! -d "../srarn_v8${patch_print}${acb_print}" ]; then
+  mkdir "../srarn_v8${patch_print}${acb_print}"
 fi
-if [ ! -d "../srarn_v8${acb_print}/logs" ]; then
-  mkdir "../srarn_v8${acb_print}/logs"
+if [ ! -d "../srarn_v8${patch_print}${acb_print}/logs" ]; then
+  mkdir "../srarn_v8${patch_print}${acb_print}/logs"
 fi
 
 
