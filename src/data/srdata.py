@@ -19,7 +19,7 @@ class SRData(data.Dataset):
         self.do_eval = True
         self.benchmark = benchmark
         self.input_large = (args.model == 'VDSR' or
-                            args.model == 'SRCNN' or
+                            # args.model == 'SRCNN' or
                             args.model == 'BISRCNN' or
                             args.model == 'BICNNV2' or
                             args.model == 'BICNNV3')

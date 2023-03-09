@@ -16,7 +16,7 @@ class SRCNN(nn.Module):
         self.relu = nn.ReLU(inplace=True)
 
     def forward(self, x):
-        # x = F.interpolate(x, scale_factor=self.scale, mode='bicubic')
+        x = F.interpolate(x, scale_factor=self.scale, mode='bicubic')
         fea = self.relu(self.conv1(x))
         fea = self.relu(self.conv2(fea))
         out = self.conv3(fea)
