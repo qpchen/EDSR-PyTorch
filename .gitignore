@@ -72,12 +72,7 @@ target/
 
 # Starlight HPC file
 *.out
-#src/continuerun.sh
-src/scripts/*.sh
-!src/scripts/startrun.sh
-!src/scripts/train_srarn.sh
-!src/scripts/train_srarn_v7.sh
-!src/scripts/train_srarn_v8.sh
+
 *.tar
 
 # Jupyter temp file
@@ -96,36 +91,4 @@ srarn_v6
 srarn_v*
 src/utility_with_warmup.py
 src/params_macs_count.ipynb
-
-matlab/*
-!matlab/Evaluate_PSNR_SSIM_SRACN.m
-!matlab/Prepare_TestData_HR_LR.m
-!matlab/Move_SR_img.ipynb
-!matlab/rename_forEDSR.ipynb
-!matlab/Move_gen2dataset_dir.ipynb
-# !matlab/PSNR_SSIM_Results_BI_model.txt
-!matlab/PSNR_SSIM_Means_Results_BI_model.txt
-
-!matlab/HR
-matlab/HR/*
-!matlab/HR/Set5
-matlab/HR/Set5/*
-!matlab/HR/Set5/x2
-!matlab/HR/Set5/x2/baby*
-
-!matlab/SR
-matlab/SR/*
-!matlab/SR/BI
-matlab/SR/BI/*
-!matlab/SR/BI/v5xt_j15
-matlab/SR/BI/v5xt_j15/*
-!matlab/SR/BI/v5xt_j15/Set5
-matlab/SR/BI/v5xt_j15/Set5/*
-!matlab/SR/BI/v5xt_j15/Set5/x2
-!matlab/SR/BI/v5xt_j15/Set5/x2/baby*
-
-!matlab/OriginalTestData
-matlab/OriginalTestData/*
-!matlab/OriginalTestData/Set5
-!matlab/OriginalTestData/Set5/baby.bmp
 
