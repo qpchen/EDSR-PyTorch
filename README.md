@@ -44,7 +44,7 @@ We provide scripts for reproducing all the results from our paper. You can train
 * cv2 >= 3.xx (Only if you want to use video input/output) \[should `pip install opencv-python`\]
 * torchinfo
 * thop
-* timm?
+* timm
 
 ## Code
 Clone this repository into any place you want.
