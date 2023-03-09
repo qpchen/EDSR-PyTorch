@@ -181,7 +181,7 @@ class RACB(nn.Module):
         layer_scale_init_value (float): Init value for Layer Scale. Default: 1e-6.
     """
     def __init__(self, num_layers, dim_in, dim_out, dp_rates, dp_rate_cur, layer_scale_init_value=1e-6,
-                    head_conv="skip", deploy=False, layer_norm=False, acb_norm="no"):
+                    head_conv="skip", deploy=False, layer_norm=True, acb_norm="no"):
         super(RACB, self).__init__()
         self.layer = nn.Sequential(
                 *[ACL(dim=dim_in, drop_path=dp_rates[dp_rate_cur + j], 
