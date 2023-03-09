@@ -83,7 +83,7 @@ src/model/irn.py
 src/model/modules/
 
 # Datasets
-data/
+# data/
 test/
 # tree of model experiment files
 srarn
