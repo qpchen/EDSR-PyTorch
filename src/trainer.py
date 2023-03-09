@@ -1,6 +1,7 @@
 import os
 import math
 from decimal import Decimal
+import time
 
 import utility
 import model
@@ -286,10 +287,25 @@ class Trainer():
                     else:
                         for lr, hr, filename in tqdm(d, ncols=80):
                             lr, hr = self.prepare(lr, hr)
-                            timer_run = utility.timer()
+                            # timer_run = utility.timer()
                             sr = self.model(lr, idx_scale)
                             if self.args.runtime:
-                                self.ckp.write_log('Runtime: {:.2f}ms\n'.format(timer_run.toc()*1e3))
+                                sum_run = 0
+                                # sum_run_2 = 0
+                                _times = self.args.times
+                                for _i in range(_times):
+                                    run_start = time.time()
+                                    sr = self.model(lr, idx_scale)
+                                    run_stop = time.time()
+                                    runtime = run_stop - run_start
+                                    self.ckp.write_log('No.{} Runtime: {:.2f}ms.'.format(_i + 1, runtime*1e3))
+                                    sum_run += runtime
+                                    # if _i != 0:
+                                    #     sum_run_2 += runtime
+                                self.ckp.write_log('Average Runtime: {:.2f}ms.\n'.format((sum_run/_times)*1e3))
+                                # self.ckp.write_log('\nAverage Runtime except for first run: {:.2f}ms.'.format((sum_run_2/4)*1e3))
+                            else:
+                                sr = self.model(lr, idx_scale)
                             sr = utility.quantize(sr, self.args.rgb_range)
 
                             save_list = [sr]

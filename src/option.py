@@ -212,6 +212,8 @@ parser.add_argument('--no_count', action='store_true',
                     help='Do model params and macs statistics')
 parser.add_argument('--runtime', action='store_true',
                     help='print the runtime of model for each input')
+parser.add_argument('--times', type=int, default=10,
+                    help='running model for multi times to calculate the average runtime.')
 
 args = parser.parse_args()
 # add following means receive [] as input, replace the way of main.py [], to use in jupyter notebook
