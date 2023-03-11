@@ -304,8 +304,8 @@ class Trainer():
                                     #     sum_run_2 += runtime
                                 self.ckp.write_log('Average Runtime: {:.2f}ms.\n'.format((sum_run/_times)*1e3))
                                 # self.ckp.write_log('\nAverage Runtime except for first run: {:.2f}ms.'.format((sum_run_2/4)*1e3))
-                            else:
-                                sr = self.model(lr, idx_scale)
+                            # else:
+                            #     sr = self.model(lr, idx_scale)
                             sr = utility.quantize(sr, self.args.rgb_range)
 
                             save_list = [sr]
