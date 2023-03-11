@@ -209,8 +209,8 @@ class RACB(nn.Module):
 
 class SRARNV8(nn.Module):
     """ 
-    在V7基础上将head并放在每个ResBlock的add of skip connect之后。
-    抽离出create_head方法,其中conv增加skip选择,另增加norm的输出。
+    在V7基础上将head与layernorm分离,head放在每个ResBlock的add of skip connect之前,ln在之后。
+    抽离出create_head方法同时输出head_conv和ln,其中conv增加skip选择,另增加是否使用norm的选择。
     选择skip和使用LN时,实际在add后仅跟一个LN。
     Args:
         scale (int): Image magnification factor.
