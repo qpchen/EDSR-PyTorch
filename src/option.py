@@ -195,6 +195,9 @@ parser.add_argument('--layer_init_scale', type=float, default=1e-6,
 parser.add_argument('--res_connect', default='1acb3',
                     choices=('1acb3', '3acb3', '1conv1', 'skip'),
                     help='last conv to use before residual connect (1acb3 | 3acb3 | 1conv1 | skip)')
+parser.add_argument('--deep_conv', default='1acb3',
+                    choices=('1acb3', '3acb3', '1conv1', 'skip'),
+                    help='last conv to use at end of deep featurn module (1acb3 | 3acb3 | 1conv1 | skip)')
 
 # SRARN UpSampling Function setting
 parser.add_argument('--upsampling', default='Nearest',

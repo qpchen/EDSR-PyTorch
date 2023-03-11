@@ -4,37 +4,37 @@
 ######################      SRARN V8       ######################
 ################################################################################
 # ./scripts/train_srarn_v8.sh [mode] [cuda_device] [accummulation_step] [model_size] [use_bicubic] [sr_scale] [lr_patch_size]
-# run example for v8test_x2: ./scripts/train_srarn_v8.sh train 0 1 test nb 2 48 ms skip v8old
+# run example for v8test_x2: ./scripts/train_srarn_v8.sh train 0 1 test nb 2 48 ms skip skip v8old
 # ########### training commands ###########
 
-# run example for v8bn_x3: ./scripts/train_srarn_v8.sh train 0,1 1 bn ab 3 48 ms skip v8old
-# run example for v8bn_x4: ./scripts/train_srarn_v8.sh train 2,3 1 bn ab 4 48 ms skip v8old
+# run example for v8bn_x3: ./scripts/train_srarn_v8.sh train 0,1 1 bn ab 3 48 ms skip skip v8old
+# run example for v8bn_x4: ./scripts/train_srarn_v8.sh train 2,3 1 bn ab 4 48 ms skip skip v8old
 
-# run example for v8bn_x2: ./scripts/train_srarn_v8.sh train 0,1 1 bn ab 2 48 ms skip v8old
-# run example for v8b_x2: ./scripts/train_srarn_v8.sh resume 0,1 1 b ab 2 48 ms skip v8old
-# run example for v8b_nb_x2: ./scripts/train_srarn_v8.sh train 2,3 1 b nb 2 48 ms skip v8old              #bad#
-# run example for v8ba_1acb3_x2: ./scripts/train_srarn_v8.sh resume 2,3 1 ba ab 2 48 ms 1acb3 v8old          #bad#
-# run example for v8ba_x2: ./scripts/train_srarn_v8.sh train 0,1 1 ba ab 2 48 ms skip v8old
-# run example for v8bn_nb_x2: ./scripts/train_srarn_v8.sh train 0,1 1 bn nb 2 48 ms skip v8old
-# run example for v8s_x2: ./scripts/train_srarn_v8.sh train 0 1 s ab 2 48 ms skip v8old
-# run example for v8s_x3: ./scripts/train_srarn_v8.sh train 1 1 s ab 3 48 ms skip v8old
-# run example for v8s_x4: ./scripts/train_srarn_v8.sh train 1 1 s ab 4 48 ms skip v8old
-# run example for v8t_x3: ./scripts/train_srarn_v8.sh train 0 1 t ab 3 48 ms skip v8old
-# run example for v8t_x4: ./scripts/train_srarn_v8.sh train 0 1 t ab 4 48 ms skip v8old
-# run example for v8t_CR_x2: ./scripts/train_srarn_v8.sh train 1 1 t ab 2 48 cosre skip v8old           #bad#
-# run example for v8t_x2: ./scripts/train_srarn_v8.sh train 0 1 t ab 2 48 ms skip v8old
-# run example for v8xt_x2: ./scripts/train_srarn_v8.sh train 0 1 xt ab 2 48 ms skip v8old
-# run example for v8xt_x3: ./scripts/train_srarn_v8.sh train 1 1 xt ab 3 48 ms skip v8old
-# run example for v8xt_x4: ./scripts/train_srarn_v8.sh train 1 1 xt ab 4 48 ms skip v8old
+# run example for v8bn_x2: ./scripts/train_srarn_v8.sh train 0,1 1 bn ab 2 48 ms skip skip v8old
+# run example for v8b_x2: ./scripts/train_srarn_v8.sh resume 0,1 1 b ab 2 48 ms skip skip v8old
+# run example for v8b_nb_x2: ./scripts/train_srarn_v8.sh train 2,3 1 b nb 2 48 ms skip skip v8old              #bad#
+# run example for v8ba_1acb3_x2: ./scripts/train_srarn_v8.sh resume 2,3 1 ba ab 2 48 ms 1acb3 1acb3 v8old          #bad#
+# run example for v8ba_x2: ./scripts/train_srarn_v8.sh train 0,1 1 ba ab 2 48 ms skip skip v8old
+# run example for v8bn_nb_x2: ./scripts/train_srarn_v8.sh train 0,1 1 bn nb 2 48 ms skip skip v8old
+# run example for v8s_x2: ./scripts/train_srarn_v8.sh train 0 1 s ab 2 48 ms skip skip v8old
+# run example for v8s_x3: ./scripts/train_srarn_v8.sh train 1 1 s ab 3 48 ms skip skip v8old
+# run example for v8s_x4: ./scripts/train_srarn_v8.sh train 1 1 s ab 4 48 ms skip skip v8old
+# run example for v8t_x3: ./scripts/train_srarn_v8.sh train 0 1 t ab 3 48 ms skip skip v8old
+# run example for v8t_x4: ./scripts/train_srarn_v8.sh train 0 1 t ab 4 48 ms skip skip v8old
+# run example for v8t_CR_x2: ./scripts/train_srarn_v8.sh train 1 1 t ab 2 48 cosre skip skip v8old           #bad#
+# run example for v8t_x2: ./scripts/train_srarn_v8.sh train 0 1 t ab 2 48 ms skip skip v8old
+# run example for v8xt_x2: ./scripts/train_srarn_v8.sh train 0 1 xt ab 2 48 ms skip skip v8old
+# run example for v8xt_x3: ./scripts/train_srarn_v8.sh train 1 1 xt ab 3 48 ms skip skip v8old
+# run example for v8xt_x4: ./scripts/train_srarn_v8.sh train 1 1 xt ab 4 48 ms skip skip v8old
 
 
-# run example for v8xt_1conv1_x2: ./scripts/train_srarn_v8.sh train 0 1 xt ab 2 48 ms 1conv1 v8old
-# run example for v8xt_3acb3_x2: ./scripts/train_srarn_v8.sh train 0 1 xt ab 2 48 ms 3acb3 v8old
-# run example for v8xt_1acb3_x2: ./scripts/train_srarn_v8.sh train 0 1 xt ab 2 48 ms 1acb3 v8old
+# run example for v8xt_1conv1_x2: ./scripts/train_srarn_v8.sh train 0 1 xt ab 2 48 ms 1conv1 1conv1 v8old
+# run example for v8xt_3acb3_x2: ./scripts/train_srarn_v8.sh train 0 1 xt ab 2 48 ms 3acb3 3acb3 v8old
+# run example for v8xt_1acb3_x2: ./scripts/train_srarn_v8.sh train 0 1 xt ab 2 48 ms 1acb3 1acb3 v8old
 
-# run example for v8lt_x2: ./scripts/train_srarn_v8.sh train 0 1 lt ab 2 48 ms skip v8old
-# run example for v8lt_x3: ./scripts/train_srarn_v8.sh train 1 1 lt ab 3 48 ms skip v8old
-# run example for v8lt_x4: ./scripts/train_srarn_v8.sh train 1 1 lt ab 4 48 ms skip v8old
+# run example for v8lt_x2: ./scripts/train_srarn_v8.sh train 0 1 lt ab 2 48 ms skip skip v8old
+# run example for v8lt_x3: ./scripts/train_srarn_v8.sh train 1 1 lt ab 3 48 ms skip skip v8old
+# run example for v8lt_x4: ./scripts/train_srarn_v8.sh train 1 1 lt ab 4 48 ms skip skip v8old
 
 # #####################################
 # accept input
@@ -120,8 +120,15 @@ if [ $res = "skip" ]; then
 else
   res_print="_$res"
 fi
+deep=${10}
+# the last conv at end of deep feature module, before skip connect
+if [ $deep = "skip" ]; then
+  deep_print=""
+else
+  deep_print="_D$deep"
+fi
 # acb norm choices, can be "batch", "layer", "no", "v8old"
-acb=${10}
+acb=${11}
 if [ $acb = "v8old" ]; then
   acb_print=""
 else
@@ -133,10 +140,10 @@ fi
 # #####################################
 # prepare program options parameters
 # v8 must use layernorm
-run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $bicubic --res_connect $res --acb_norm $acb --loss 1*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class $lr_class --model SRARNV8"
-# run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $bicubic --res_connect $res --loss 1*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class CosineWarmRestart --model SRARNV8"
-save_dir="../srarn_v8${patch_print}${acb_print}/v8${size}${bicubic_print}${res_print}${lr_print}_x${scale}"
-log_file="../srarn_v8${patch_print}${acb_print}/logs/v8${size}${bicubic_print}${res_print}${lr_print}_x${scale}.log"
+run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $bicubic --res_connect $res --deep_conv $deep --acb_norm $acb --loss 1*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class $lr_class --model SRARNV8"
+# run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $bicubic --res_connect $res --deep_conv $deep --loss 1*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class CosineWarmRestart --model SRARNV8"
+save_dir="../srarn_v8${patch_print}${acb_print}/v8${size}${bicubic_print}${res_print}${deep_print}${lr_print}_x${scale}"
+log_file="../srarn_v8${patch_print}${acb_print}/logs/v8${size}${bicubic_print}${res_print}${deep_print}${lr_print}_x${scale}.log"
 
 if [ ! -d "../srarn_v8${patch_print}${acb_print}" ]; then
   mkdir "../srarn_v8${patch_print}${acb_print}"

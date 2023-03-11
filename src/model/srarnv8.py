@@ -212,6 +212,7 @@ class SRARNV8(nn.Module):
     在V7基础上将head与layernorm分离,head放在每个ResBlock的add of skip connect之前,ln在之后。
     抽离出create_head方法同时输出head_conv和ln,其中conv增加skip选择,另增加是否使用norm的选择。
     选择skip和使用LN时,实际在add后仅跟一个LN。
+    另外增加deep feature module最后add skip connect之前是否增加一个conv的选项deep_conv
     Args:
         scale (int): Image magnification factor.
         num_blocks (int): The number of RACB blocks in deep feature extraction.
@@ -239,6 +240,7 @@ class SRARNV8(nn.Module):
         drop_path_rate = args.drop_path_rate
         layer_scale_init_value = args.layer_init_scale
         head_conv = args.res_connect
+        deep_conv = args.deep_conv
         self.upsampling = args.upsampling
         self.no_bicubic = args.no_bicubic
         use_norm = not args.no_layernorm
@@ -277,7 +279,7 @@ class SRARNV8(nn.Module):
         # conv layers for enhancing the translational equivariance 
         # define head of deep feature, input channel dims[-1] to output dims[0]
         # the output receive the residual connect from stem of deep feature
-        self.deep_head, self.deep_norm = create_head(dims[-1], dims[0], layer_norm=use_norm, head_conv=head_conv, deploy=use_inf, acb_norm=acb_norm)
+        self.deep_head, self.deep_norm = create_head(dims[-1], dims[0], layer_norm=use_norm, head_conv=deep_conv, deploy=use_inf, acb_norm=acb_norm)
 
         # ##################################################################################
         # Upsampling
