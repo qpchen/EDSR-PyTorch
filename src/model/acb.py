@@ -2,22 +2,6 @@ import torch.nn as nn
 import torch.nn.init as init
 import torch
 
-class LayerNorm(nn.Module):
-    r""" LayerNorm that supports input data with shape (batch_size, channels, height, width).
-    """
-    def __init__(self, normalized_shape, eps=1e-6):
-        super().__init__()
-        self.weight = nn.Parameter(torch.ones(normalized_shape))
-        self.bias = nn.Parameter(torch.zeros(normalized_shape))
-        self.eps = eps
-        self.normalized_shape = (normalized_shape, )
-    
-    def forward(self, x):
-        u = x.mean(1, keepdim=True)
-        s = (x - u).pow(2).mean(1, keepdim=True)
-        x = (x - u) / torch.sqrt(s + self.eps)
-        x = self.weight[:, None, None] * x + self.bias[:, None, None]
-        return x
 
 class ACBlock(nn.Module):
 
@@ -26,29 +10,29 @@ class ACBlock(nn.Module):
         super(ACBlock, self).__init__()
         self.deploy = deploy
         self.norm = norm
-        if self.norm not in ["batch", "layer", "no", "v8old"]:
+        if self.norm not in ["batch", "layer", "no", "v8old", "inst"]:
             raise NotImplementedError 
         if self.norm == "v8old":  # the v8old do not training bias, so fused conv should not init bias. This is not recommend!!!
-            fused_bias = False
+            self.fused_bias = False
         else:
-            fused_bias = True
+            self.fused_bias = True
         if deploy:
             self.fused_conv = nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=(kernel_size,kernel_size), stride=stride,
-                                      padding=padding, dilation=dilation, groups=groups, bias=fused_bias, padding_mode=padding_mode)
+                                      padding=padding, dilation=dilation, groups=groups, bias=self.fused_bias, padding_mode=padding_mode)
         else:
             if self.norm == "batch":
                 self.square_n = nn.BatchNorm2d(num_features=out_channels, affine=use_affine)
-                self.conv_bias = False
-            elif self.norm == "layer":
-                self.square_n = LayerNorm(out_channels)
-                self.conv_bias = False
+                conv_bias = False
+            elif self.norm == "inst":
+                self.square_n = nn.InstanceNorm2d(num_features=out_channels, affine=use_affine, track_running_stats=True)
+                conv_bias = False
             elif self.norm == "no":
-                self.conv_bias = True
+                conv_bias = True
             elif self.norm == "v8old":
-                self.conv_bias = False
+                conv_bias = False
             self.square_conv = nn.Conv2d(in_channels=in_channels, out_channels=out_channels,
                                          kernel_size=(kernel_size, kernel_size), stride=stride,
-                                         padding=padding, dilation=dilation, groups=groups, bias=self.conv_bias,
+                                         padding=padding, dilation=dilation, groups=groups, bias=conv_bias,
                                          padding_mode=padding_mode)
 
 
@@ -67,19 +51,19 @@ class ACBlock(nn.Module):
 
             self.ver_conv = nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=(kernel_size, 1),
                                       stride=stride,
-                                      padding=ver_padding, dilation=dilation, groups=groups, bias=self.conv_bias,
+                                      padding=ver_padding, dilation=dilation, groups=groups, bias=conv_bias,
                                       padding_mode=padding_mode)
 
             self.hor_conv = nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=(1, kernel_size),
                                       stride=stride,
-                                      padding=hor_padding, dilation=dilation, groups=groups, bias=self.conv_bias,
+                                      padding=hor_padding, dilation=dilation, groups=groups, bias=conv_bias,
                                       padding_mode=padding_mode)
             if self.norm == "batch":
                 self.ver_n = nn.BatchNorm2d(num_features=out_channels, affine=use_affine)
                 self.hor_n = nn.BatchNorm2d(num_features=out_channels, affine=use_affine)
-            elif self.norm == "layer":
-                self.ver_n = LayerNorm(out_channels)
-                self.hor_n = LayerNorm(out_channels)
+            elif self.norm == "inst":
+                self.ver_n = nn.InstanceNorm2d(num_features=out_channels, affine=use_affine, track_running_stats=True)
+                self.hor_n = nn.InstanceNorm2d(num_features=out_channels, affine=use_affine, track_running_stats=True)
 
                 if reduce_gamma:
                     self.init_gamma(1.0 / 3)
@@ -94,11 +78,6 @@ class ACBlock(nn.Module):
         t = (bn.weight / std).reshape(-1, 1, 1, 1)
         return conv.weight * t, bn.bias - bn.running_mean * bn.weight / std
 
-    def _fuse_ln_tensor(self, conv, bn):
-        # TODO: change formula to ln
-        std = (bn.running_var + bn.eps).sqrt()
-        t = (bn.weight / std).reshape(-1, 1, 1, 1)
-        return conv.weight * t, bn.bias - bn.running_mean * bn.weight / std
 
     def _add_to_square_kernel(self, square_kernel, asym_kernel):
         asym_h = asym_kernel.size(2)
@@ -109,14 +88,10 @@ class ACBlock(nn.Module):
                 square_w // 2 - asym_w // 2: square_w // 2 - asym_w // 2 + asym_w] += asym_kernel
 
     def get_equivalent_kernel_bias(self):
-        if self.norm == "batch":
+        if self.norm == "batch" or self.norm == "inst":
             hor_k, hor_b = self._fuse_bn_tensor(self.hor_conv, self.hor_n)
             ver_k, ver_b = self._fuse_bn_tensor(self.ver_conv, self.ver_n)
             square_k, square_b = self._fuse_bn_tensor(self.square_conv, self.square_n)
-        elif self.norm == "layer":
-            hor_k, hor_b = self._fuse_ln_tensor(self.hor_conv, self.hor_n)
-            ver_k, ver_b = self._fuse_ln_tensor(self.ver_conv, self.ver_n)
-            square_k, square_b = self._fuse_ln_tensor(self.square_conv, self.square_n)
         elif self.norm == "no":
             square_k = self.square_conv.weight.detach()
             square_b = self.square_conv.bias
@@ -131,7 +106,7 @@ class ACBlock(nn.Module):
             # fuse_b = self.square_conv.bias  # should be NoneType since bias set to False
         self._add_to_square_kernel(square_k, hor_k)
         self._add_to_square_kernel(square_k, ver_k)
-        if self.conv_bias:
+        if self.fused_bias:
             return square_k, hor_b + ver_b + square_b
         else:
             return square_k
@@ -139,24 +114,24 @@ class ACBlock(nn.Module):
 
 
     def switch_to_deploy(self):
-        if self.conv_bias:
+        if self.fused_bias:
             deploy_k, deploy_b = self.get_equivalent_kernel_bias()
         else:
             deploy_k = self.get_equivalent_kernel_bias()
         self.deploy = True
         self.fused_conv = nn.Conv2d(in_channels=self.square_conv.in_channels, out_channels=self.square_conv.out_channels,
                                     kernel_size=self.square_conv.kernel_size, stride=self.square_conv.stride,
-                                    padding=self.square_conv.padding, dilation=self.square_conv.dilation, groups=self.square_conv.groups, bias=self.conv_bias,
+                                    padding=self.square_conv.padding, dilation=self.square_conv.dilation, groups=self.square_conv.groups, bias=self.fused_bias,
                                     padding_mode=self.square_conv.padding_mode)
         self.__delattr__('square_conv')
         self.__delattr__('hor_conv')
         self.__delattr__('ver_conv')
-        if self.norm == "batch" or self.norm == "layer":
+        if self.norm == "batch" or self.norm == "inst":
             self.__delattr__('square_n')
             self.__delattr__('hor_n')
             self.__delattr__('ver_n')
         self.fused_conv.weight.data = deploy_k
-        if self.conv_bias:
+        if self.fused_bias:
             self.fused_conv.bias.data = deploy_b
 
 
@@ -177,7 +152,7 @@ class ACBlock(nn.Module):
             return self.fused_conv(input)
         else:
             square_outputs = self.square_conv(input)
-            if self.norm == "batch" or self.norm == "layer":
+            if self.norm == "batch" or self.norm == "inst":
                 square_outputs = self.square_n(square_outputs)
             if self.crop > 0:
                 ver_input = input[:, :, :, self.crop:-self.crop]
@@ -186,10 +161,10 @@ class ACBlock(nn.Module):
                 ver_input = input
                 hor_input = input
             vertical_outputs = self.ver_conv(ver_input)
-            if self.norm == "batch" or self.norm == "layer":
+            if self.norm == "batch" or self.norm == "inst":
                 vertical_outputs = self.ver_n(vertical_outputs)
             horizontal_outputs = self.hor_conv(hor_input)
-            if self.norm == "batch" or self.norm == "layer":
+            if self.norm == "batch" or self.norm == "inst":
                 horizontal_outputs = self.hor_n(horizontal_outputs)
             result = square_outputs + vertical_outputs + horizontal_outputs
             return result

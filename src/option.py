@@ -170,8 +170,8 @@ parser.add_argument('--load_inf', action='store_true',
 parser.add_argument('--inf_switch', action='store_true',
                     help='When test_only, load training-time Block, then switch to inference-time model and save it')
 parser.add_argument('--acb_norm', default='v8old',
-                    choices=('batch', 'layer', 'no', 'v8old'),
-                    help='last conv to use before residual connect (batch | layer | no | v8old)')
+                    choices=('batch', 'no', 'v8old', 'inst'),
+                    help='last conv to use before residual connect (batch | no | v8old | inst)')
 
 # SRACN settings
 parser.add_argument('--n_feat', type=int, default=56,
