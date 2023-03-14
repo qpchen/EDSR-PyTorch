@@ -121,6 +121,8 @@
                 // "3acb3",
                 // "1conv1",
                 "skip",
+                "--deep_conv",
+                "1acb3",
                 "--srarn_up_feat",
                 "8",     //test
                 // "24",       // default 0, means same as dims[0]
@@ -128,11 +130,14 @@
                 // "64",       // SwinIR
                 "--acb_norm",
                 // "batch",
+                // "inst",
                 // "layer",
                 "no",
                 "--no_act_ps",
-                // "--no_bicubic",
+                "--no_bicubic",
                 // "--no_layernorm",
+                "--norm_at",
+                "before",
                 "--no_count",
                 "--model",
                 // "SRARNV5",
@@ -143,15 +148,15 @@
                 // "../srarn/srarn_x2",
                 // "srarn/v5_test",
                 "srarn/test",
-                // "--reset"
+                "--reset"
                 // "--load",
                 // "--resume",
                 // "-1"
-                "--test_only",
-                "--save_result",
-                "--pre_train",
-                "../experiment/srarn/test/model/model_best.pt",
-                "--inf_switch"
+                // "--test_only",
+                // "--save_result",
+                // "--pre_train",
+                // "../experiment/srarn/test/model/model_best.pt",
+                // "--inf_switch"
                 // "../experiment/srarn/v5_test/model/model_best.pt",
                 // "../experiment/srarn/test/model/model_latest.pt"
                 // "../srarn/srarn_x2/model/model_best.pt",
