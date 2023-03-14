@@ -7,6 +7,10 @@
 # #### specially for SRARN model ,just input Version, and need addition model size param:
 # #### ./test_runtime.sh [version] [size] [scale] [times] "[addition options]"
 #########################################
+# after copy ../runtime_models/*.pt files and ../../dataset/runtime dir, run example like: 
+# ./scripts/test_runtime.sh v5 xt 4 10 "--no_count --save_result"
+#########################################
+
 
 # python main.py --n_GPUs 1 --accumulation_step 1 --scale 2 --patch_size 96 --epochs 3000 --decay 1500-2400-2700-2850 --upsampling Nearest --srarn_up_feat 24 --depths 2+2+2+2 --dims 24+24+24+24 --batch_size 32  --res_connect skip --acb_norm v8old --loss 1*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class MultiStepLR --model SRARNV8 --data_test Set5+Set14+B100+Urban100+Manga109 --save ../srarn_v8/v8xt_x2_test --pre_train ../srarn_v8/v8xt_x2_test/model/inf_model.pt --test_only --save_result --load_inf
 
