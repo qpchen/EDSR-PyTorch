@@ -210,6 +210,9 @@ parser.add_argument('--no_bicubic', action='store_true',
                     help='do not add bicubic interpolation of input to output')
 parser.add_argument('--no_layernorm', action='store_true',
                     help='delete layer normalization for each acl/racb')
+parser.add_argument('--norm_at', default='after',
+                    choices=('after', 'before'),
+                    help='layer norm location (after | before) the head_conv & connection of the resblocks')
 
 parser.add_argument('--no_count', action='store_true',
                     help='Do model params and macs statistics')

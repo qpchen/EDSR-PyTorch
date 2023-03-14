@@ -140,7 +140,9 @@ class LayerNorm(nn.Module):
             x = self.weight[:, None, None] * x + self.bias[:, None, None]
             return x
 
-def create_head(dim_in, dim_out, layer_norm=True, head_conv="skip", deploy=False, acb_norm="no"):
+def create_head(dim_in, dim_out, layer_norm=True, head_conv="skip", deploy=False, acb_norm="no", norm_at="before"):
+    if norm_at not in ["before", "after"]:
+        raise NotImplementedError 
     if head_conv == "1conv1":
         head = nn.Conv2d(dim_in, dim_out, kernel_size=1, stride=1)
     elif head_conv == "1acb3":
@@ -159,7 +161,12 @@ def create_head(dim_in, dim_out, layer_norm=True, head_conv="skip", deploy=False
             head = None
     # create layer norm after addition of the residual connect
     if layer_norm:
-        norm = LayerNorm(dim_out, eps=1e-6, data_format="channels_first")
+        if norm_at == "after":
+            norm = LayerNorm(dim_out, eps=1e-6, data_format="channels_first")
+        elif norm_at == "before":
+            norm = LayerNorm(dim_in, eps=1e-6, data_format="channels_first")
+        else:
+            raise NotImplementedError
     else:
         norm = None
 
@@ -181,8 +188,10 @@ class RACB(nn.Module):
         layer_scale_init_value (float): Init value for Layer Scale. Default: 1e-6.
     """
     def __init__(self, num_layers, dim_in, dim_out, dp_rates, dp_rate_cur, layer_scale_init_value=1e-6,
-                    head_conv="skip", deploy=False, layer_norm=True, acb_norm="no"):
+                    head_conv="skip", deploy=False, layer_norm=True, acb_norm="no", norm_at="before"):
         super(RACB, self).__init__()
+        if norm_at not in ["before", "after"]:
+            raise NotImplementedError 
         self.layer = nn.Sequential(
                 *[ACL(dim=dim_in, drop_path=dp_rates[dp_rate_cur + j], 
                         layer_scale_init_value=layer_scale_init_value, deploy=deploy, 
@@ -190,19 +199,24 @@ class RACB(nn.Module):
                 for j in range(num_layers)]
         )
         # conv layers for enhancing the translational equivariance 
-        self.layer_head, self.layer_norm = create_head(dim_in, dim_in, layer_norm=layer_norm, 
-                                                        head_conv=head_conv, deploy=deploy, acb_norm=acb_norm)
-        
+        self.layer_head, self.layer_norm = create_head(dim_in, dim_in, layer_norm=layer_norm, head_conv=head_conv, 
+                                                        deploy=deploy, acb_norm=acb_norm, norm_at=norm_at)
+        self.norm_at = norm_at
+
         if dim_in != dim_out:
             self.channel_modify = nn.Conv2d(dim_in, dim_out, kernel_size=1, stride=1)
     def forward(self, x):
         input = x
         x = self.layer(x)
+
+        if self.norm_at == "before" and self.layer_norm is not None:
+            x = self.layer_norm(x)
         if self.layer_head is not None:
             x = self.layer_head(x)
         x = x + input
-        if self.layer_norm is not None:
+        if self.norm_at == "after" and self.layer_norm is not None:
             x = self.layer_norm(x)
+        
         if hasattr(self, 'channel_modify'):
             x = self.channel_modify(x)
         return x
@@ -213,6 +227,7 @@ class SRARNV8(nn.Module):
     抽离出create_head方法同时输出head_conv和ln,其中conv增加skip选择,另增加是否使用norm的选择。
     选择skip和使用LN时,实际在add后仅跟一个LN。
     另外增加deep feature module最后add skip connect之前是否增加一个conv的选项deep_conv
+    增加LN位置选项norm_at,主要在head_conv前(v5-v7/swinir)和add后(v8old)两个位置选择
     Args:
         scale (int): Image magnification factor.
         num_blocks (int): The number of RACB blocks in deep feature extraction.
@@ -245,6 +260,7 @@ class SRARNV8(nn.Module):
         self.no_bicubic = args.no_bicubic
         use_norm = not args.no_layernorm
         acb_norm = args.acb_norm
+        self.norm_at = args.norm_at
 
         # RGB mean for DIV2K
         if num_channels == 3:
@@ -279,7 +295,8 @@ class SRARNV8(nn.Module):
         # conv layers for enhancing the translational equivariance 
         # define head of deep feature, input channel dims[-1] to output dims[0]
         # the output receive the residual connect from stem of deep feature
-        self.deep_head, self.deep_norm = create_head(dims[-1], dims[0], layer_norm=use_norm, head_conv=deep_conv, deploy=use_inf, acb_norm=acb_norm)
+        self.deep_head, self.deep_norm = create_head(dims[-1], dims[0], layer_norm=use_norm, head_conv=deep_conv, 
+                                                        deploy=use_inf, acb_norm=acb_norm, norm_at=self.norm_at)
 
         # ##################################################################################
         # Upsampling
@@ -361,10 +378,12 @@ class SRARNV8(nn.Module):
         input = x
         for i in range(self.num_blocks):
             x = self.RACBs[i](x)
+        if self.norm_at == "before" and self.deep_norm is not None:
+            x = self.deep_norm(x)
         if self.deep_head is not None:
             x = self.deep_head(x)
         x = input + x   # Residual of the whole deep feature Extraction
-        if self.deep_norm is not None:
+        if self.norm_at == "after" and self.deep_norm is not None:
             x = self.deep_norm(x)
 
         return x

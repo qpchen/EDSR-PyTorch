@@ -3,7 +3,7 @@
 ################################################################################
 ######################      SRARN V8       ######################
 ################################################################################
-# ./scripts/train_srarn_v8.sh [mode] [cuda_device] [accummulation_step] [model] [use_bicubic] [sr_scale] [lr_patch_size] [LR_scheduler_class] [block_conv] [deep_conv] [acb_norm]
+# ./scripts/train_srarn_v8.sh [mode] [cuda_device] [accummulation_step] [model] [use_bicubic] [sr_scale] [lr_patch_size] [LR_scheduler_class] [block_conv] [deep_conv] [acb_norm] [LN]
 # run example for v8test_x2: ./scripts/train_srarn_v8.sh train 0 1 test nb 2 48 ms skip skip v8old ln
 # ########### training commands ###########
 
@@ -137,11 +137,14 @@ fi
 # backbone norm choices
 norm=${12}
 if [ $norm = "ln" ]; then
-  norm_opt=""
+  norm_opt="--norm_at after"
   norm_print=""
-else  # "no": means do not use norm
+elif [ $norm = "no" ]; then  # "no": means do not use norm
   norm_opt="--no_layernorm"
   norm_print="_noLN"
+elif [ $norm = "befln" ]; then
+  norm_opt="--norm_at before"
+  norm_print="_befLN"
 fi
 
 
