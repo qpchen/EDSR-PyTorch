@@ -8,7 +8,7 @@
 # #### ./test_runtime.sh [version] [size] [scale] [times] "[addition options]"
 #########################################
 # after copy ../runtime_models/*.pt files and ../../dataset/runtime dir, run example like: 
-# ./scripts/test_runtime.sh v5 xt 4 10 "--no_count --save_result"
+# ./scripts/test_runtime.sh v5 xt 2 10 "--no_count --save_result"
 #########################################
 
 
@@ -29,12 +29,12 @@ fi
 
 if [ $model = "FSRCNN" ]; then
   # trained by: python main.py --n_GPUs 1 --scale 2 --patch_size 96 --batch_size 32 --data_test Set5 --lr 1e-3 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --model FSRCNN --reset --save fsrcnn_x2
-  python main.py --n_threads 4 --n_GPUs 1 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --model FSRCNN --save ../runtime_models/logs/fsrcnn_x$3 --pre_train ../runtime_models/fsrcnn_x$3.pt --test_only --reset --runtime --times $4 $5 #--no_count --save_result 
+  python main.py --n_threads 4 --cpu --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --model FSRCNN --save ../runtime_models/logs/fsrcnn_x$3 --pre_train ../runtime_models/fsrcnn_x$3.pt --test_only --reset --runtime --times $4 $5 #--no_count --save_result 
 elif [ $model = "v8" ]; then
   # ./scripts/train_srarn_v8.sh runtime 0 1 xt ab $3 48 ms skip v8old $4
-  python main.py --n_threads 4 --n_GPUs 1 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --res_connect skip $dim_configs --upsampling Nearest --acb_norm v8old --model SRARNV8 --save ../runtime_models/v8$2_x$3 --pre_train ../runtime_models/logs/v8$2_x$3.pt --test_only --load_inf --reset --runtime --times $4 $5 #--no_count --save_result 
+  python main.py --n_threads 4 --cpu --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --res_connect skip $dim_configs --upsampling Nearest --acb_norm v8old --model SRARNV8 --save ../runtime_models/v8$2_x$3 --pre_train ../runtime_models/logs/v8$2_x$3.pt --test_only --load_inf --reset --runtime --times $4 $5 #--no_count --save_result 
 elif [ $model = "v5" ]; then
-  python main.py --n_threads 4 --n_GPUs 1 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --res_connect 1acb3 $dim_configs --model SRARNV5 --save ../runtime_models/logs/v5$2_x$3 --pre_train ../runtime_models/v5$2_x$3.pt --test_only --load_inf --reset --runtime --times $4 $5 #--no_count --save_result 
+  python main.py --n_threads 4 --cpu --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --res_connect 1acb3 $dim_configs --model SRARNV5 --save ../runtime_models/logs/v5$2_x$3 --pre_train ../runtime_models/v5$2_x$3.pt --test_only --load_inf --reset --runtime --times $4 $5 #--no_count --save_result 
 else
   echo "The model $1 is not supported!"
 fi

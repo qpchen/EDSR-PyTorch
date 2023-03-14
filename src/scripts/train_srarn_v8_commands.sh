@@ -130,4 +130,4 @@
 # run example for v8xt_s64_D3acb3_x2: ./scripts/train_srarn_v8.sh train 0 1 xt ab 2 64 ms skip 3acb3 no befln
 # run example for v8xt_s64_D3acb3_x3: ./scripts/train_srarn_v8.sh train 1 1 xt ab 3 64 ms skip 3acb3 no befln
 # run example for v8xt_s64_D3acb3_x4: ./scripts/train_srarn_v8.sh train 1 1 xt ab 4 64 ms skip 3acb3 no befln
-# run example for v8xt_s64_nb_D3acb3_x2: ./scripts/train_srarn_v8.sh train 1 1 xt nb 2 64 ms skip 3acb3 no befln  # comparing
+# run example for v8xt_s64_nb_D3acb3_x2: ./scripts/train_srarn_v8.sh train 0 1 xt nb 2 64 ms skip 3acb3 no befln  # comparing
