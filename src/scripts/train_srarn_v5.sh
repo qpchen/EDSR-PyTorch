@@ -16,21 +16,22 @@
 # run example for v5ba_1acb3_x2: ./scripts/train_srarn_v5.sh resume 2,3 1 ba ab 2 48 ms 1acb3          #bad#
 # run example for v5ba_x2: ./scripts/train_srarn_v5.sh train 0,1 1 ba ab 2 48 ms 1acb3
 # run example for v5bn_nb_x2: ./scripts/train_srarn_v5.sh train 0,1 1 bn nb 2 48 ms 1acb3
+
 # run example for v5s_x2: ./scripts/train_srarn_v5.sh train 0 1 s ab 2 64 ms 1acb3
-# run example for v5s_x3: ./scripts/train_srarn_v5.sh train 1 1 s ab 3 48 ms 1acb3
-# run example for v5s_x4: ./scripts/train_srarn_v5.sh train 1 1 s ab 4 48 ms 1acb3
-# run example for v5t_x3: ./scripts/train_srarn_v5.sh train 0 1 t ab 3 48 ms 1acb3
-# run example for v5t_x4: ./scripts/train_srarn_v5.sh train 0 1 t ab 4 48 ms 1acb3
-# run example for v5t_CR_x2: ./scripts/train_srarn_v5.sh train 1 1 t ab 2 48 cosre           #bad#
-# run example for v5t_x2: ./scripts/train_srarn_v5.sh train 0 1 t ab 2 48 ms 1acb3
+# run example for v5s_x3: ./scripts/train_srarn_v5.sh train 1 1 s ab 3 64 ms 1acb3
+# run example for v5s_x4: ./scripts/train_srarn_v5.sh train 1 1 s ab 4 64 ms 1acb3
+# run example for v5t_x3: ./scripts/train_srarn_v5.sh train 0 1 t ab 3 64 ms 1acb3
+# run example for v5t_x4: ./scripts/train_srarn_v5.sh train 0 1 t ab 4 64 ms 1acb3
+
+# run example for v5t_x2: ./scripts/train_srarn_v5.sh train 0 1 t ab 2 64 ms 1acb3
 # run example for v5xt_x2: ./scripts/train_srarn_v5.sh train 0 1 xt ab 2 64 ms 1acb3
-# run example for v5xt_x3: ./scripts/train_srarn_v5.sh train 1 1 xt ab 3 48 ms 1acb3
-# run example for v5xt_x4: ./scripts/train_srarn_v5.sh train 1 1 xt ab 4 48 ms 1acb3
+# run example for v5xt_x3: ./scripts/train_srarn_v5.sh train 1 1 xt ab 3 64 ms 1acb3
+# run example for v5xt_x4: ./scripts/train_srarn_v5.sh train 1 1 xt ab 4 64 ms 1acb3
 
 
-# run example for v5lt_x2: ./scripts/train_srarn_v5.sh train 0 1 lt ab 2 48 ms 1acb3
-# run example for v5lt_x3: ./scripts/train_srarn_v5.sh train 1 1 lt ab 3 48 ms 1acb3
-# run example for v5lt_x4: ./scripts/train_srarn_v5.sh train 1 1 lt ab 4 48 ms 1acb3
+# run example for v5lt_x2: ./scripts/train_srarn_v5.sh train 0 1 lt ab 2 64 ms 1acb3
+# run example for v5lt_x3: ./scripts/train_srarn_v5.sh train 1 1 lt ab 3 64 ms 1acb3
+# run example for v5lt_x4: ./scripts/train_srarn_v5.sh train 1 1 lt ab 4 64 ms 1acb3
 
 # #####################################
 # accept input
@@ -116,7 +117,7 @@ fi
 # #####################################
 # prepare program options parameters
 # v5 must use layernorm
-run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $bicubic --res_connect $res --loss 1*L1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class $lr_class --model SRARNV5"
+run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $bicubic --data_range 1-800 --res_connect $res --loss 1*L1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class $lr_class --model SRARNV5"
 
 save_dir="../srarn_v5/v5${size}${patch_print}${bicubic_print}${res_print}${lr_print}_x${scale}"
 log_file="../srarn_v5/logs/v5${size}${patch_print}${bicubic_print}${res_print}${lr_print}_x${scale}.log"
