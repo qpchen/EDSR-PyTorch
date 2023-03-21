@@ -37,6 +37,8 @@ elif [ $model = "v8" ]; then
   python test_runtime.py --n_threads 4 --cpu --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --res_connect skip $dim_configs --upsampling Nearest --acb_norm v8old --model SRARNV8 --save ../runtime_models/v8$2_x$3 --pre_train ../runtime_models/logs/v8$2_x$3.pt --test_only --load_inf --reset --runtime --times $4 $5 #--no_count --save_result 
 elif [ $model = "v5" ]; then
   python test_runtime.py --n_threads 4 --cpu --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --res_connect 1acb3 $dim_configs --model SRARNV5 --save ../runtime_models/logs/v5$2_x$3 --pre_train ../runtime_models/v5$2_x$3.pt --test_only --load_inf --reset --runtime --times $4 $5 #--no_count --save_result 
+elif [ $model = "SwinIR" ]; then
+  python test_runtime.py --n_threads 4 --cpu --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --res_connect 1acb3 $dim_configs --model SwinIR --save ../runtime_models/logs/SwinIR-$2_x$3 --test_only --load_inf --reset --runtime --times $4 $5 #--no_count --save_result 
 else
   echo "The model $1 is not supported!"
 fi
