@@ -226,6 +226,7 @@ class SRARNV9(nn.Module):
     在V8基础上将LN固定改到head_conv前,并在preUP前增加一个LN
     与V5区别主要为选择block_head_conv
     另外ACB_norm选择使用batch或者inst
+    还增加了LR直接add到preup之后的选项
     Args:
         scale (int): Image magnification factor.
         num_blocks (int): The number of RACB blocks in deep feature extraction.
@@ -258,6 +259,7 @@ class SRARNV9(nn.Module):
         self.no_bicubic = args.no_bicubic
         use_norm = not args.no_layernorm
         acb_norm = args.acb_norm
+        self.add_lr = args.add_lr
         # self.norm_at = args.norm_at
 
         # RGB mean for DIV2K
@@ -298,6 +300,15 @@ class SRARNV9(nn.Module):
 
         # ##################################################################################
         # Upsampling
+        if self.add_lr:
+            self.pre_add_lr = nn.Sequential(
+                    acb.ACBlock(dims[0], num_channels, 3, 1, 1, deploy=use_inf, norm=acb_norm),
+                    nn.GELU()
+            )
+            self.post_add_lr = nn.Sequential(
+                    acb.ACBlock(num_channels, dims[0], 3, 1, 1, deploy=use_inf, norm=acb_norm),
+                    nn.GELU()
+            )
         self.preup_norm = LayerNorm(dims[0], eps=1e-6, data_format="channels_first")
         if self.upsampling != 'PixelShuffleDirect' and self.upsampling != 'Deconv':
             self.preup = nn.Sequential(
@@ -361,7 +372,7 @@ class SRARNV9(nn.Module):
             x = self.deep_head(x)
         x = input + x   # Residual of the whole deep feature Extraction
 
-        return self.preup_norm(x)
+        return x
 
     def forward(self, x):
         if hasattr(self, 'sub_mean'):
@@ -373,16 +384,19 @@ class SRARNV9(nn.Module):
 
         # if hasattr(self, 'upfea'):
         #     out = self.upfea(out)
-        
+
+        if self.add_lr:
+            out = self.post_add_lr(self.pre_add_lr(out) + x)
+
         if self.upsampling == 'Deconv':
             out = self.deconv(out)
         elif self.upsampling == 'PixelShuffleDirect':
             out = self.pixelshuffledirect(out)
         elif self.upsampling == 'PixelShuffle':
-            out = self.preup(out)
+            out = self.preup(self.preup_norm(out))
             out = self.pixelshuffle(out)
         elif self.upsampling == 'Nearest':
-            out = self.preup(out)
+            out = self.preup(self.preup_norm(out))
             if (self.scale & (self.scale - 1)) == 0:  # 缩放因子等于 2^n
                 for i in range(int(log(self.scale, 2))):  #  循环 n 次
                     out = getattr(self, f'up{i}')(F.interpolate(out, scale_factor=2, mode='nearest'))
