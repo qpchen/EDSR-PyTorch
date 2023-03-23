@@ -3,7 +3,7 @@
 ################################################################################
 ######################      SRARN V8       ######################
 ################################################################################
-# ./scripts/train_srarn_v8.sh [mode] [cuda_device] [accummulation_step] [model_size] [use_bicubic] [sr_scale] [lr_patch_size]
+# ./scripts/train_srarn_v8.sh [mode] [cuda_device] [accummulation_step] [model] [use_bicubic] [sr_scale] [lr_patch_size] [LR_scheduler_class] [block_conv] [deep_conv] [acb_norm] [LN]
 # run example for v8test_x2: ./scripts/train_srarn_v8.sh train 0 1 test nb 2 48 ms skip skip no ln
 # ########### training commands ###########
 
@@ -43,7 +43,7 @@
 ################################################################################
 ######################      SRARN V8_D1acb3 noACBnorm noLN       ######################
 ################################################################################
-# ./scripts/train_srarn_v8.sh [mode] [cuda_device] [accummulation_step] [model_size] [use_bicubic] [sr_scale] [lr_patch_size]
+# ./scripts/train_srarn_v8.sh [mode] [cuda_device] [accummulation_step] [model] [use_bicubic] [sr_scale] [lr_patch_size] [LR_scheduler_class] [block_conv] [deep_conv] [acb_norm] [LN]
 # run example for v8test_D1acb3_x2: ./scripts/train_srarn_v8.sh train 0 1 test nb 2 48 ms skip 1acb3 no no
 # ########### training commands ###########
 # on Starlight:
@@ -97,7 +97,7 @@
 ################################################################################
 ######################      SRARN V8_D1acb3 noACBnorm befLN       ######################
 ################################################################################
-# ./scripts/train_srarn_v8.sh [mode] [cuda_device] [accummulation_step] [model_size] [use_bicubic] [sr_scale] [lr_patch_size]
+# ./scripts/train_srarn_v8.sh [mode] [cuda_device] [accummulation_step] [model] [use_bicubic] [sr_scale] [lr_patch_size] [LR_scheduler_class] [block_conv] [deep_conv] [acb_norm] [LN]
 # run example for v8test_D1acb3_x2: ./scripts/train_srarn_v8.sh train 0 1 test nb 2 48 ms skip 1acb3 no befln
 # ########### training commands ###########
 # on Starlight:
