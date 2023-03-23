@@ -4,14 +4,14 @@ clear all; close all; clc
 
 %% set path
 degradation = 'BI'; % BI, BD
-methods = {'v5xt_j15'};
+methods = {'v5xt_j15', 'v5t_i14', 'v5s_f11', 'v5_ps_g12'};
 dataset = {'Set5', 'Set14', 'B100', 'Urban100', 'Manga109'};
 ext = {'*.jpg', '*.png', '*.bmp'};
 num_method = length(methods);
 num_set = length(dataset);
-record_results_txt = ['PSNR_SSIM_Results_', degradation,'_model.txt'];
+record_results_txt = ['PSNR_SSIM_Results_', degradation,'_sracnv5.txt'];
 results = fopen(fullfile(record_results_txt), 'wt');
-record_means_results_txt = ['PSNR_SSIM_Means_Results_', degradation,'_model.txt'];
+record_means_results_txt = ['PSNR_SSIM_Means_Results_', degradation,'_sracnv5.txt'];
 means_results = fopen(fullfile(record_means_results_txt), 'wt');
 
 if strcmp(degradation, 'BI') 
