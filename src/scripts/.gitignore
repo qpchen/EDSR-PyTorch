@@ -5,6 +5,7 @@
 !train_srarn_v5.sh
 !train_srarn_v7.sh
 !train_srarn_v8.sh
+!train_srarn_v9.sh
 !test_runtime.sh
 !train_srarn_v8_commands.sh
 
