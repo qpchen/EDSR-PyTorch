@@ -7,6 +7,7 @@
 !train_srarn_v8.sh
 !train_srarn_v9.sh
 !test_runtime.sh
+!runtime_batch.sh
 !train_srarn_v8_commands.sh
 
 # Jupyter temp file

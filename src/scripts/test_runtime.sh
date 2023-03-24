@@ -3,12 +3,12 @@
 #########################################
 # This script is used for test the runtime of single 720P image
 # run this script use command following (if just have one size, just input anything):
-# ./test_runtime.sh [model_name] [size] [scale] [times] "[addition options]"
+# ./test_runtime.sh [model_name] [size] [scale] [patch] [times] "[addition options]"
 # #### specially for SRARN model ,just input Version, and need addition model size param:
-# #### ./test_runtime.sh [version] [size] [scale] [times] "[addition options]"
+# #### ./test_runtime.sh [version] [size] [scale] [patch] [times] "[addition options]"
 #########################################
 # after copy ../runtime_models/*.pt files and ../../dataset/runtime dir, run example like: 
-# ./scripts/test_runtime.sh v5 xt 2 10 "--no_count --save_result"
+# ./scripts/test_runtime.sh v5 xt 2 48 10 "--no_count --save_result"
 #########################################
 
 
@@ -18,7 +18,8 @@
 
 # FSRCNN
 model=$1
-patch=`expr $3 \* 48`
+# patch=`expr $3 \* 48`
+patch=`expr $3 \* $4`
 if [ $2 = "xt" ]; then
   dim_configs="--srarn_up_feat 24 --depths 2+2+2+2 --dims 24+24+24+24"
 elif [ $2 = "t" ]; then
@@ -31,14 +32,21 @@ fi
 
 if [ $model = "FSRCNN" ]; then
   # trained by: python main.py --n_GPUs 1 --scale 2 --patch_size 96 --batch_size 32 --data_test Set5 --lr 1e-3 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --model FSRCNN --reset --save fsrcnn_x2
-  python test_runtime.py --n_threads 4 --cpu --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --model FSRCNN --save ../runtime_models/logs/fsrcnn_x$3 --pre_train ../runtime_models/fsrcnn_x$3.pt --test_only --reset --runtime --times $4 $5 #--no_count --save_result 
+  python test_runtime.py --n_threads 6 --cpu --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --model FSRCNN --save ../runtime_models/logs/fsrcnn_s64_x$3 --pre_train ../runtime_models/fsrcnn_s64_x$3.pt --test_only --reset --runtime --times $5 $6 #--no_count --save_result 
+elif [ $model = "SRCNN" ]; then
+  python test_runtime.py --n_threads 6 --cpu --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --model SRCNN --save ../runtime_models/logs/srcnn_s64_x$3 --pre_train ../runtime_models/srcnn_s64_x$3.pt --test_only --reset --runtime --times $5 $6 #--no_count --save_result 
 elif [ $model = "v8" ]; then
-  # ./scripts/train_srarn_v8.sh runtime 0 1 xt ab $3 48 ms skip v8old $4
-  python test_runtime.py --n_threads 4 --cpu --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --res_connect skip $dim_configs --upsampling Nearest --acb_norm v8old --model SRARNV8 --save ../runtime_models/v8$2_x$3 --pre_train ../runtime_models/logs/v8$2_x$3.pt --test_only --load_inf --reset --runtime --times $4 $5 #--no_count --save_result 
+  # ./scripts/train_srarn_v8.sh runtime 0 1 xt ab $3 48 ms skip v8old $5
+  python test_runtime.py --n_threads 6 --cpu --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --res_connect skip $dim_configs --upsampling Nearest --acb_norm v8old --model SRARNV8 --save ../runtime_models/v8$2_x$3 --pre_train ../runtime_models/logs/v8$2_x$3.pt --test_only --load_inf --reset --runtime --times $5 $6 #--no_count --save_result 
 elif [ $model = "v5" ]; then
-  python test_runtime.py --n_threads 4 --cpu --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --res_connect 1acb3 $dim_configs --model SRARNV5 --save ../runtime_models/logs/v5$2_x$3 --pre_train ../runtime_models/v5$2_x$3.pt --test_only --load_inf --reset --runtime --times $4 $5 #--no_count --save_result 
+  python test_runtime.py --n_threads 6 --cpu --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --res_connect 1acb3 $dim_configs --model SRARNV5 --save ../runtime_models/logs/v5$2_x$3 --pre_train ../runtime_models/v5$2_x$3.pt --test_only --load_inf --reset --runtime --times $5 $6 #--no_count --save_result 
 elif [ $model = "SwinIR" ]; then
-  python test_runtime.py --n_threads 4 --cpu --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --res_connect 1acb3 $dim_configs --model SwinIR --save ../runtime_models/logs/SwinIR-$2_x$3 --test_only --load_inf --reset --runtime --times $4 $5 #--no_count --save_result 
+  python test_runtime.py --n_threads 6 --cpu --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --res_connect 1acb3 $dim_configs --model SwinIR --save ../runtime_models/logs/SwinIR-$2_x$3 --test_only --reset --runtime --times $5 $6 #--no_count --save_result 
+elif [ $model = "EDSR-baseline" ]; then
+  python test_runtime.py --n_threads 6 --cpu --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --model EDSR --save ../runtime_models/logs/EDSR-baseline_x$3 --pre_train ../models/EDSR-baseline_x$3.pt --test_only --reset --runtime --times $5 $6 #--no_count --save_result 
+elif [ $model = "EDSR" ]; then
+  python test_runtime.py --n_threads 6 --cpu --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --model EDSR --n_resblocks 32 --n_feats 256 --res_scale 0.1 --save ../runtime_models/logs/EDSR_x$3  --pre_train ../models/EDSR_x$3.pt --test_only --reset --runtime --times $5 $6 #--no_count --save_result 
 else
-  echo "The model $1 is not supported!"
+  # echo "The model $1 is not supported!"
+  python test_runtime.py --n_threads 6 --cpu --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --model $model --save ../runtime_models/logs/${model}_x$3 --pre_train ../runtime_models/${model}_x$3.pt --test_only --reset --runtime --times $5 $6 #--no_count --save_result 
 fi

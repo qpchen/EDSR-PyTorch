@@ -27,6 +27,16 @@ python main.py --model EDSR --scale 2 --save edsr_x2 --n_resblocks 32 --n_feats 
 #python main.py --data_test Set5+Set14+B100+Urban100+DIV2K --data_range 801-900 --scale 4 --pre_train download --test_only --self_ensemble
 
 #python main.py --data_test Set5+Set14+B100+Urban100+DIV2K --data_range 801-900 --scale 4 --n_resblocks 32 --n_feats 256 --res_scale 0.1 --pre_train download --test_only --self_ensemble
+############### EDSR in paper test #################
+# AttributeError: 'ReLU' object has no attribute 'total_ops'
+# thop conflict https://blog.csdn.net/daixiangzi/article/details/108368980
+# only run thop or only test (--no_count)
+#python main.py --data_test Set5+Set14+B100+Urban100+Manga109 --n_resblocks 32 --n_feats 256 --res_scale 0.1 --test_only --save_results --pre_train ../models/EDSR_x2.pt --save ../models/logs/EDSR_x2 --scale 2 --no_count
+####### baseline ############
+#python main.py --data_test Set5+Set14+B100+Urban100+Manga109 --patch_size 96 --test_only --save_results --pre_train ../models/EDSR-baseline_x2.pt --save ../models/logs/EDSR-baseline_x2 --scale 2 --no_count
+#python main.py --data_test Set5+Set14+B100+Urban100+Manga109 --patch_size 144 --test_only --save_results --pre_train ../models/EDSR-baseline_x3.pt --save ../models/logs/EDSR-baseline_x3 --scale 3
+#python main.py --data_test Set5+Set14+B100+Urban100+Manga109 --patch_size 192 --test_only --save_results --pre_train ../models/EDSR-baseline_x4.pt --save ../models/logs/EDSR-baseline_x4 --scale 4
+####################################################
 
 # Test your own images
 #python main.py --data_test Demo --scale 4 --pre_train download --test_only --save_results

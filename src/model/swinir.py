@@ -647,36 +647,36 @@ class SwinIR(nn.Module):
     """
 
     # def __init__(self, img_size=64, patch_size=1, in_chans=3,
-    def __init__(self, args, img_size=64, patch_size=1, in_chans=3,
-                 embed_dim=60, depths=[6, 6, 6, 6], num_heads=[6, 6, 6, 6],
-                 window_size=8, mlp_ratio=2., qkv_bias=True, qk_scale=None,
-                 drop_rate=0., attn_drop_rate=0., drop_path_rate=0.1,
-                 norm_layer=nn.LayerNorm, ape=False, patch_norm=True,
-                 use_checkpoint=False, upscale=2, img_range=1., upsampler='pixelshuffledirect', resi_connection='1conv',
-                 **kwargs):
-    # def __init__(self, args):
+    # def __init__(self, args, img_size=64, patch_size=1, in_chans=3,
+    #              embed_dim=60, depths=[6, 6, 6, 6], num_heads=[6, 6, 6, 6],
+    #              window_size=8, mlp_ratio=2., qkv_bias=True, qk_scale=None,
+    #              drop_rate=0., attn_drop_rate=0., drop_path_rate=0.1,
+    #              norm_layer=nn.LayerNorm, ape=False, patch_norm=True,
+    #              use_checkpoint=False, upscale=2, img_range=1., upsampler='pixelshuffledirect', resi_connection='1conv',
+    #              **kwargs):
+    def __init__(self, args):
         super(SwinIR, self).__init__()
-        # img_size=args.patch_size / args.scale[0]
-        # patch_size=1
-        # in_chans=args.n_colors
-        # embed_dim=args.dims[0]
-        # depths=args.depths
-        # num_heads=args.depths
-        # window_size=8
-        # mlp_ratio=2
-        # qkv_bias=True
-        # qk_scale=None
-        # drop_rate=0.
-        # attn_drop_rate=0.
-        # drop_path_rate=0.1
-        # norm_layer=nn.LayerNorm
-        # ape=False
-        # patch_norm=True
-        # use_checkpoint=False
-        # upscale=args.scale[0]
-        # img_range=1.
-        # upsampler='pixelshuffledirect'  # 'pixelshuffle' or 'nearest+conv'
-        # resi_connection='1conv'  # '3conv'
+        img_size=args.patch_size // args.scale[0]
+        patch_size=1
+        in_chans=args.n_colors
+        embed_dim=args.dims[0]
+        depths=args.depths
+        num_heads=args.depths
+        window_size=8
+        mlp_ratio=2
+        qkv_bias=True
+        qk_scale=None
+        drop_rate=0.
+        attn_drop_rate=0.
+        drop_path_rate=0.1
+        norm_layer=nn.LayerNorm
+        ape=False
+        patch_norm=True
+        use_checkpoint=False
+        upscale=args.scale[0]
+        img_range=1.
+        upsampler='pixelshuffledirect'  # 'pixelshuffle' or 'nearest+conv'
+        resi_connection='1conv'  # '3conv'
 
         num_in_ch = in_chans
         num_out_ch = in_chans

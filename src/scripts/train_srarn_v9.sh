@@ -7,10 +7,10 @@
 # run example for v9test_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 test ab 2 48 ms skip 1acb3 batch befln nolr
 # ########### training commands ###########
 # ###### on Starlight: ######
-# run example for v9ba_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 ba ab 2 48 ms skip 1acb3 batch befln nolr  # 38.243 v8  # PixelShuffleAct+BicubicAdd
-# run example for v9b_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 b ab 2 48 ms skip 1acb3 batch befln nolr  # 38.257 v8  # PixelShuffleNOAct+Bicubic
+# run example for v9ba_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 ba ab 2 48 ms skip 1acb3 batch befln nolr  # 38.243 v8  # PixelShuffleAct+BicubicAdd same as v5
+# run example for v9b_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 b ab 2 48 ms skip 1acb3 batch befln nolr  # 38.257 v8  # PixelShuffleNOAct+BicubicAdd
 
-# run example for v9bn_D1acb3_x2: ./scripts/train_srarn_v9.sh train 2,3 1 bn ab 2 48 ms skip 1acb3 batch befln nolr  # 38.266 v8: Nearest+BicubicAdd 
+# run example for v9bn_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 bn ab 2 48 ms skip 1acb3 batch befln nolr  # 38.266 v8: Nearest+BicubicAdd 
 # run example for v9bn_D1acb3_x3: ./scripts/train_srarn_v9.sh train 0,1 1 bn ab 3 48 ms skip 1acb3 batch befln nolr
 # run example for v9bn_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0,1 1 bn ab 4 48 ms skip 1acb3 batch befln nolr
 
