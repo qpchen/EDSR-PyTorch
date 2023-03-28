@@ -3,37 +3,40 @@
 ################################################################################
 ######################      SRARN V5       ######################
 ################################################################################
-# ./scripts/train_srarn_v5.sh [mode] [cuda_device] [accummulation_step] [model] [use_bicubic] [sr_scale] [lr_patch_size] [LR_scheduler_class] [block_conv] [deep_conv] [acb_norm] [LN]
-# run example for v5test_x2: ./scripts/train_srarn_v5.sh train 0 1 test nb 2 48 ms 1acb3
+# ./scripts/train_srarn_v5.sh [mode] [cuda_device] [accummulation_step] [model] [interpolation] [sr_scale] [lr_patch_size] [LR_scheduler_class] [block_conv] [deep_conv] [acb_norm] [LN]
+# run example for v5test_x2: ./scripts/train_srarn_v5.sh train 0 1 test s 2 48 ms 1acb3
 # ########### training commands ###########
 
-# run example for v5bn_x3: ./scripts/train_srarn_v5.sh train 0,1 1 bn ab 3 48 ms 1acb3
-# run example for v5bn_x4: ./scripts/train_srarn_v5.sh train 2,3 1 bn ab 4 48 ms 1acb3
+# run example for v5bn_x3: ./scripts/train_srarn_v5.sh train 0,1 1 bn b 3 48 ms 1acb3
+# run example for v5bn_x4: ./scripts/train_srarn_v5.sh train 2,3 1 bn b 4 48 ms 1acb3
 
-# run example for v5bn_x2: ./scripts/train_srarn_v5.sh train 0,1,2,3 1 bn ab 2 48 ms 1acb3
-# run example for v5b_x2: ./scripts/train_srarn_v5.sh resume 0,1 1 b ab 2 48 ms 1acb3
-# run example for v5b_nb_x2: ./scripts/train_srarn_v5.sh train 2,3 1 b nb 2 48 ms 1acb3              #bad#
-# run example for v5ba_1acb3_x2: ./scripts/train_srarn_v5.sh resume 2,3 1 ba ab 2 48 ms 1acb3          #bad#
-# run example for v5ba_x2: ./scripts/train_srarn_v5.sh train 0,1 1 ba ab 2 48 ms 1acb3
-# run example for v5bn_nb_x2: ./scripts/train_srarn_v5.sh train 0,1 1 bn nb 2 48 ms 1acb3
-
-# run example for v5s_x2: ./scripts/train_srarn_v5.sh train 0 1 s ab 2 64 ms 1acb3
-# run example for v5s_x3: ./scripts/train_srarn_v5.sh train 0,1 1 s ab 3 64 ms 1acb3
-# run example for v5s_x4: ./scripts/train_srarn_v5.sh train 0,1 1 s ab 4 64 ms 1acb3
-# run example for v5t_x3: ./scripts/train_srarn_v5.sh train 0 1 t ab 3 64 ms 1acb3
-# run example for v5t_x4: ./scripts/train_srarn_v5.sh train 0 1 t ab 4 64 ms 1acb3
-
-# run example for v5t_x2: ./scripts/train_srarn_v5.sh train 0 1 t ab 2 64 ms 1acb3
-# run example for v5xt_x2: ./scripts/train_srarn_v5.sh train 0 1 xt ab 2 64 ms 1acb3
-# run example for v5xt_x3: ./scripts/train_srarn_v5.sh train 1 1 xt ab 3 64 ms 1acb3
-# run example for v5xt_x4: ./scripts/train_srarn_v5.sh train 1 1 xt ab 4 64 ms 1acb3
+# run example for v5bn_x2: ./scripts/train_srarn_v5.sh train 0,1,2,3 1 bn b 2 48 ms 1acb3
+# run example for v5b_x2: ./scripts/train_srarn_v5.sh resume 0,1 1 b b 2 48 ms 1acb3
+# run example for v5b_Skip_x2: ./scripts/train_srarn_v5.sh train 2,3 1 b s 2 48 ms 1acb3              #bad#
+# run example for v5ba_1acb3_x2: ./scripts/train_srarn_v5.sh resume 2,3 1 ba b 2 48 ms 1acb3          #bad#
+# run example for v5ba_x2: ./scripts/train_srarn_v5.sh train 0,1 1 ba b 2 48 ms 1acb3
+# run example for v5bn_Skip_x2: ./scripts/train_srarn_v5.sh train 0,1 1 bn s 2 48 ms 1acb3
 
 
-# run example for v5xt_x2: ./scripts/train_srarn_v5.sh train 1 1 xt ab 2 64 ms 3acb3
+# run example for v5s_Nrst_x2: ./scripts/train_srarn_v5.sh train 0 1 s n 2 64 ms 1acb3
 
-# run example for v5lt_x2: ./scripts/train_srarn_v5.sh train 1 1 lt ab 2 64 ms 1acb3
-# run example for v5lt_x3: ./scripts/train_srarn_v5.sh train 1 1 lt ab 3 64 ms 1acb3
-# run example for v5lt_x4: ./scripts/train_srarn_v5.sh train 1 1 lt ab 4 64 ms 1acb3
+# run example for v5s_x2: ./scripts/train_srarn_v5.sh train 0 1 s b 2 64 ms 1acb3
+# run example for v5s_x3: ./scripts/train_srarn_v5.sh train 0,1 1 s b 3 64 ms 1acb3
+# run example for v5s_x4: ./scripts/train_srarn_v5.sh train 0,1 1 s b 4 64 ms 1acb3
+# run example for v5t_x3: ./scripts/train_srarn_v5.sh train 0 1 t b 3 64 ms 1acb3
+# run example for v5t_x4: ./scripts/train_srarn_v5.sh train 0 1 t b 4 64 ms 1acb3
+
+# run example for v5t_x2: ./scripts/train_srarn_v5.sh train 0 1 t b 2 64 ms 1acb3
+# run example for v5xt_x2: ./scripts/train_srarn_v5.sh train 0 1 xt b 2 64 ms 1acb3
+# run example for v5xt_x3: ./scripts/train_srarn_v5.sh train 1 1 xt b 3 64 ms 1acb3
+# run example for v5xt_x4: ./scripts/train_srarn_v5.sh train 1 1 xt b 4 64 ms 1acb3
+
+
+# run example for v5xt_x2: ./scripts/train_srarn_v5.sh train 1 1 xt b 2 64 ms 3acb3
+
+# run example for v5lt_x2: ./scripts/train_srarn_v5.sh train 1 1 lt b 2 64 ms 1acb3
+# run example for v5lt_x3: ./scripts/train_srarn_v5.sh train 1 1 lt b 3 64 ms 1acb3
+# run example for v5lt_x4: ./scripts/train_srarn_v5.sh train 1 1 lt b 4 64 ms 1acb3
 
 # #####################################
 # accept input
@@ -79,15 +82,18 @@ else
   exit
 fi
 # if the output add bicubic interpolation of input
-use_bicubic=$5
-if [ $use_bicubic = "ab" ]; then
-  bicubic_print=""
-  bicubic=""
-elif [ $use_bicubic = "nb" ]; then
-  bicubic_print="_nb"
-  bicubic="--no_bicubic"
+interpolation=$5
+if [ $interpolation = "b" ]; then
+  interpolation_print=""
+  interpolation=""
+elif [ $interpolation = "n" ]; then
+  interpolation_print="_Nrst"
+  interpolation="--interpolation Nearest"
+elif [ $interpolation = "s" ]; then
+  interpolation_print="_Skip"
+  interpolation="--interpolation Skip"
 else
-  echo "no valid $use_bicubic ! Please input (ab | nb)."
+  echo "no valid $interpolation ! Please input (b | n | s)."
 fi
 # fifth is sr scale
 scale=$6
@@ -125,10 +131,10 @@ fi
 # #####################################
 # prepare program options parameters
 # v5 must use layernorm
-run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $bicubic --data_range 1-800 --res_connect $res --loss 1*L1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class $lr_class --model SRARNV5"
+run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $interpolation --data_range 1-800 --res_connect $res --loss 1*L1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class $lr_class --model SRARNV5"
 
-save_dir="../srarn_v5/v5${size}${patch_print}${bicubic_print}${res_print}${lr_print}_x${scale}"
-log_file="../srarn_v5/logs/v5${size}${patch_print}${bicubic_print}${res_print}${lr_print}_x${scale}.log"
+save_dir="../srarn_v5/v5${size}${patch_print}${interpolation_print}${res_print}${lr_print}_x${scale}"
+log_file="../srarn_v5/logs/v5${size}${patch_print}${interpolation_print}${res_print}${lr_print}_x${scale}.log"
 
 if [ ! -d "../srarn_v5" ]; then
   mkdir "../srarn_v5"

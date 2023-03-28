@@ -222,6 +222,7 @@ class SRARNV5(nn.Module):
         layer_scale_init_value = args.layer_init_scale
         res_connect = args.res_connect
         self.upsampling = args.upsampling
+        self.interpolation = args.interpolation
 
         # RGB mean for DIV2K
         if num_channels == 3:
@@ -341,7 +342,11 @@ class SRARNV5(nn.Module):
             out = self.postup(out)
 
         # a: add interpolate
-        out = out + F.interpolate(x, scale_factor=self.scale, mode='bicubic')
+        # out = out + F.interpolate(x, scale_factor=self.scale, mode='bicubic')
+        if self.interpolation == 'Bicubic':
+            out = out + F.interpolate(x, scale_factor=self.scale, mode='bicubic')
+        elif self.interpolation == 'Nearest':
+            out = out + F.interpolate(x, scale_factor=self.scale, mode='nearest')
 
         if hasattr(self, 'add_mean'):
             out = self.add_mean(out)

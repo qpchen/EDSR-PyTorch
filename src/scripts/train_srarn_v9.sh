@@ -17,6 +17,7 @@
 # run example for v9s_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s b 2 64 ms skip 1acb3 inst befln nolr  # comparing
 # run example for v9s_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s b 2 64 ms skip 1acb3 batch befln nolr
 # run example for v9s_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s b 2 64 ms skip 1acb3 batch befln addlr  # comparing
+# run example for v9s_s64_Nrst_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s n 2 64 ms skip 1acb3 batch befln nolr  # comparing
 
 # run example for v9s_s64_D1acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 s b 3 64 ms skip 1acb3 batch befln nolr
 # run example for v9s_s64_D1acb3_x4: ./scripts/train_srarn_v9.sh train 1 1 s b 4 64 ms skip 1acb3 batch befln nolr
