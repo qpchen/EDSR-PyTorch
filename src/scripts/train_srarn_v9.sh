@@ -3,38 +3,40 @@
 ################################################################################
 ######################      SRARN V9_D1acb3 noACBnorm befln nolr       ######################
 ################################################################################
-# ./scripts/train_srarn_v9.sh [mode] [cuda_device] [accummulation_step] [model] [use_bicubic] [sr_scale] [lr_patch_size] [LR_scheduler_class] [block_conv] [deep_conv] [acb_norm] [LN] [addLR]
-# run example for v9test_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 test ab 2 48 ms skip 1acb3 batch befln nolr
+# ./scripts/train_srarn_v9.sh [mode] [cuda_device] [accummulation_step] [model] [interpolation] [sr_scale] [lr_patch_size] [LR_scheduler_class] [block_conv] [deep_conv] [acb_norm] [LN] [addLR]
+# run example for v9test_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 test b 2 48 ms skip 1acb3 batch befln nolr
 # ########### training commands ###########
 # ###### on Starlight: ######
-# run example for v9ba_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 ba ab 2 48 ms skip 1acb3 batch befln nolr  # 38.243 v8  # PixelShuffleAct+BicubicAdd same as v5
-# run example for v9b_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 b ab 2 48 ms skip 1acb3 batch befln nolr  # 38.257 v8  # PixelShuffleNOAct+BicubicAdd
+# run example for v9ba_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 ba b 2 48 ms skip 1acb3 batch befln nolr  # 38.243 v8  # PixelShuffleAct+BicubicAdd same as v5
+# run example for v9b_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 b b 2 48 ms skip 1acb3 batch befln nolr  # 38.257 v8  # PixelShuffleNOAct+BicubicAdd
 
-# run example for v9bn_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 bn ab 2 48 ms skip 1acb3 batch befln nolr  # 38.266 v8: Nearest+BicubicAdd 
-# run example for v9bn_D1acb3_x3: ./scripts/train_srarn_v9.sh train 0,1 1 bn ab 3 48 ms skip 1acb3 batch befln nolr
-# run example for v9bn_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0,1 1 bn ab 4 48 ms skip 1acb3 batch befln nolr
+# run example for v9bn_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 bn b 2 48 ms skip 1acb3 batch befln nolr  # 38.266 v8: Nearest+BicubicAdd 
+# run example for v9bn_D1acb3_x3: ./scripts/train_srarn_v9.sh train 0,1 1 bn b 3 48 ms skip 1acb3 batch befln nolr
+# run example for v9bn_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0,1 1 bn b 4 48 ms skip 1acb3 batch befln nolr
 
-# run example for v9s_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s ab 2 64 ms skip 1acb3 inst befln nolr  # comparing
-# run example for v9s_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s ab 2 64 ms skip 1acb3 batch befln nolr
-# run example for v9s_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s ab 2 64 ms skip 1acb3 batch befln addlr  # comparing
+# run example for v9s_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s b 2 64 ms skip 1acb3 inst befln nolr  # comparing
+# run example for v9s_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s b 2 64 ms skip 1acb3 batch befln nolr
+# run example for v9s_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s b 2 64 ms skip 1acb3 batch befln addlr  # comparing
 
-# run example for v9s_s64_D1acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 s ab 3 64 ms skip 1acb3 batch befln nolr
-# run example for v9s_s64_D1acb3_x4: ./scripts/train_srarn_v9.sh train 1 1 s ab 4 64 ms skip 1acb3 batch befln nolr
+# run example for v9s_s64_D1acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 s b 3 64 ms skip 1acb3 batch befln nolr
+# run example for v9s_s64_D1acb3_x4: ./scripts/train_srarn_v9.sh train 1 1 s b 4 64 ms skip 1acb3 batch befln nolr
 
-# run example for v9lt_s64_D3acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 lt ab 2 64 ms skip 1acb3 batch befln nolr
-# run example for v9lt_s64_D3acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 lt ab 3 64 ms skip 1acb3 batch befln nolr
-# run example for v9lt_s64_D3acb3_x4: ./scripts/train_srarn_v9.sh train 1 1 lt ab 4 64 ms skip 1acb3 batch befln nolr
+# run example for v9lt_s64_D3acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 lt b 2 64 ms skip 1acb3 batch befln nolr
+# run example for v9lt_s64_D3acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 lt b 3 64 ms skip 1acb3 batch befln nolr
+# run example for v9lt_s64_D3acb3_x4: ./scripts/train_srarn_v9.sh train 1 1 lt b 4 64 ms skip 1acb3 batch befln nolr
 
-# run example for v9t_s64_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0 1 t ab 4 64 ms skip 1acb3 batch befln nolr
-# run example for v9t_s64_D1acb3_x3: ./scripts/train_srarn_v9.sh train 0 1 t ab 3 64 ms skip 1acb3 batch befln nolr
+# run example for v9t_s64_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0 1 t b 4 64 ms skip 1acb3 batch befln nolr
+# run example for v9t_s64_D1acb3_x3: ./scripts/train_srarn_v9.sh train 0 1 t b 3 64 ms skip 1acb3 batch befln nolr
 
 # ###### on t640: ######
-# run example for v9t_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 t ab 2 64 ms skip 1acb3 batch befln nolr
-# run example for v9xt_s64_D3acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 xt ab 2 64 ms skip 1acb3 batch befln nolr
-# run example for v9xt_s64_D3acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 xt ab 3 64 ms skip 1acb3 batch befln nolr
-# run example for v9xt_s64_D3acb3_x4: ./scripts/train_srarn_v9.sh train 1 1 xt ab 4 64 ms skip 1acb3 batch befln nolr
+# run example for v9t_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 t b 2 64 ms skip 1acb3 batch befln nolr
+# run example for v9xt_s64_D3acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 xt b 2 64 ms skip 1acb3 batch befln nolr
+# run example for v9xt_s64_D3acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 xt b 3 64 ms skip 1acb3 batch befln nolr
+# run example for v9xt_s64_D3acb3_x4: ./scripts/train_srarn_v9.sh train 1 1 xt b 4 64 ms skip 1acb3 batch befln nolr
 
-# run example for v9xt_s64_D3acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 xt ab 2 64 ms skip 1acb3 batch befln addlr  # comparing
+# run example for v9xt_s64_D3acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 xt n 2 64 ms skip 1acb3 batch befln nolr
+
+# run example for v9xt_s64_D3acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 xt b 2 64 ms skip 1acb3 batch befln addlr  # bad
 
 # #####################################
 # accept input
@@ -57,15 +59,21 @@ elif [ $size = "bn" ]; then  # model_b with nearest+conv upsampling
 # ############## model_s #############
 elif [ $size = "s" ]; then
   options="--epochs 1500 --decay 750-1200-1350-1425 --upsampling Nearest --srarn_up_feat 60 --depths 6+6+6+6 --dims 60+60+60+60 --batch_size 32"
-# ############## model_lt larger tiny #############
-elif [ $size = "lt" ]; then
-  options="--epochs 2000 --decay 1000-1600-1800-1900 --upsampling Nearest --srarn_up_feat 42 --depths 4+4+4+4 --dims 42+42+42+42 --batch_size 32"
+# ############## fixed block model_lt larger tiny #############
+elif [ $size = "fblt" ]; then
+  options="--epochs 2000 --decay 1000-1600-1800-1900 --upsampling Nearest --srarn_up_feat 42 --depths 6+6+6 --dims 42+42+42+42 --batch_size 32"
 # ############## model_t #############
 elif [ $size = "t" ]; then
   options="--epochs 2000 --decay 1000-1600-1800-1900 --upsampling Nearest --srarn_up_feat 30 --depths 3+3+3+3 --dims 30+30+30+30 --batch_size 32"
+# ############## fixed block model_t #############
+elif [ $size = "fbt" ]; then
+  options="--epochs 2000 --decay 1000-1600-1800-1900 --upsampling Nearest --srarn_up_feat 30 --depths 6+6 --dims 30+30+30+30 --batch_size 32"
 # ############## model_xt #############
 elif [ $size = "xt" ]; then
   options="--epochs 3000 --decay 1500-2400-2700-2850 --upsampling Nearest --srarn_up_feat 24 --depths 2+2+2+2 --dims 24+24+24+24 --batch_size 32"
+# ############## fixed block model_xt #############
+elif [ $size = "fbxt" ]; then
+  options="--epochs 3000 --decay 1500-2400-2700-2850 --upsampling Nearest --srarn_up_feat 24 --depths 6+6 --dims 24+24+24+24 --batch_size 32"
 # ############## test_model #############
 elif [ $size = "test" ]; then  # test with lower costs
   options="--epochs 3000 --decay 1500-2400-2700-2850 --upsampling Nearest --srarn_up_feat 6 --depths 2+4 --dims 6+12 --batch_size 4"
@@ -73,16 +81,19 @@ else
   echo "no this size $size !"
   exit
 fi
-# if the output add bicubic interpolation of input
-use_bicubic=$5
-if [ $use_bicubic = "ab" ]; then
-  bicubic_print=""
-  bicubic=""
-elif [ $use_bicubic = "nb" ]; then
-  bicubic_print="_nb"
-  bicubic="--no_bicubic"
+# if the output add interpolation of input
+interpolation=$5
+if [ $interpolation = "b" ]; then
+  interpolation_print=""
+  interpolation=""
+elif [ $interpolation = "n" ]; then
+  interpolation_print="_Nrst"
+  interpolation="--interpolation Nearest"
+elif [ $interpolation = "s" ]; then
+  interpolation_print="_Skip"
+  interpolation="--interpolation Skip"
 else
-  echo "no valid $use_bicubic ! Please input (ab | nb)."
+  echo "no valid $interpolation ! Please input (b | n | s)."
 fi
 # fifth is sr scale
 scale=$6
@@ -156,10 +167,10 @@ fi
 # #####################################
 # prepare program options parameters
 # v9 must use layernorm
-run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $bicubic --res_connect $res --deep_conv $deep --acb_norm $acb --loss 1*L1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class $lr_class $norm_opt $addlr_opt --model SRARNV9"
-# run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $bicubic --res_connect $res --deep_conv $deep --loss 1*L1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class CosineWarmRestart --model SRARNV9"
-save_dir="../srarn_v9${acb_print}${norm_print}/v9${size}${patch_print}${addlr_print}${bicubic_print}${res_print}${deep_print}${lr_print}_x${scale}"
-log_file="../srarn_v9${acb_print}${norm_print}/logs/v9${size}${patch_print}${addlr_print}${bicubic_print}${res_print}${deep_print}${lr_print}_x${scale}.log"
+run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $interpolation --res_connect $res --deep_conv $deep --acb_norm $acb --loss 1*L1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class $lr_class $norm_opt $addlr_opt --model SRARNV9"
+# run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $interpolation --res_connect $res --deep_conv $deep --loss 1*L1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class CosineWarmRestart --model SRARNV9"
+save_dir="../srarn_v9${acb_print}${norm_print}/v9${size}${patch_print}${addlr_print}${interpolation_print}${res_print}${deep_print}${lr_print}_x${scale}"
+log_file="../srarn_v9${acb_print}${norm_print}/logs/v9${size}${patch_print}${addlr_print}${interpolation_print}${res_print}${deep_print}${lr_print}_x${scale}.log"
 
 if [ ! -d "../srarn_v9${acb_print}${norm_print}" ]; then
   mkdir "../srarn_v9${acb_print}${norm_print}"

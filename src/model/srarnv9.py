@@ -226,7 +226,8 @@ class SRARNV9(nn.Module):
     在V8基础上将LN固定改到head_conv前,并在preUP前增加一个LN
     与V5区别主要为选择block_head_conv
     另外ACB_norm选择使用batch或者inst
-    还增加了LR直接add到preup之后的选项
+    还增加了LR直接add到preup之后的选项(但效果不好，默认不加)
+    另增加bicubic更好为nearest的选项
     Args:
         scale (int): Image magnification factor.
         num_blocks (int): The number of RACB blocks in deep feature extraction.
@@ -257,6 +258,7 @@ class SRARNV9(nn.Module):
         deep_conv = args.deep_conv
         self.upsampling = args.upsampling
         self.no_bicubic = args.no_bicubic
+        self.interpolation = args.interpolation
         use_norm = not args.no_layernorm
         acb_norm = args.acb_norm
         self.add_lr = args.add_lr
@@ -405,8 +407,11 @@ class SRARNV9(nn.Module):
             out = self.postup(out)
 
         # a: add interpolate
-        if not self.no_bicubic:
+        # if not self.no_bicubic:
+        if self.interpolation == 'Bicubic':
             out = out + F.interpolate(x, scale_factor=self.scale, mode='bicubic')
+        elif self.interpolation == 'Nearest':
+            out = out + F.interpolate(x, scale_factor=self.scale, mode='nearest')
 
         if hasattr(self, 'add_mean'):
             out = self.add_mean(out)
