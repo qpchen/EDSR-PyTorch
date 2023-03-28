@@ -9,6 +9,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.utils.checkpoint as checkpoint
 from timm.models.layers import DropPath, to_2tuple, trunc_normal_
+from model import common
 
 
 def make_model(args, parent=False):
@@ -683,8 +684,10 @@ class SwinIR(nn.Module):
         num_feat = 64
         self.img_range = img_range
         if in_chans == 3:
-            rgb_mean = (0.4488, 0.4371, 0.4040)
-            self.mean = torch.Tensor(rgb_mean).view(1, 3, 1, 1)
+            # rgb_mean = (0.4488, 0.4371, 0.4040)
+            # self.mean = torch.Tensor(rgb_mean).view(1, 3, 1, 1)
+            self.sub_mean = common.MeanShift(args.rgb_range)
+            self.add_mean = common.MeanShift(args.rgb_range, sign=1)
         else:
             self.mean = torch.zeros(1, 1, 1, 1)
         self.upscale = upscale
@@ -833,8 +836,10 @@ class SwinIR(nn.Module):
         H, W = x.shape[2:]
         x = self.check_image_size(x)
         
-        self.mean = self.mean.type_as(x)
-        x = (x - self.mean) * self.img_range
+        # self.mean = self.mean.type_as(x)
+        # x = (x - self.mean) * self.img_range
+        if hasattr(self, 'sub_mean'):
+            x = self.sub_mean(x)
 
         if self.upsampler == 'pixelshuffle':
             # for classical SR
@@ -862,7 +867,9 @@ class SwinIR(nn.Module):
             res = self.conv_after_body(self.forward_features(x_first)) + x_first
             x = x + self.conv_last(res)
 
-        x = x / self.img_range + self.mean
+        # x = x / self.img_range + self.mean
+        if hasattr(self, 'add_mean'):
+            x = self.add_mean(x)
 
         return x[:, :, :H*self.upscale, :W*self.upscale]
 

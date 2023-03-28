@@ -22,7 +22,7 @@ def default_acb(in_channels, out_channels, kernel_size, stride=1, padding=-1, di
         return acb.ACBlock(in_channels, out_channels, kernel_size, stride=stride, padding=padding, 
                         dilation=dilation, groups=groups, padding_mode=padding_mode, deploy=deploy, norm=norm)
 
-
+# 因为EDSR框架在读取时已经将RGB转成0-255的值了，因此不需要像swinir那样做转化，仅添加bias偏移即可实现mean
 class MeanShift(nn.Conv2d):
     def __init__(
         self, rgb_range,
