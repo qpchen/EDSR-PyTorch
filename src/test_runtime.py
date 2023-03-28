@@ -20,17 +20,18 @@ def main():
     if checkpoint.ok:
         _model = model.Model(args, checkpoint)
         _is_test = True#args.test_only
-        _batch_size = args.batch_size if not _is_test else 1
-        _height = args.patch_size if not _is_test else 1280 // args.scale[0]#args.patch_size#1280
-        _width =  args.patch_size if not _is_test else 720 // args.scale[0]##args.patch_size#720
-        _input_size = (1, args.n_colors, _height, _width)
+        _batch_size = 1
+        _height = 1280 // args.scale[0]#args.patch_size#1280
+        _width =  720 // args.scale[0]##args.patch_size#720
+        _input_size = (_batch_size, args.n_colors, _height, _width)
         _input = torch.randn(_input_size)
+        _device = torch.device('cpu' if args.cpu else 'cuda' if torch.cuda.is_available() else 'cpu')
+        _input = _input.to(_device)
         if not args.no_count:
             ################# get model info manually #####################
             # param = utility.count_param(_model, args.model)
             # print('%s total parameters: %.2fM (%d)' % (args.model, param / 1e6, param))
             ################# get model info from torchinfo #####################
-            _device = torch.device('cpu' if args.cpu else 'cuda' if torch.cuda.is_available() else 'cpu')
             _mode = "train" if not _is_test else "eval"
             checkpoint.write_log(str(
                 summary(_model, 
@@ -43,13 +44,12 @@ def main():
             # checkpoint.write_log(str(summary(_model, [(_batch_size, args.n_colors, 1280, 720), args.scale])))
             ################# get model info from thop #####################
             if args.n_GPUs == 1:  # TODO: fix the thop error when use data_parallel in training. some modules are on device cpu
-                _input = _input.to(_device)
                 _macs, _params = profile(_model, inputs=(_input, args.scale))
                 _m_fm, _p_fm = clever_format([_macs, _params], "%.3f")#inputs=(_input, args.scale))
                 _trop = str('\nThop: %s\'s total Parameters: %s(%d); MACs(Multi-Adds): %s(%d).\n' % (args.model, _p_fm, _params, _m_fm, _macs))
                 # print(_trop)
                 checkpoint.write_log(_trop)
-                _input = _input.to(torch.device('cpu'))
+                # _input = _input.to(torch.device('cpu'))
             if torch.cuda.is_available(): torch.cuda.empty_cache()  # release the cache costs on GPU by the statistics function
         if args.runtime:
             sum_run = 0
