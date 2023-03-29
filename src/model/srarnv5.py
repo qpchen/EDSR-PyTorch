@@ -300,8 +300,8 @@ class SRARNV5(nn.Module):
             )
         
         if self.interpolation == 'PixelShuffle':
-            acblock = common.default_acb
-            self.lr_up = common.Upsampler(acblock, self.scale, num_channels, act='gelu', deploy=use_inf) #act='gelu' for v5
+            convblock = common.default_conv
+            self.lr_up = common.Upsampler(convblock, self.scale, num_channels, act=False) #act='gelu' for v5
 
         # Initialize model weights.
         # self.apply(self._init_weights)
