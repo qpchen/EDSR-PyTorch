@@ -355,6 +355,10 @@ class SRARNV9(nn.Module):
                 nn.GELU(),
                 acb.ACBlock(num_up_feat, num_channels, 3, 1, 1, deploy=use_inf, norm=acb_norm)
             )
+        
+        if self.interpolation == 'PixelShuffle':
+            acblock = common.default_acb
+            self.lr_up = common.Upsampler(acblock, self.scale, num_channels, act='gelu', deploy=use_inf, norm=acb_norm) #act='gelu' for v5
 
         # Initialize model weights.
         # self.apply(self._init_weights)
@@ -412,6 +416,8 @@ class SRARNV9(nn.Module):
             out = out + F.interpolate(x, scale_factor=self.scale, mode='bicubic')
         elif self.interpolation == 'Nearest':
             out = out + F.interpolate(x, scale_factor=self.scale, mode='nearest')
+        elif self.interpolation == 'PixelShuffle':
+            out = out + self.lr_up(x)
 
         if hasattr(self, 'add_mean'):
             out = self.add_mean(out)

@@ -93,6 +93,9 @@ elif [ $interpolation = "n" ]; then
 elif [ $interpolation = "s" ]; then
   interpolation_print="_Skip"
   interpolation="--interpolation Skip"
+elif [ $interpolation = "p" ]; then
+  interpolation_print="_PxSh"
+  interpolation="--interpolation PixelShuffle"
 else
   echo "no valid $interpolation ! Please input (b | n | s)."
 fi

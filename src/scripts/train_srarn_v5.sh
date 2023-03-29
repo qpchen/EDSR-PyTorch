@@ -11,11 +11,8 @@
 # run example for v5bn_x4: ./scripts/train_srarn_v5.sh train 2,3 1 bn b 4 48 ms 1acb3
 
 # run example for v5bn_x2: ./scripts/train_srarn_v5.sh train 0,1,2,3 1 bn b 2 48 ms 1acb3
-# run example for v5b_x2: ./scripts/train_srarn_v5.sh resume 0,1 1 b b 2 48 ms 1acb3
-# run example for v5b_Skip_x2: ./scripts/train_srarn_v5.sh train 2,3 1 b s 2 48 ms 1acb3       #bad#
-# run example for v5ba_1acb3_x2: ./scripts/train_srarn_v5.sh resume 2,3 1 ba b 2 48 ms 1acb3   #bad#
+# run example for v5b_Nrst_x2: ./scripts/train_srarn_v5.sh train 0,1,2,3 1 b n 2 48 ms 1acb3
 # run example for v5ba_x2: ./scripts/train_srarn_v5.sh train 0,1 1 ba b 2 48 ms 1acb3
-# run example for v5bn_Skip_x2: ./scripts/train_srarn_v5.sh train 0,1 1 bn s 2 48 ms 1acb3
 
 
 # run example for v5s_Nrst_x2: ./scripts/train_srarn_v5.sh train 0 1 s n 2 64 ms 1acb3
@@ -92,6 +89,9 @@ elif [ $interpolation = "n" ]; then
 elif [ $interpolation = "s" ]; then
   interpolation_print="_Skip"
   interpolation="--interpolation Skip"
+elif [ $interpolation = "p" ]; then
+  interpolation_print="_PxSh"
+  interpolation="--interpolation PixelShuffle"
 else
   echo "no valid $interpolation ! Please input (b | n | s)."
 fi

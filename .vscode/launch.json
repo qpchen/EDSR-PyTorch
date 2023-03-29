@@ -135,6 +135,8 @@
                 "no",
                 "--no_act_ps",
                 // "--no_bicubic",
+                "--interpolation",
+                "PixelShuffle",
                 // "--no_layernorm",
                 "--norm_at",
                 "before",
