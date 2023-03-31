@@ -1,12 +1,14 @@
 #!/bin/bash
 
-# ./scripts/runtime_batch.sh "--save_result --no_count --n_GPUs 1"
-# ./scripts/runtime_batch.sh "--n_GPUs 1"
-# ./scripts/runtime_batch.sh "--save_result --no_count --cpu"
+# ./scripts/runtime_batch.sh "RACN" "no" "2 3 4" "--save_result --no_count --n_GPUs 1"
+# ./scripts/runtime_batch.sh "RACN" "no" "2 3 4" "--n_GPUs 1"
+# ./scripts/runtime_batch.sh "RACN" "no" "2 3 4" "--save_result --no_count --cpu"
+# ./scripts/runtime_batch.sh "LBNet LBNet-T" "no" "2 3 4" "--save_result --no_count --cpu --times 3"
 
 models=($1)
 sizes=($2)
-scales=(2 3 4)
+# scales=(2 3 4)
+scales=($3)
 
 for model in ${models[@]}; do 
 #  echo "$model"
@@ -15,11 +17,11 @@ for model in ${models[@]}; do
     for scale in ${scales[@]}; do 
       # echo "$scale"
       if [ $s = "b" -o $s = "no" ]; then
-        echo "./scripts/test_runtime.sh $model $s $scale 48 50 \"$3\""
-        ./scripts/test_runtime.sh $model $s $scale 48 50 "$3"
+        echo "./scripts/test_runtime.sh $model $s $scale 48 50 \"$4\""
+        ./scripts/test_runtime.sh $model $s $scale 48 50 "$4"
       else
-        echo "./scripts/test_runtime.sh $model $s $scale 64 50 \"$3\""
-        ./scripts/test_runtime.sh $model $s $scale 64 50 "$3"
+        echo "./scripts/test_runtime.sh $model $s $scale 64 50 \"$4\""
+        ./scripts/test_runtime.sh $model $s $scale 64 50 "$4"
       fi
     done
   done
