@@ -55,6 +55,7 @@ elif [ $model = "ESRT" ]; then
 elif [ $model = "IDN" ]; then
   python main.py --n_threads 6 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --model IDN --save ../runtime_models/logs/IDN_x$3 --pre_train ../runtime_models/IDN_x$3.pt --test_only --reset --runtime --times $5 $6 #--no_count --save_result 
 elif [ $model = "LapSRN" ]; then
+  echo "python main.py --n_threads 6 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 1 --model LapSRN --save ../runtime_models/logs/LapSRN_x$3 --pre_train ../runtime_models/LapSRN_x$3.pt --test_only --reset --runtime --times $5 $6"
   python main.py --n_threads 6 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 1 --model LapSRN --save ../runtime_models/logs/LapSRN_x$3 --pre_train ../runtime_models/LapSRN_x$3.pt --test_only --reset --runtime --times $5 $6 #--no_count --save_result 
 elif [ $model = "DRRN" ]; then
   python main.py --n_threads 6 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 1 --model DRRN --save ../runtime_models/logs/DRRN_x$3 --pre_train ../runtime_models/DRRN_x$3.pt --test_only --reset --runtime --times $5 $6 #--no_count --save_result 
