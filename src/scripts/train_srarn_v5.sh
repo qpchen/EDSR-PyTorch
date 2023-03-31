@@ -11,11 +11,13 @@
 # run example for v5bn_x4: ./scripts/train_srarn_v5.sh train 2,3 1 bn b 4 48 ms 1acb3
 
 # run example for v5bn_x2: ./scripts/train_srarn_v5.sh train 0,1,2,3 1 bn b 2 48 ms 1acb3
-# run example for v5b_Nrst_x2: ./scripts/train_srarn_v5.sh train 0,1,2,3 1 b n 2 48 ms 1acb3
+# run example for v5b_Nrst_x2: ./scripts/train_srarn_v5.sh train 0,1,2 1 b n 2 48 ms 1acb3
+# run example for v5b_PxSh_x2: ./scripts/train_srarn_v5.sh train 0 4 b p 2 48 ms 1acb3
 # run example for v5ba_x2: ./scripts/train_srarn_v5.sh train 0,1 1 ba b 2 48 ms 1acb3
 
 
 # run example for v5s_Nrst_x2: ./scripts/train_srarn_v5.sh train 0 1 s n 2 64 ms 1acb3
+# run example for v5s_PxSh_x2: ./scripts/train_srarn_v5.sh train 3 1 s p 2 64 ms 1acb3
 
 # run example for v5s_x2: ./scripts/train_srarn_v5.sh train 0 1 s b 2 64 ms 1acb3
 # run example for v5s_x3: ./scripts/train_srarn_v5.sh train 0,1 1 s b 3 64 ms 1acb3
