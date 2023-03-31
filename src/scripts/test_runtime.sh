@@ -40,6 +40,24 @@ elif [ $model = "v8" ]; then
   python main.py --n_threads 6 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --res_connect skip $dim_configs --upsampling Nearest --acb_norm v8old --model SRARNV8 --save ../runtime_models/v8$2_x$3 --pre_train ../runtime_models/logs/v8$2_x$3.pt --test_only --load_inf --reset --runtime --times $5 $6 #--no_count --save_result 
 elif [ $model = "v5" ]; then
   python main.py --n_threads 6 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --res_connect 1acb3 $dim_configs --model SRARNV5 --save ../runtime_models/logs/v5$2_x$3 --pre_train ../runtime_models/v5$2_x$3.pt --test_only --load_inf --reset --runtime --times $5 $6 #--no_count --save_result 
+elif [ $model = "IMDN" ]; then
+  python main.py --n_threads 6 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --model IMDN --save ../runtime_models/logs/IMDN_x$3 --pre_train ../runtime_models/IMDN_x$3.pth --test_only --reset --runtime --times $5 $6 #--no_count --save_result 
+elif [ $model = "LAPAR_A" ]; then
+  python main.py --n_threads 6 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --model LAPAR_A --save ../runtime_models/logs/LAPAR_A_x$3 --pre_train ../runtime_models/LAPAR_A_x$3.pth --test_only --reset --runtime --times $5 $6 #--no_count --save_result 
+elif [ $model = "LatticeNet" ]; then
+  python main.py --n_threads 6 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --model LatticeNet --save ../runtime_models/logs/LatticeNet_x$3 --pre_train ../runtime_models/LatticeNet_x$3.pt --test_only --reset --runtime --times $5 $6 #--no_count --save_result 
+elif [ $model = "LBNet" ]; then
+  python main.py --n_threads 6 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --n_feats 32 --num_heads 8 --model LBNet --save ../runtime_models/logs/LBNet_x$3 --pre_train ../runtime_models/LBNet-X$3.pt --test_only --reset --runtime --times $5 $6 #--no_count --save_result 
+elif [ $model = "LBNet-T" ]; then
+  python main.py --n_threads 6 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --n_feats 18 --num_heads 6 --model LBNet --save ../runtime_models/logs/LBNet-T_x$3 --pre_train ../runtime_models/LBNet-T_X$3.pt --test_only --reset --runtime --times $5 $6 #--no_count --save_result 
+elif [ $model = "ESRT" ]; then
+  python main.py --n_threads 6 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --model ESRT --save ../runtime_models/logs/ESRT_x$3 --test_only --reset --runtime --times $5 $6 #--no_count --save_result 
+elif [ $model = "IDN" ]; then
+  python main.py --n_threads 6 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --model IDN --save ../runtime_models/logs/IDN_x$3 --pre_train ../runtime_models/IDN_x$3.pt --test_only --reset --runtime --times $5 $6 #--no_count --save_result 
+elif [ $model = "LapSRN" ]; then
+  python main.py --n_threads 6 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 1 --model LapSRN --save ../runtime_models/logs/LapSRN_x$3 --pre_train ../runtime_models/LapSRN_x$3.pt --test_only --reset --runtime --times $5 $6 #--no_count --save_result 
+elif [ $model = "DRRN" ]; then
+  python main.py --n_threads 6 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 1 --model DRRN --save ../runtime_models/logs/DRRN_x$3 --pre_train ../runtime_models/DRRN_x$3.pt --test_only --reset --runtime --times $5 $6 #--no_count --save_result 
 elif [ $model = "SwinIR" ]; then
   python main.py --n_threads 6 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --res_connect 1acb3 $dim_configs --model SwinIR --save ../runtime_models/logs/SwinIR-$2_x$3 --pre_train ../runtime_models/SwinIR-$2_x$3.pt --test_only --reset --runtime --times $5 $6 #--no_count --save_result 
 elif [ $model = "EDSR-baseline" ]; then
