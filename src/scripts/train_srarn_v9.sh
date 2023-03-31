@@ -14,7 +14,7 @@
 # run example for v9bn_D1acb3_x3: ./scripts/train_srarn_v9.sh train 0,1 1 bn b 3 48 ms skip 1acb3 batch befln nolr
 # run example for v9bn_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0,1 1 bn b 4 48 ms skip 1acb3 batch befln nolr
 # run example for v9bnL_Nrst_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 bnL n 2 48 ms skip 1acb3 batch befln nolr  # 38.266 v8: Nearest+BicubicAdd 
-# run example for v9bL_Nrst_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 2 bL n 2 48 ms skip 1acb3 batch befln nolr  # 38.257 v8  # PixelShuffleNOAct+BicubicAdd
+# run example for v9bL_Nrst_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 4 bL n 2 48 ms skip 1acb3 batch befln nolr  # 38.257 v8  # PixelShuffleNOAct+BicubicAdd
 
 # run example for v9s_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s b 2 64 ms skip 1acb3 inst befln nolr  # comparing
 # run example for v9s_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s b 2 64 ms skip 1acb3 batch befln nolr
@@ -59,6 +59,8 @@ elif [ $size = "bL" ]; then  # model_b use PixelShuffle upsampling with no activ
   options="--epochs 1000 --decay 500-800-900-950 --upsampling PixelShuffle --no_act_ps --srarn_up_feat 180 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --batch_size 32"
 elif [ $size = "ba" ]; then  # model_b use PixelShuffle upsampling with activate layer, same as version 5
   options="--epochs 1000 --decay 500-800-900-950 --upsampling PixelShuffle --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --batch_size 32"
+elif [ $size = "baL" ]; then  # model_b use PixelShuffle upsampling with activate layer, same as version 5
+  options="--epochs 1000 --decay 500-800-900-950 --upsampling PixelShuffle --srarn_up_feat 180 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --batch_size 32"
 elif [ $size = "bn" ]; then  # model_b with nearest+conv upsampling
   options="--epochs 1000 --decay 500-800-900-950 --upsampling Nearest --srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --batch_size 32"
 elif [ $size = "bnL" ]; then  # model_b with nearest+conv upsampling
