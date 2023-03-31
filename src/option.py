@@ -58,6 +58,8 @@ parser.add_argument('--n_resblocks', type=int, default=16,
                     help='number of residual blocks')
 parser.add_argument('--n_feats', type=int, default=64,
                     help='number of feature maps')
+parser.add_argument('--num_heads', type=int, default=8,
+                    help='The number of multi-head self-attention heads in the transformer')
 parser.add_argument('--res_scale', type=float, default=1,
                     help='residual scaling')
 parser.add_argument('--shift_mean', default=True,
