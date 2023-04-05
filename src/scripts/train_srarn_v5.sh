@@ -151,7 +151,7 @@ fi
 # #####################################
 # prepare program options parameters
 # v5 must use layernorm
-run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $interpolation --data_range 1-800 --res_connect $res --loss 1*L1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class $lr_class --model SRARNV5"
+run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $interpolation --data_range 1-900 --res_connect $res --loss 1*L1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class $lr_class --model SRARNV5"
 
 save_dir="../srarn_v5/v5${size}${patch_print}${interpolation_print}${res_print}${lr_print}_x${scale}"
 log_file="../srarn_v5/logs/v5${size}${patch_print}${interpolation_print}${res_print}${lr_print}_x${scale}.log"
