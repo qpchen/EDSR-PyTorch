@@ -19,7 +19,7 @@
 # run example for v5bnL_x2: ./scripts/train_srarn_v5.sh train 0 4 bnL b 2 48 ms 1acb3
 # run example for v5LBbL_x2: ./scripts/train_srarn_v5.sh train 1 4 LBbL b 2 48 ms 1acb3
 
-# run example for v5l_x2: ./scripts/train_srarn_v5.sh train 1 4 l b 2 48 ms 1acb3
+# run example for v5l_x2: ./scripts/train_srarn_v5.sh train 0,1 2 l b 2 48 ms 1acb3
 
 # run example for v5s_Nrst_x2: ./scripts/train_srarn_v5.sh train 0 1 s n 2 64 ms 1acb3
 # run example for v5s_PxSh_x2: ./scripts/train_srarn_v5.sh train 3 1 s p 2 64 ms 1acb3
@@ -69,28 +69,28 @@ elif [ $size = "bn" ]; then  # model_b with nearest+conv upsampling
 elif [ $size = "bnL" ]; then  # model_b with nearest+conv upsampling
   options="--epochs 1000 --decay 500-800-900-950 --upsampling Nearest --srarn_up_feat 180 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180 --batch_size 32"
 elif [ $size = "LBbL" ]; then  # model_b use PixelShuffle upsampling with no activate layer, same as SwinIR
-  options="--epochs 1000 --decay 500-800-900-950 --upsampling PixelShuffle --no_act_ps --srarn_up_feat 180 --depths 10+10+10+10 --dims 180+180+180+180+180+180 --batch_size 32"
+  options="--epochs 1000 --decay 500-800-900-950 --upsampling PixelShuffle --no_act_ps --srarn_up_feat 180 --depths 10+10+10+10 --dims 180+180+180+180 --batch_size 32"
 # ############## model_l #############
 elif [ $size = "l" ]; then  # model_l use PixelShuffle upsampling with no activate layer, same as SwinIR
-  options="--epochs 1000 --decay 500-800-900-950 --upsampling PixelShuffle --no_act_ps --srarn_up_feat 180 --depths 6+6+6+6+6+6+6+6 --dims 180+180+180+180+180+180 --batch_size 32"
+  options="--epochs 1000 --decay 500-800-900-950 --upsampling PixelShuffle --no_act_ps --srarn_up_feat 180 --depths 6+6+6+6+6+6+6+6 --dims 180+180+180+180+180+180+180+180 --batch_size 32"
 # ############## model_s #############
 elif [ $size = "s" ]; then
   options="--epochs 1500 --decay 750-1200-1350-1425 --upsampling Nearest --srarn_up_feat 60 --depths 6+6+6+6 --dims 60+60+60+60 --batch_size 32"
 # ############## model_lt larger tiny #############
 elif [ $size = "fblt" ]; then
-  options="--epochs 2000 --decay 1000-1600-1800-1900 --upsampling Nearest --srarn_up_feat 42 --depths 6+6+6 --dims 42+42+42+42 --batch_size 32"
+  options="--epochs 2000 --decay 1000-1600-1800-1900 --upsampling Nearest --srarn_up_feat 42 --depths 6+6+6 --dims 42+42+42 --batch_size 32"
 # ############## model_t #############
 elif [ $size = "t" ]; then
   options="--epochs 2000 --decay 1000-1600-1800-1900 --upsampling Nearest --srarn_up_feat 30 --depths 3+3+3+3 --dims 30+30+30+30 --batch_size 32"
 # ############## fixed block model_t #############
 elif [ $size = "fbt" ]; then
-  options="--epochs 2000 --decay 1000-1600-1800-1900 --upsampling Nearest --srarn_up_feat 30 --depths 6+6+6 --dims 30+30+30+30 --batch_size 32"
+  options="--epochs 2000 --decay 1000-1600-1800-1900 --upsampling Nearest --srarn_up_feat 30 --depths 6+6+6 --dims 30+30+30 --batch_size 32"
 # ############## model_xt #############
 elif [ $size = "xt" ]; then
   options="--epochs 3000 --decay 1500-2400-2700-2850 --upsampling Nearest --srarn_up_feat 24 --depths 2+2+2+2 --dims 24+24+24+24 --batch_size 32"
 # ############## fixed block model_xt #############
 elif [ $size = "fbxt" ]; then
-  options="--epochs 3000 --decay 1500-2400-2700-2850 --upsampling Nearest --srarn_up_feat 24 --depths 6+6 --dims 24+24+24+24 --batch_size 32"
+  options="--epochs 3000 --decay 1500-2400-2700-2850 --upsampling Nearest --srarn_up_feat 24 --depths 6+6 --dims 24+24 --batch_size 32"
 # ############## test_model #############
 elif [ $size = "test" ]; then  # test with lower costs
   options="--epochs 3000 --decay 1500-2400-2700-2850 --upsampling Nearest --srarn_up_feat 6 --depths 2+4 --dims 6+12 --batch_size 4"
