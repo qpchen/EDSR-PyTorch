@@ -15,6 +15,11 @@
 # run example for v5b_PxSh_x2: ./scripts/train_srarn_v5.sh train 0 4 b p 2 48 ms 1acb3
 # run example for v5ba_x2: ./scripts/train_srarn_v5.sh train 0,1 1 ba b 2 48 ms 1acb3
 
+# run example for v5bL_x2: ./scripts/train_srarn_v5.sh train 0,1,2 1 bL b 2 48 ms 1acb3
+# run example for v5bnL_x2: ./scripts/train_srarn_v5.sh train 0 4 bnL b 2 48 ms 1acb3
+# run example for v5LBbL_x2: ./scripts/train_srarn_v5.sh train 1 4 LBbL b 2 48 ms 1acb3
+
+# run example for v5l_x2: ./scripts/train_srarn_v5.sh train 1 4 l b 2 48 ms 1acb3
 
 # run example for v5s_Nrst_x2: ./scripts/train_srarn_v5.sh train 0 1 s n 2 64 ms 1acb3
 # run example for v5s_PxSh_x2: ./scripts/train_srarn_v5.sh train 3 1 s p 2 64 ms 1acb3
@@ -31,7 +36,9 @@
 # run example for v5xt_x4: ./scripts/train_srarn_v5.sh train 1 1 xt b 4 64 ms 1acb3
 
 
-# run example for v5xt_x2: ./scripts/train_srarn_v5.sh train 1 1 xt b 2 64 ms 3acb3
+# run example for v5fblt_x2: ./scripts/train_srarn_v5.sh train 1 1 fblt b 2 64 ms 1acb3
+# run example for v5fbt_x2: ./scripts/train_srarn_v5.sh train 0 1 fbt b 2 64 ms 1acb3
+# run example for v5fbxt_x2: ./scripts/train_srarn_v5.sh train 1 1 fbxt b 2 64 ms 3acb3
 
 # run example for v5lt_x2: ./scripts/train_srarn_v5.sh train 1 1 lt b 2 64 ms 1acb3
 # run example for v5lt_x3: ./scripts/train_srarn_v5.sh train 1 1 lt b 3 64 ms 1acb3
