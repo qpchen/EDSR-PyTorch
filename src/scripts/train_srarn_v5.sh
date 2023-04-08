@@ -197,12 +197,13 @@ if [ $loss = "L1" ]; then
 else
   loss_print="_$loss"
 fi
+method=${12}  # SRARNV5 | SRARNV5OLD
 
 
 # #####################################
 # prepare program options parameters
 # v5 must use layernorm
-run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $interpolation $train --res_connect $res --loss 1*$loss --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class $lr_class --model SRARNV5"
+run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $interpolation $train --res_connect $res --loss 1*$loss --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class $lr_class --model $method"
 # seems SmoothL1 is better than L1
 
 save_dir="../srarn_v5$dataset_print/v5${size}${patch_print}${interpolation_print}${res_print}${lr_print}${loss_print}_x${scale}"
