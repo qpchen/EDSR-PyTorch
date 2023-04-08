@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from model import acb
+from model.acb_old import ACBlock
 
 def default_conv(in_channels, out_channels, kernel_size, bias=True, deploy=False, norm="batch"):
     return nn.Conv2d(
@@ -19,7 +19,7 @@ def default_acb(in_channels, out_channels, kernel_size, stride=1, padding=-1, di
         return nn.Conv2d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, 
                         dilation=dilation, groups=groups, bias=bias, padding_mode=padding_mode)
     else:
-        return acb.ACBlock(in_channels, out_channels, kernel_size, stride=stride, padding=padding, 
+        return ACBlock(in_channels, out_channels, kernel_size, stride=stride, padding=padding, 
                         dilation=dilation, groups=groups, padding_mode=padding_mode, deploy=deploy, norm=norm)
 
 # 因为EDSR框架在读取时已经将RGB转成0-255的值了，因此不需要像swinir那样做转化，仅添加bias偏移即可实现mean
