@@ -4,6 +4,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from model import acb
 from model.acb_old import ACBlock
 
 def default_conv(in_channels, out_channels, kernel_size, bias=True, deploy=False, norm="batch"):
@@ -12,6 +13,17 @@ def default_conv(in_channels, out_channels, kernel_size, bias=True, deploy=False
         padding=(kernel_size//2), bias=bias)
 
 def default_acb(in_channels, out_channels, kernel_size, stride=1, padding=-1, dilation=1, groups=1, 
+                bias=True, padding_mode='zeros', use_original_conv=False, deploy=False, norm="batch"):
+    if padding == -1:
+        padding = (kernel_size//2)
+    if use_original_conv or kernel_size == 1 or kernel_size == (1, 1) or kernel_size >= 7:
+        return nn.Conv2d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, 
+                        dilation=dilation, groups=groups, bias=bias, padding_mode=padding_mode)
+    else:
+        return acb.ACBlock(in_channels, out_channels, kernel_size, stride=stride, padding=padding, 
+                        dilation=dilation, groups=groups, padding_mode=padding_mode, deploy=deploy, norm=norm)
+                        
+def default_acbv5(in_channels, out_channels, kernel_size, stride=1, padding=-1, dilation=1, groups=1, 
                 bias=True, padding_mode='zeros', use_original_conv=False, deploy=False, norm="batch"):
     if padding == -1:
         padding = (kernel_size//2)

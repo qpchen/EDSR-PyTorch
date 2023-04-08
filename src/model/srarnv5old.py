@@ -7,12 +7,12 @@ from torch import nn
 import torch.nn.functional as F
 from timm.models.layers import trunc_normal_, DropPath
 
-from model.acb import ACBlock  # the layer name is different with acb_old version
+from model.acb_old import ACBlock  # the layer name is different with acb version
 
 # mainly copied from the fsrcnnacv4 model
 
 def make_model(args, parent=False):
-    return SRARNV5(args)
+    return SRARNV5OLD(args)
 
 class PA(nn.Module):
     '''PA is pixel attention'''
@@ -191,7 +191,7 @@ class RACB(nn.Module):
             x = self.channel_modify(x)
         return x
 
-class SRARNV5(nn.Module):
+class SRARNV5OLD(nn.Module):
     """ 
     在V4基础上将残差连接前的主干上的最后一层Conv从1*1x1conv改成1*3x3abc或者3*3x3abc
     Args:
@@ -202,7 +202,7 @@ class SRARNV5(nn.Module):
 
     # def __init__(self, upscale_factor: int) -> None:
     def __init__(self, args):
-        super(SRARNV5, self).__init__()
+        super(SRARNV5OLD, self).__init__()
 
         num_channels = args.n_colors
         # num_feat = args.n_feat
@@ -272,10 +272,10 @@ class SRARNV5(nn.Module):
             self.deconv = nn.ConvTranspose2d(dims[0], num_channels, (9, 9), (self.scale, self.scale),
                                              (4, 4), (self.scale - 1, self.scale - 1))
         elif self.upsampling == 'PixelShuffleDirect':
-            acblock = common.default_acb
+            acblock = common.default_acbv5
             self.pixelshuffledirect = common.UpsamplerDirect(acblock, self.scale, dims[0], num_channels, deploy=use_inf) #False)
         elif self.upsampling == 'PixelShuffle':
-            acblock = common.default_acb
+            acblock = common.default_acbv5
             self.pixelshuffle = nn.Sequential(
                 common.Upsampler(acblock, self.scale, num_up_feat, act='gelu', deploy=use_inf), #False),
                 acblock(num_up_feat, num_channels, 3, 1, 1, deploy=use_inf)
