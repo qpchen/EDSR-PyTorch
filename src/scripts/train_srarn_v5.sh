@@ -76,6 +76,39 @@ elif [ $size = "l" ]; then  # model_l use PixelShuffle upsampling with no activa
 # ############## model_s #############
 elif [ $size = "s" ]; then
   options="--epochs 1500 --decay 750-1200-1350-1425 --upsampling Nearest --srarn_up_feat 60 --depths 6+6+6+6 --dims 60+60+60+60 --batch_size 32"
+# ############## model_s ablation #############
+elif [ $size = "s30" ]; then
+  options="--epochs 1500 --decay 750-1200-1350-1425 --upsampling Nearest --srarn_up_feat 30 --depths 6+6+6+6 --dims 30+30+30+30 --batch_size 32"
+elif [ $size = "s90" ]; then
+  options="--epochs 1500 --decay 750-1200-1350-1425 --upsampling Nearest --srarn_up_feat 90 --depths 6+6+6+6 --dims 90+90+90+90 --batch_size 32"
+elif [ $size = "s120" ]; then
+  options="--epochs 1500 --decay 750-1200-1350-1425 --upsampling Nearest --srarn_up_feat 120 --depths 6+6+6+6 --dims 120+120+120+120 --batch_size 32"
+elif [ $size = "s150" ]; then
+  options="--epochs 1500 --decay 750-1200-1350-1425 --upsampling Nearest --srarn_up_feat 150 --depths 6+6+6+6 --dims 150+150+150+150 --batch_size 32"
+elif [ $size = "s180" ]; then
+  options="--epochs 1500 --decay 750-1200-1350-1425 --upsampling Nearest --srarn_up_feat 150 --depths 6+6+6+6 --dims 180+180+180+180 --batch_size 32"
+elif [ $size = "s210" ]; then
+  options="--epochs 1500 --decay 750-1200-1350-1425 --upsampling Nearest --srarn_up_feat 150 --depths 6+6+6+6 --dims 210+210+210+210 --batch_size 32"
+elif [ $size = "s1B" ]; then
+  options="--epochs 1500 --decay 750-1200-1350-1425 --upsampling Nearest --srarn_up_feat 60 --depths 6 --dims 60 --batch_size 32"
+elif [ $size = "s2B" ]; then
+  options="--epochs 1500 --decay 750-1200-1350-1425 --upsampling Nearest --srarn_up_feat 60 --depths 6+6 --dims 60+60 --batch_size 32"
+elif [ $size = "s6B" ]; then
+  options="--epochs 1500 --decay 750-1200-1350-1425 --upsampling Nearest --srarn_up_feat 60 --depths 6+6+6+6+6+6 --dims 60+60+60+60+60+60 --batch_size 32"
+elif [ $size = "s8B" ]; then
+  options="--epochs 1500 --decay 750-1200-1350-1425 --upsampling Nearest --srarn_up_feat 60 --depths 6+6+6+6+6+6+6+6 --dims 60+60+60+60+60+60+60+60 --batch_size 32"
+elif [ $size = "s10B" ]; then
+  options="--epochs 1500 --decay 750-1200-1350-1425 --upsampling Nearest --srarn_up_feat 60 --depths 6+6+6+6+6+6+6+6+6+6 --dims 60+60+60+60+60+60+60+60+60+60 --batch_size 32"
+elif [ $size = "s1L" ]; then
+  options="--epochs 1500 --decay 750-1200-1350-1425 --upsampling Nearest --srarn_up_feat 60 --depths 1+1+1+1 --dims 60+60+60+60 --batch_size 32"
+elif [ $size = "s2L" ]; then
+  options="--epochs 1500 --decay 750-1200-1350-1425 --upsampling Nearest --srarn_up_feat 60 --depths 2+2+2+2 --dims 60+60+60+60 --batch_size 32"
+elif [ $size = "s4L" ]; then
+  options="--epochs 1500 --decay 750-1200-1350-1425 --upsampling Nearest --srarn_up_feat 60 --depths 4+4+4+4 --dims 60+60+60+60 --batch_size 32"
+elif [ $size = "s8L" ]; then
+  options="--epochs 1500 --decay 750-1200-1350-1425 --upsampling Nearest --srarn_up_feat 60 --depths 8+8+8+8 --dims 60+60+60+60 --batch_size 32"
+elif [ $size = "s10L" ]; then
+  options="--epochs 1500 --decay 750-1200-1350-1425 --upsampling Nearest --srarn_up_feat 60 --depths 10+10+10+10 --dims 60+60+60+60 --batch_size 32"
 # ############## model_lt larger tiny #############
 elif [ $size = "fblt" ]; then
   options="--epochs 2000 --decay 1000-1600-1800-1900 --upsampling Nearest --srarn_up_feat 42 --depths 6+6+6 --dims 42+42+42 --batch_size 32"
@@ -159,15 +192,14 @@ elif [ $dataset = "Flickr2K" ]; then
 fi
 
 
-
-
 # #####################################
 # prepare program options parameters
 # v5 must use layernorm
-run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $interpolation $train --res_connect $res --loss 1*L1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class $lr_class --model SRARNV5"
+run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $interpolation $train --res_connect $res --loss 1*$loss --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class $lr_class --model SRARNV5"
+# seems SmoothL1 is better than L1
 
-save_dir="../srarn_v5$dataset_print/v5${size}${patch_print}${interpolation_print}${res_print}${lr_print}_x${scale}"
-log_file="../srarn_v5$dataset_print/logs/v5${size}${patch_print}${interpolation_print}${res_print}${lr_print}_x${scale}.log"
+save_dir="../srarn_v5$dataset_print/v5${size}${patch_print}${interpolation_print}${res_print}${lr_print}${loss_print}_x${scale}"
+log_file="../srarn_v5$dataset_print/logs/v5${size}${patch_print}${interpolation_print}${res_print}${lr_print}${loss_print}_x${scale}.log"
 
 if [ ! -d "../srarn_v5$dataset_print" ]; then
   mkdir "../srarn_v5$dataset_print"
