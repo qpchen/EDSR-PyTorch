@@ -190,6 +190,13 @@ elif [ $dataset = "Flickr2K" ]; then
   train="--data_train Flickr2K --data_range 1-2650"
   dataset_print="_$dataset"
 fi
+# loss function
+loss=${11}
+if [ $loss = "L1" ]; then
+  loss_print=""
+else
+  loss_print="_$loss"
+fi
 
 
 # #####################################
