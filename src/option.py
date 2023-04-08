@@ -171,7 +171,7 @@ parser.add_argument('--load_inf', action='store_true',
                     help='Load ACBlock or DBBlock using inference-time Structure')
 parser.add_argument('--inf_switch', action='store_true',
                     help='When test_only, load training-time Block, then switch to inference-time model and save it')
-parser.add_argument('--acb_norm', default='v8old',
+parser.add_argument('--acb_norm', default='batch',
                     choices=('batch', 'no', 'v8old', 'inst'),
                     help='last conv to use before residual connect (batch | no | v8old | inst)')
 
