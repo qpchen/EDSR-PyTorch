@@ -150,7 +150,8 @@ class checkpoint():
     def save_results(self, dataset, filename, save_list, scale):
         if self.args.save_results:
             filename = self.get_path(
-                'results-{}'.format(dataset.dataset.name),
+                # 'results-{}'.format(dataset.dataset.name),
+                '{}'.format(dataset.dataset.name),
                 '{}_x{}_'.format(filename, scale)
             )
             if len(save_list) == 2 or len(save_list) == 4:
