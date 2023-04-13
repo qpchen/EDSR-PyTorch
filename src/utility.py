@@ -74,7 +74,8 @@ class checkpoint():
         os.makedirs(self.dir, exist_ok=True)
         os.makedirs(self.get_path('model'), exist_ok=True)
         for d in args.data_test:
-            os.makedirs(self.get_path('results-{}'.format(d)), exist_ok=True)
+            os.makedirs(self.get_path('results-{}'.format(d)), exist_ok=True)  # No1. EDSR original format
+            # os.makedirs(self.get_path('{}'.format(d)), exist_ok=True)  # No2. & No3. common shared format
 
         open_type = 'a' if os.path.exists(self.get_path('log.txt'))else 'w'
         self.log_file = open(self.get_path('log.txt'), open_type)
@@ -150,20 +151,20 @@ class checkpoint():
     def save_results(self, dataset, filename, save_list, scale):
         if self.args.save_results:
             filename = self.get_path(
-                # 'results-{}'.format(dataset.dataset.name),  # No1. EDSR original format
-                '{}'.format(dataset.dataset.name),  # No2. & No3. common shared format
-                # '{}_x{}_'.format(filename, scale)  # No1.
+                'results-{}'.format(dataset.dataset.name),  # No1. EDSR original format
+                # '{}'.format(dataset.dataset.name),  # No2. & No3. common shared format
+                '{}_x{}_'.format(filename, scale)  # No1.
                 # '{}x{}_'.format(filename, scale)  # No2. SwinIR format
-                '{}x{}'.format(filename, scale)  # No3. common shared format
+                # '{}x{}'.format(filename, scale)  # No3. common shared format
             )
             if len(save_list) == 2 or len(save_list) == 4:
-                # postfix = ('SR_Y', 'SR_RGB', 'LR', 'HR')  # No1.
+                postfix = ('SR_Y', 'SR_RGB', 'LR', 'HR')  # No1.
                 # postfix = ('{}_Y'.format(self.args.model), '{}_RGB'.format(self.args.model), 'LR', 'HR')  # No2.
-                postfix = ('_Y', '_RGB', '_LR', '_HR')  # No3.
+                # postfix = ('_Y', '_RGB', '_LR', '_HR')  # No3.
             else:
-                # postfix = ('SR', 'LR', 'HR')  # No1.
+                postfix = ('SR', 'LR', 'HR')  # No1.
                 # postfix = (self.args.model, 'LR', 'HR')  # No2.
-                postfix = ('', '_LR', '_HR')  # No3.
+                # postfix = ('', '_LR', '_HR')  # No3.
             for v, p in zip(save_list, postfix):
                 normalized = v[0].mul(255 / self.args.rgb_range)
                 tensor_cpu = normalized.byte().permute(1, 2, 0).cpu()
