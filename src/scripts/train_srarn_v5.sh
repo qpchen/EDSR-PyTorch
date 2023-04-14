@@ -246,6 +246,11 @@ then
   echo "load inference version of acb to eval:"
   echo "$run_command --data_test Set5+Set14+B100+Urban100+Manga109 --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf"
   $run_command --data_test Set5+Set14+B100+Urban100+Manga109 --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf
+elif [ $mode = "eval_plus" ]
+then
+  echo "load inference version of acb to eval:"
+  echo "$run_command --data_test Set5+Set14+B100+Urban100+Manga109 --save ${save_dir}_test_plus --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf --self_ensemble"
+  $run_command --data_test Set5+Set14+B100+Urban100+Manga109 --save ${save_dir}_test_plus --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf --self_ensemble
 elif [ $mode = "runtime" ]
 then
   # echo "load inference version of acb to test the runtime:"
