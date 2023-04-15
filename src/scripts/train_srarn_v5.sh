@@ -76,6 +76,8 @@ elif [ $size = "l" ]; then  # model_l use PixelShuffle upsampling with no activa
 # ############## model_s #############
 elif [ $size = "s" ]; then
   options="--epochs 1500 --decay 750-1200-1350-1425 --upsampling Nearest --srarn_up_feat 60 --depths 6+6+6+6 --dims 60+60+60+60 --batch_size 32"
+elif [ $size = "fs" ]; then
+  options="--epochs 1500 --decay 750-1200-1350-1425 --upsampling Nearest --srarn_up_feat 60 --depths 6+6+6+6+6 --dims 60+60+60+60+60 --batch_size 32"
 # ############## model_s ablation #############
 elif [ $size = "s30" ]; then
   options="--epochs 1500 --decay 750-1200-1350-1425 --upsampling Nearest --srarn_up_feat 30 --depths 6+6+6+6 --dims 30+30+30+30 --batch_size 32"
