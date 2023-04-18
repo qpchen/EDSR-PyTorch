@@ -280,7 +280,7 @@ class SRARNV5(nn.Module):
                 common.Upsampler(acblock, self.scale, num_up_feat, act='gelu', deploy=use_inf), #False),
                 acblock(num_up_feat, num_channels, 3, 1, 1, deploy=use_inf)
             )
-        elif self.upsampling == 'Nearest':
+        elif self.upsampling == 'Nearest' or self.upsampling == 'NearestNoPA':
             # Nearest + Conv/ACBlock
             if (self.scale & (self.scale - 1)) == 0:  # 缩放因子等于 2^n
                 for i in range(int(log(self.scale, 2))):  #  循环 n 次
@@ -291,13 +291,20 @@ class SRARNV5(nn.Module):
                 # 报错，缩放因子不对
                 raise ValueError(f'scale {self.sscale} is not supported. ' 'Supported scales: 2^n and 3.')
 
-            self.postup = nn.Sequential(
-                PA(num_up_feat),
-                nn.GELU(),
-                ACBlock(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf),
-                nn.GELU(),
-                ACBlock(num_up_feat, num_channels, 3, 1, 1, deploy=use_inf)
-            )
+            if self.upsampling == 'Nearest':
+                self.postup = nn.Sequential(
+                    PA(num_up_feat),
+                    nn.GELU(),
+                    ACBlock(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf),
+                    nn.GELU(),
+                    ACBlock(num_up_feat, num_channels, 3, 1, 1, deploy=use_inf)
+                )
+            else:
+                self.postup = nn.Sequential(
+                    ACBlock(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf),
+                    nn.GELU(),
+                    ACBlock(num_up_feat, num_channels, 3, 1, 1, deploy=use_inf)
+                )
         
         if self.interpolation == 'PixelShuffle':
             convblock = common.default_conv
@@ -337,7 +344,7 @@ class SRARNV5(nn.Module):
             out = self.pixelshuffledirect(out)
         elif self.upsampling == 'PixelShuffle':
             out = self.pixelshuffle(out)
-        elif self.upsampling == 'Nearest':
+        elif self.upsampling == 'Nearest' or self.upsampling == 'NearestNoPA':
             if (self.scale & (self.scale - 1)) == 0:  # 缩放因子等于 2^n
                 for i in range(int(log(self.scale, 2))):  #  循环 n 次
                     out = getattr(self, f'up{i}')(F.interpolate(out, scale_factor=2, mode='nearest'))

@@ -203,8 +203,8 @@ parser.add_argument('--deep_conv', default='1acb3',
 
 # SRARN UpSampling Function setting
 parser.add_argument('--upsampling', default='Nearest',
-                    choices=('Nearest', 'Deconv', 'PixelShuffle', 'PixelShuffleDirect'),
-                    help='Upsampling to use (Nearest | Deconv | PixelShuffle | PixelShuffleDirect)')
+                    choices=('Nearest', 'Deconv', 'PixelShuffle', 'PixelShuffleDirect', 'NearestNoPA'),
+                    help='Upsampling to use (Nearest | Deconv | PixelShuffle | PixelShuffleDirect | NearestNoPA)')
 parser.add_argument('--no_act_ps', action='store_true',
                     help='do not use activate function GELU in PixelShuffle')
                     
