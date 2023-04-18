@@ -227,7 +227,7 @@ class SRARNV9(nn.Module):
     与V5区别主要为选择block_head_conv
     另外ACB_norm选择使用batch或者inst
     还增加了LR直接add到preup之后的选项(但效果不好，默认不加)
-    另增加bicubic更好为nearest的选项
+    另增加bicubic更换为nearest的选项
     Args:
         scale (int): Image magnification factor.
         num_blocks (int): The number of RACB blocks in deep feature extraction.
