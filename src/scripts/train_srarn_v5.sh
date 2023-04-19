@@ -128,6 +128,8 @@ elif [ $size = "fbxt" ]; then
   options="--epochs 3000 --decay 1500-2400-2700-2850 --upsampling Nearest --srarn_up_feat 24 --depths 6+6 --dims 24+24 --batch_size 32"
 elif [ $size = "fbxtnopa" ]; then
   options="--epochs 3000 --decay 1500-2400-2700-2850 --upsampling NearestNoPA --srarn_up_feat 24 --depths 6+6 --dims 24+24 --batch_size 32"
+elif [ $size = "fbxtps" ]; then
+  options="--epochs 3000 --decay 1500-2400-2700-2850 --upsampling PixelShuffle --srarn_up_feat 24 --depths 6+6 --dims 24+24 --batch_size 32"
 # ############## test_model #############
 elif [ $size = "test" ]; then  # test with lower costs
   options="--epochs 3000 --decay 1500-2400-2700-2850 --upsampling Nearest --srarn_up_feat 6 --depths 2+4 --dims 6+12 --batch_size 4"
