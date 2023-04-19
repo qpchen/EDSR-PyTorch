@@ -373,7 +373,8 @@ class SRARNV9(nn.Module):
         input = x
         for i in range(self.num_blocks):
             x = self.RACBs[i](x)
-        x = self.deep_norm(x)
+        if self.deep_norm is not None:
+            x = self.deep_norm(x)
         if self.deep_head is not None:
             x = self.deep_head(x)
         x = input + x   # Residual of the whole deep feature Extraction
