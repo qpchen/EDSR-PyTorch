@@ -28,6 +28,14 @@ elif [ $2 = "s" ]; then
   dim_configs="--srarn_up_feat 60 --depths 6+6+6+6 --dims 60+60+60+60"
 elif [ $2 = "b" ]; then
   dim_configs="--srarn_up_feat 64 --depths 6+6+6+6+6+6 --dims 180+180+180+180+180+180"
+elif [ $2 = "fblt" ]; then
+  dim_configs="--srarn_up_feat 42 --depths 6+6+6 --dims 42+42+42"
+elif [ $2 = "fbt" ]; then
+  dim_configs="--srarn_up_feat 30 --depths 6+6+6 --dims 30+30+30"
+elif [ $2 = "fbxt" ]; then
+  dim_configs="--srarn_up_feat 24 --depths 6+6 --dims 24+24"
+elif [ $2 = "fs" ]; then
+  dim_configs="--srarn_up_feat 60 --depths 6+6+6+6+6 --dims 60+60+60+60+60"
 fi
 
 if [ $model = "FSRCNN" ]; then
@@ -38,6 +46,8 @@ elif [ $model = "SRCNN" ]; then
 elif [ $model = "v8" ]; then
   # ./scripts/train_srarn_v8.sh runtime 0 1 xt ab $3 48 ms skip v8old $5
   python main.py --n_threads 6 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --res_connect skip $dim_configs --upsampling Nearest --acb_norm v8old --model SRARNV8 --save ../runtime_models/v8$2_x$3 --pre_train ../runtime_models/logs/v8$2_x$3.pt --test_only --load_inf --reset --runtime --times $5 $6 #--no_count --save_result 
+# elif [ $model = "v5" ]; then
+#   python main.py --n_threads 6 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --res_connect 1acb3 $dim_configs --model SRARNV5 --save ../runtime_models/logs/v5$2_x$3 --pre_train ../runtime_models/v5$2_x$3.pt --test_only --load_inf --reset --runtime --times $5 $6 #--no_count --save_result 
 elif [ $model = "v5" ]; then
   python main.py --n_threads 6 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --res_connect 1acb3 $dim_configs --model SRARNV5 --save ../runtime_models/logs/v5$2_x$3 --pre_train ../runtime_models/v5$2_x$3.pt --test_only --load_inf --reset --runtime --times $5 $6 #--no_count --save_result 
 elif [ $model = "IMDN" ]; then

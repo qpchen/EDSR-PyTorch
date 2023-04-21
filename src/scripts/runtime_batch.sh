@@ -4,6 +4,7 @@
 # ./scripts/runtime_batch.sh "RACN" "no" "2 3 4" "--n_GPUs 1"
 # ./scripts/runtime_batch.sh "RACN" "no" "2 3 4" "--save_result --no_count --cpu"
 # ./scripts/runtime_batch.sh "LBNet LBNet-T" "no" "2 3 4" "--save_result --no_count --cpu --times 3"
+# ./scripts/runtime_batch.sh "v5" "fblt fbt fbxt" "2 3 4" "--save_result --no_count --cpu --times 50"
 
 models=($1)
 sizes=($2)
