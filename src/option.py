@@ -242,6 +242,11 @@ args.data_test = args.data_test.split('+')
 if args.epochs == 0:
     args.epochs = 1e8
 
+# for multi-GPU training settings changing
+if not args.cpu and args.n_GPUs > 1:
+    args.batch_size = args.batch_size * args.n_GPUs
+    args.lr = args.lr * args.n_GPUs
+
 if args.batch_size % args.accumulation_step != 0:
     raise ValueError('accumulation_step {} must divides into batch_size {}.'
                         .format(args.accumulation_step, args.batch_size))
