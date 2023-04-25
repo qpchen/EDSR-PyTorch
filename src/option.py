@@ -244,7 +244,7 @@ if args.epochs == 0:
 
 # for multi-GPU training settings changing
 if not args.cpu and args.n_GPUs > 1:
-    args.batch_size = args.batch_size * args.n_GPUs
+    # args.batch_size = args.batch_size * args.n_GPUs
     args.lr = args.lr * args.n_GPUs
 
 if args.batch_size % args.accumulation_step != 0:
