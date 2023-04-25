@@ -187,7 +187,7 @@ fi
 # #####################################
 # prepare program options parameters
 # v9 must use layernorm
-run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $interpolation --res_connect $res --deep_conv $deep --acb_norm $acb --loss 1*L1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class $lr_class $norm_opt $addlr_opt --model SRARNV9"
+run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $interpolation --res_connect $res --deep_conv $deep --acb_norm $acb --loss 1*SmoothL1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class $lr_class $norm_opt $addlr_opt --model SRARNV9"
 # run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $interpolation --res_connect $res --deep_conv $deep --loss 1*L1 --lr 2e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class CosineWarmRestart --model SRARNV9"
 save_dir="../srarn_v9${acb_print}${norm_print}/v9${size}${patch_print}${addlr_print}${interpolation_print}${res_print}${deep_print}${lr_print}_x${scale}"
 log_file="../srarn_v9${acb_print}${norm_print}/logs/v9${size}${patch_print}${addlr_print}${interpolation_print}${res_print}${deep_print}${lr_print}_x${scale}.log"
