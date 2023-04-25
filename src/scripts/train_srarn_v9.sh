@@ -76,7 +76,7 @@ elif [ $size = "l2" ]; then  # model_b use PixelShuffle upsampling with no activ
 elif [ $size = "l2_ps" ]; then  # model_b use PixelShuffle upsampling with no activate layer, same as SwinIR
   options="--epochs 1000 --decay 500-800-900-950 --upsampling PixelShuffle --no_act_ps --srarn_up_feat 120 --depths 8+8+8+8+8+8+8+8 --dims 120+120+120+120+120+120+120+120 --batch_size 32"
 elif [ $size = "l3" ]; then  # model_b use PixelShuffle upsampling with no activate layer, same as SwinIR
-  options="--epochs 1000 --decay 500-800-900-950 --upsampling Nearest --no_act_ps --srarn_up_feat 150 --depths 8+8+8+8+8+8+8+8 --dims 150+150+150+150+150+150+150+150 --batch_size 32"
+  options="--epochs 1000 --decay 500-800-900-950 --upsampling Nearest --no_act_ps --srarn_up_feat 150 --depths 6+6+6+6+6+6+6+6 --dims 150+150+150+150+150+150+150+150 --batch_size 32"
 elif [ $size = "l4" ]; then  # model_b use PixelShuffle upsampling with no activate layer, same as SwinIR
   options="--epochs 1000 --decay 500-800-900-950 --upsampling Nearest --no_act_ps --srarn_up_feat 180 --depths 8+8+8+8+8+8+8+8+8+8 --dims 180+180+180+180+180+180+180+180+180+180 --batch_size 32"
 # ############## model_s #############
