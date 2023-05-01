@@ -346,7 +346,7 @@ class SRARNV9(nn.Module):
                 self.up = acb.ACBlock(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf, norm=acb_norm)
             else:
                 # 报错，缩放因子不对
-                raise ValueError(f'scale {self.sscale} is not supported. ' 'Supported scales: 2^n and 3.')
+                raise ValueError(f'scale {self.scale} is not supported. ' 'Supported scales: 2^n and 3.')
 
             self.postup = nn.Sequential(
                 PA(num_up_feat),
