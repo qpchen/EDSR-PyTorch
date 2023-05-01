@@ -253,8 +253,8 @@ if args.batch_size % args.accumulation_step != 0:
 
 if args.accumulation_step > 1:
     # choose one of following:
-    args.batch_size = args.batch_size // args.accumulation_step
-    # args.lr = args.lr * args.accumulation_step
+    args.batch_size = args.batch_size // args.accumulation_step  # maintain the same batch as setting
+    # args.lr = args.lr * args.accumulation_step  # larger batch as multiply accumulation_step with larger lr
 
 for arg in vars(args):
     if vars(args)[arg] == 'True':
