@@ -1,7 +1,7 @@
 import torch.nn as nn
 import torch.nn.init as init
 import torch
-
+import math
 
 class ACBlock(nn.Module):
 
@@ -40,8 +40,10 @@ class ACBlock(nn.Module):
                 #   Common use case. E.g., k=3, p=1 or k=5, p=2
                 self.crop = 0
                 #   Compared to the KxK layer, the padding of the 1xK layer and Kx1 layer should be adjust to align the sliding windows (Fig 2 in the paper)
-                hor_padding = [padding - kernel_size // 2, padding]
-                ver_padding = [padding, padding - kernel_size // 2]
+                # hor_padding = [padding - kernel_size // 2, padding]
+                # ver_padding = [padding, padding - kernel_size // 2]
+                hor_padding = [0, padding]
+                ver_padding = [padding, 0]
             else:
                 #   A negative "padding" (padding - kernel_size//2 < 0, which is not a common use case) is cropping.
                 #   Since nn.Conv2d does not support negative padding, we implement it manually
@@ -71,6 +73,16 @@ class ACBlock(nn.Module):
                 if gamma_init is not None:
                     assert not reduce_gamma
                     self.init_gamma(gamma_init)
+    # init weight following VAN
+    #     self.apply(self._init_weights)
+
+    # def _init_weights(self, m):
+    #     if isinstance(m, nn.Conv2d):
+    #         fan_out = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
+    #         fan_out //= m.groups
+    #         m.weight.data.normal_(0, math.sqrt(2.0 / fan_out))
+    #         if m.bias is not None:
+    #             m.bias.data.zero_()
 
     # ############## when use batch norm #################
     def _fuse_bn_tensor(self, conv, bn):

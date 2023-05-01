@@ -167,6 +167,8 @@ parser.add_argument('--rf2', type=int, default='4',
                     help='GhostNetV2 reduce factor 2 stage')
 
 # ACBlock or DBBlock inference-time settings
+parser.add_argument('--use_acb', action='store_true',
+                    help='use ACBlock instead of Conv2D')
 parser.add_argument('--load_inf', action='store_true',
                     help='Load ACBlock or DBBlock using inference-time Structure')
 parser.add_argument('--inf_switch', action='store_true',
@@ -217,7 +219,7 @@ parser.add_argument('--interpolation', default='Bicubic',
                     help='LR interpolation then add to output (Nearest | Bicubic | Skip | PixelShuffle')
 parser.add_argument('--no_layernorm', action='store_true',
                     help='delete layer normalization for each acl/racb')
-parser.add_argument('--norm_at', default='after',
+parser.add_argument('--norm_at', default='before',
                     choices=('after', 'before'),
                     help='layer norm location (after | before) the head_conv & connection of the resblocks')
 
@@ -228,6 +230,12 @@ parser.add_argument('--runtime', action='store_true',
 parser.add_argument('--times', type=int, default=10,
                     help='running model for multi times to calculate the average runtime.')
 
+# RAAN settings
+parser.add_argument('--mlp_ratios', type=str, default='4+4',
+                    help='MLp ratios at each stage')
+parser.add_argument('--stage_res', action='store_true',
+                    help='use residual connect at stage level')
+
 args = parser.parse_args()
 # add following means receive [] as input, replace the way of main.py [], to use in jupyter notebook
 # args = parser.parse_args(args=[])
@@ -236,6 +244,7 @@ template.set_template(args)
 args.scale = list(map(lambda x: int(x), args.scale.split('+')))
 args.depths = list(map(lambda x: int(x), args.depths.split('+')))
 args.dims = list(map(lambda x: int(x), args.dims.split('+')))
+args.mlp_ratios = list(map(lambda x: float(x), args.mlp_ratios.split('+')))
 args.data_train = args.data_train.split('+')
 args.data_test = args.data_test.split('+')
 

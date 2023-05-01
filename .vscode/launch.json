@@ -42,8 +42,8 @@
                 // "Set5+Set14+B100+Urban100",
                 // "Set5+Set14+B100+Urban100+DIV2K",
                 "--loss",
-                // "1*SmoothL1",
-                "1*L1",
+                "1*SmoothL1",
+                // "1*L1",
                 // "1*MSE",
                 "--lr",
                 // "1e-3",
@@ -88,7 +88,7 @@
                 // "3+3+3+3",  //i              // SRARN-T
                 // "2+2+2+2",  //j              // SRARN-XT
                 "--dims",
-                "6+12",  // test
+                "8+8",  // test
                 // "12+24",  //0
                 // "12+24+48",  //1
                 // "12+24+48+96",  //2
@@ -111,29 +111,31 @@
                 // "0.1",  // ConvNeXt-T
                 // "0.4",  // ConvNeXt-S
                 // "0.5",  // ConvNeXt-B/L
+                "--mlp_ratios",
+                "4+4",
                 "--upsampling",
                 // "PixelShuffleDirect",
                 // "Deconv",
                 "Nearest",
                 // "PixelShuffle",
                 "--res_connect",
-                // "1acb3",
+                "1acb3",
                 // "3acb3",
                 // "1conv1",
-                "skip",
+                // "skip",
                 "--deep_conv",
                 "1acb3",
-                "--srarn_up_feat",
-                "8",     //test
+                // "--srarn_up_feat",
+                // "8",     //test
                 // "24",       // default 0, means same as dims[0]
                 // "32",       // SRARN-T
                 // "64",       // SwinIR
                 "--acb_norm",
-                // "batch",
+                "batch",
                 // "inst",
                 // "layer",
-                "no",
-                "--no_act_ps",
+                // "no",
+                // "--no_act_ps",
                 // "--no_bicubic",
                 "--interpolation",
                 "PixelShuffle",
@@ -146,8 +148,11 @@
                 // "2",
                 "--model",
                 // "SRARNV5",
-                "SRARNV9",
+                // "SRARNV9",
                 // "LapSRN",
+                "RAAN",
+                "--use_acb",
+                "--stage_res",
                 "--save",
                 // "test",
                 // "srarn/srarn_v2t_x2",

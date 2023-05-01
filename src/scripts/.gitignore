@@ -9,6 +9,7 @@
 !test_runtime.sh
 !runtime_batch.sh
 !train_srarn_v8_commands.sh
+!train_raan.sh
 
 # Jupyter temp file
 *.ipynb_checkpoints/
