@@ -251,6 +251,11 @@ if args.batch_size % args.accumulation_step != 0:
     raise ValueError('accumulation_step {} must divides into batch_size {}.'
                         .format(args.accumulation_step, args.batch_size))
 
+if args.accumulation_step > 1:
+    # choose one of following:
+    args.batch_size = args.batch_size // args.accumulation_step
+    # args.lr = args.lr * args.accumulation_step
+
 for arg in vars(args):
     if vars(args)[arg] == 'True':
         vars(args)[arg] = True
