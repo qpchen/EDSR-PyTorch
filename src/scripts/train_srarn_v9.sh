@@ -1,48 +1,84 @@
 #!/bin/bash
 
 ################################################################################
-######################      SRARN V9_D1acb3 noACBnorm befln nolr       ######################
+######################      SRARN V9_D1acb3 noACBnorm befln nolr 2e-4       ######################
 ################################################################################
-# ./scripts/train_srarn_v9.sh [mode] [cuda_device] [accummulation_step] [model] [interpolation] [sr_scale] [lr_patch_size] [LR_scheduler_class] [block_conv] [deep_conv] [acb_norm] [LN] [addLR]
-# run example for v9test_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 test b 2 48 ms skip 1acb3 batch befln nolr
+# ./scripts/train_srarn_v9.sh [mode] [cuda_device] [accummulation_step] [model] [interpolation] [sr_scale] [lr_patch_size] [LR_scheduler_class] [init LR] [block_conv] [deep_conv] [acb_norm] [LN] [addLR]
+# run example v9test_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 test b 2 48 ms skip 1acb3 batch befln nolr 2e-4
 # ########### training commands ###########
 # ###### on Starlight: ######
-# run example for v9ba_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 ba b 2 48 ms skip 1acb3 batch befln nolr  # 38.243 v8  # PixelShuffleAct+BicubicAdd same as v5
-# run example for v9b_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 b b 2 48 ms skip 1acb3 batch befln nolr  # 38.257 v8  # PixelShuffleNOAct+BicubicAdd
+# run example v9ba_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 ba b 2 48 ms skip 1acb3 batch befln nolr 2e-4  # 38.243 v8  # PixelShuffleAct+BicubicAdd same as v5
+# run example v9b_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 b b 2 48 ms skip 1acb3 batch befln nolr 2e-4  # 38.257 v8  # PixelShuffleNOAct+BicubicAdd
 
-# run example for v9bn_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 bn b 2 48 ms skip 1acb3 batch befln nolr  # 38.266 v8: Nearest+BicubicAdd 
-# run example for v9bn_D1acb3_x3: ./scripts/train_srarn_v9.sh train 0,1 1 bn b 3 48 ms skip 1acb3 batch befln nolr
-# run example for v9bn_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0,1 1 bn b 4 48 ms skip 1acb3 batch befln nolr
-# run example for v9bnL_Nrst_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 bnL n 2 48 ms skip 1acb3 batch befln nolr  # 38.266 v8: Nearest+BicubicAdd 
-# run example for v9bL_Nrst_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 4 bL n 2 48 ms skip 1acb3 batch befln nolr  # 38.257 v8  # PixelShuffleNOAct+BicubicAdd
+# run example v9bn_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 bn b 2 48 ms skip 1acb3 batch befln nolr 2e-4  # 38.266 v8: Nearest+BicubicAdd 
+# run example v9bn_D1acb3_x3: ./scripts/train_srarn_v9.sh train 0,1 1 bn b 3 48 ms skip 1acb3 batch befln nolr 2e-4
+# run example v9bn_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0,1 1 bn b 4 48 ms skip 1acb3 batch befln nolr 2e-4
+# run example v9bnL_Nrst_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 bnL n 2 48 ms skip 1acb3 batch befln nolr 2e-4  # 38.266 v8: Nearest+BicubicAdd 
+# run example v9bL_Nrst_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 4 bL n 2 48 ms skip 1acb3 batch befln nolr 2e-4  # 38.257 v8  # PixelShuffleNOAct+BicubicAdd
 
-# run example for v9s_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s b 2 64 ms skip 1acb3 inst befln nolr  # comparing
-# run example for v9s_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s b 2 64 ms skip 1acb3 batch befln nolr
-# run example for v9s_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s b 2 64 ms skip 1acb3 batch befln addlr  # comparing
-# run example for v9s_s64_Nrst_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s n 2 64 ms skip 1acb3 batch befln nolr  # comparing
+# run example v9s_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s b 2 64 ms skip 1acb3 inst befln nolr 2e-4  # comparing
+# run example v9s_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s b 2 64 ms skip 1acb3 batch befln nolr 2e-4
+# run example v9s_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s b 2 64 ms skip 1acb3 batch befln addlr 2e-4  # comparing
+# run example v9s_s64_Nrst_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s n 2 64 ms skip 1acb3 batch befln nolr 2e-4  # comparing
 
-# run example for v9s_s64_D1acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 s b 3 64 ms skip 1acb3 batch befln nolr
-# run example for v9s_s64_D1acb3_x4: ./scripts/train_srarn_v9.sh train 1 1 s b 4 64 ms skip 1acb3 batch befln nolr
+# run example v9s_s64_D1acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 s b 3 64 ms skip 1acb3 batch befln nolr 2e-4
+# run example v9s_s64_D1acb3_x4: ./scripts/train_srarn_v9.sh train 1 1 s b 4 64 ms skip 1acb3 batch befln nolr 2e-4
 
-# run example for v9lt_s64_D3acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 lt b 2 64 ms skip 1acb3 batch befln nolr
-# run example for v9lt_s64_D3acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 lt b 3 64 ms skip 1acb3 batch befln nolr
-# run example for v9lt_s64_D3acb3_x4: ./scripts/train_srarn_v9.sh train 1 1 lt b 4 64 ms skip 1acb3 batch befln nolr
+# run example v9lt_s64_D3acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 lt b 2 64 ms skip 1acb3 batch befln nolr 2e-4
+# run example v9lt_s64_D3acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 lt b 3 64 ms skip 1acb3 batch befln nolr 2e-4
+# run example v9lt_s64_D3acb3_x4: ./scripts/train_srarn_v9.sh train 1 1 lt b 4 64 ms skip 1acb3 batch befln nolr 2e-4
 
-# run example for v9t_s64_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0 1 t b 4 64 ms skip 1acb3 batch befln nolr
-# run example for v9t_s64_D1acb3_x3: ./scripts/train_srarn_v9.sh train 0 1 t b 3 64 ms skip 1acb3 batch befln nolr
+# run example v9t_s64_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0 1 t b 4 64 ms skip 1acb3 batch befln nolr 2e-4
+# run example v9t_s64_D1acb3_x3: ./scripts/train_srarn_v9.sh train 0 1 t b 3 64 ms skip 1acb3 batch befln nolr 2e-4
 
 # ###### on t640: ######
-# run example for v9t_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 t b 2 64 ms skip 1acb3 batch befln nolr
-# run example for v9xt_s64_D3acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 xt b 2 64 ms skip 1acb3 batch befln nolr
-# run example for v9xt_s64_D3acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 xt b 3 64 ms skip 1acb3 batch befln nolr
-# run example for v9xt_s64_D3acb3_x4: ./scripts/train_srarn_v9.sh train 1 1 xt b 4 64 ms skip 1acb3 batch befln nolr
+# run example v9t_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 t b 2 64 ms skip 1acb3 batch befln nolr 2e-4
+# run example v9xt_s64_D3acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 xt b 2 64 ms skip 1acb3 batch befln nolr 2e-4
+# run example v9xt_s64_D3acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 xt b 3 64 ms skip 1acb3 batch befln nolr 2e-4
+# run example v9xt_s64_D3acb3_x4: ./scripts/train_srarn_v9.sh train 1 1 xt b 4 64 ms skip 1acb3 batch befln nolr 2e-4
 
-# run example for v9xt_s64_D3acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 xt n 2 64 ms skip 1acb3 batch befln nolr
+# run example v9xt_s64_D3acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 xt n 2 64 ms skip 1acb3 batch befln nolr 2e-4
 
-# run example for v9xt_s64_D3acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 xt b 2 64 ms skip 1acb3 batch befln addlr  # bad
+# run example v9xt_s64_D3acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 xt b 2 64 ms skip 1acb3 batch befln addlr 2e-4  # bad
 
-# ################### test ######################
-# for batch_befLN/v9l2_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 l2 b 2 48 ms 1acb3 1acb3 batch befln nolr  # retraining shen a100
+# ################### test: 1acb3 head; BN; before LN;  ######################
+# batch_befLN/v9l2_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 l2 b 2 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # giveup shen a100
+
+# batch_befLN/v9l3_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1,2,3 1 l3 b 2 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # done shen  # larger batch multi-GPU
+# batch_befLN/v9l3_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 0,1,2,3 1 l3 b 3 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # pause shen  # larger batch multi-GPU
+# batch_befLN/v9l3_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0,1,2,3 2 l3 b 4 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # giveup shen # accum_step may bad  # larger batch multi-GPU
+# batch_befLN/v9l3_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0 2 l3 b 4 48 ms 1acb3 1acb3 batch befln nolr 4e-4  # giveup shen a100 # accum_step may bad  # larger lr
+# batch_befLN/v9l3_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0,1 1 l3 b 4 48 ms 1acb3 1acb3 batch befln nolr 4e-4  # pause shen a100  # larger lr
+
+# batch_befLN/v9fbxt_s64_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 fbxt b 2 64 ms 1acb3 1acb3 batch befln nolr 2e-4  # done shen
+# batch_befLN/v9fbxt_s64_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 fbxt b 3 64 ms 1acb3 1acb3 batch befln nolr 2e-4  # done shen
+# batch_befLN/v9fbxt_s64_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0 1 fbxt b 4 64 ms 1acb3 1acb3 batch befln nolr 2e-4  # done shen
+# batch_befLN/v9fbxt_s64_3acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 fbxt b 2 64 ms 3acb3 1acb3 batch befln nolr 2e-4  # done t640  # param less than 100K
+# batch_befLN/v9fbxt_s64_3acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 fbxt b 3 64 ms 3acb3 1acb3 batch befln nolr 2e-4  # done t640
+# batch_befLN/v9fbxt_s64_3acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0 1 fbxt b 4 64 ms 3acb3 1acb3 batch befln nolr 2e-4  # done shen
+# batch_befLN/v9fblt_s64_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 fblt b 2 64 ms 1acb3 1acb3 batch befln nolr 2e-4  # done shen
+# batch_befLN/v9fblt_s64_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 2 1 fblt b 3 64 ms 1acb3 1acb3 batch befln nolr 2e-4  # done shen
+# batch_befLN/v9fblt_s64_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 3 1 fblt b 4 64 ms 1acb3 1acb3 batch befln nolr 2e-4  # training shen
+# batch_befLN/v9fs_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 fs b 2 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # done shen
+# batch_befLN/v9fs_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 fs b 3 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # training shen
+# batch_befLN/v9fs_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0 1 fs b 4 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # training shen
+
+  # ############## test larger init LR ###############
+  # batch_befLN/v9fs_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 fs b 2 48 ms 1acb3 1acb3 batch befln nolr 8e-4  # training shen
+  # batch_befLN/v9fs_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 0 1 fs b 3 48 ms 1acb3 1acb3 batch befln nolr 8e-4  # training shen
+  # batch_befLN/v9fs_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 2 1 fs b 4 48 ms 1acb3 1acb3 batch befln nolr 8e-4  # training shen
+  ###################################################
+  # ########## change upsampling to PS && larger init LR #############
+  # batch_befLN/v9l3_UpPS_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1,2,3 1 l3_UpPS b 2 48 ms 1acb3 1acb3 batch befln nolr 8e-4  # training shen  # larger batch multi-GPU
+  # batch_befLN/v9l3_UpPS_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 0,1,2,3 1 l3_UpPS b 3 48 ms 1acb3 1acb3 batch befln nolr 8e-4  # training shen  # larger batch multi-GPU
+  # batch_befLN/v9l3_UpPS_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0,1 1 l3_UpPS b 4 48 ms 1acb3 1acb3 batch befln nolr 16e-4  # training shen a100  # larger lr
+  ##################################################
+
+# batch_befLN/v9fbxt_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 fbxt b 2 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # pause shen  # bad p48
+# batch_befLN/v9fblt_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 fblt b 2 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # pause shen  # bad p48
+# batch/v9fbxt_s64_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 fbxt b 2 64 ms 1acb3 1acb3 batch ln nolr 2e-4  # done shen  # bad 37.899  p48:37.871
+# batch_noLN/v9fbxt_s64_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 fbxt b 2 64 ms 1acb3 1acb3 batch no nolr 2e-4  # done shen  # better 37.919 p48:37.903
+# batch/v9fblt_s64_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 fblt b 2 64 ms 1acb3 1acb3 batch ln nolr 2e-4  # waiting shen
 
 # #####################################
 # accept input
@@ -142,10 +178,10 @@ fi
 # lr_class choice, default is MultiStepLR. test whether CosineWarmRestart can be better
 # if [ $# == 8 ]; then
   lr=$8
-  if [ $lr = "cosre" ]; then  # for CosineWarmRestart
+  if [ $lr = "cosre" ]; then  # CosineWarmRestart
     lr_class="CosineWarmRestart"
     lr_print="_CR"
-  elif [ $lr = "cos" ]; then  # for CosineWarm
+  elif [ $lr = "cos" ]; then  # CosineWarm
     lr_class="CosineWarm"
     lr_print="_C"
   else  # $lr = "ms"
@@ -157,7 +193,7 @@ fi
 #   lr_print=""
 # fi
 # res_connect choice, other version default is 1acb3(same as version 5). 
-# But for v9 default 'skip'. other choices are 1conv1 3acb3
+# But v9 default 'skip'. other choices are 1conv1 3acb3
 res=$9
 if [ $res = "skip" ]; then
   res_print=""

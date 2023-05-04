@@ -4,18 +4,24 @@ clear all; close all; clc
 
 %% set path
 degradation = 'BI'; % BI, BD
-methods = {'v5xt_j15', 'v5t_i14', 'v5s_f11', 'v5_ps_g12'};
+methods = {'v5fs_plus', 'v5fs'};
+%methods = {'LatticeNet'};
 dataset = {'Set5', 'Set14', 'B100', 'Urban100', 'Manga109'};
 ext = {'*.jpg', '*.png', '*.bmp'};
 num_method = length(methods);
 num_set = length(dataset);
-record_results_txt = ['PSNR_SSIM_Results_', degradation,'_sracnv5.txt'];
+%record_results_txt = ['PSNR_SSIM_Results_', degradation,'_sracnv5.txt'];
+%record_results_txt = ['PSNR_SSIM_Results_', degradation,'_LatticeNet.txt'];
+record_results_txt = ['PSNR_SSIM_Results_', degradation,'_v5fs_x4.txt'];
 results = fopen(fullfile(record_results_txt), 'wt');
-record_means_results_txt = ['PSNR_SSIM_Means_Results_', degradation,'_sracnv5.txt'];
+%record_means_results_txt = ['PSNR_SSIM_Means_Results_', degradation,'_sracnv5.txt'];
+%record_means_results_txt = ['PSNR_SSIM_Means_Results_', degradation,'_LatticeNet.txt'];
+record_means_results_txt = ['PSNR_SSIM_Means_Results_', degradation,'_v5fs_x4.txt'];
 means_results = fopen(fullfile(record_means_results_txt), 'wt');
 
 if strcmp(degradation, 'BI') 
-    scale_all = [2, 3, 4];
+    %scale_all = [2, 3, 4];
+    scale_all = [4];
 else
     scale_all = 3;
 end
@@ -64,7 +70,7 @@ for idx_method = 1:num_method
             fprintf(results, '--------Mean--------\n');
             fprintf('--------Mean--------\n');
             fprintf(results, 'x%d: PSNR= %f SSIM= %f\n', scale, mean(PSNR_all), mean(SSIM_all));
-            fprintf(means_results, 'x%d: PSNR= %f SSIM= %f\n', scale, mean(PSNR_all), mean(SSIM_all));
+            fprintf(means_results, 'x%d: PSNR SSIM= %f %f\n', scale, mean(PSNR_all), mean(SSIM_all));
             fprintf('x%d: PSNR= %f SSIM= %f\n', scale, mean(PSNR_all), mean(SSIM_all));
         end
     end
