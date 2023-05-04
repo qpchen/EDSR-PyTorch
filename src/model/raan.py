@@ -463,6 +463,8 @@ class RAAN(nn.Module):
         # if not self.no_bicubic:
         if self.interpolation == 'Bicubic':
             out = out + F.interpolate(x, scale_factor=self.scale, mode='bicubic')
+        elif self.interpolation == 'Bilinear':
+            out = out + F.interpolate(x, scale_factor=self.scale, mode='bilinear')
         elif self.interpolation == 'Nearest':
             out = out + F.interpolate(x, scale_factor=self.scale, mode='nearest')
         elif self.interpolation == 'PixelShuffle':
