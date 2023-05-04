@@ -113,6 +113,9 @@ interpolation=$5
 if [ $interpolation = "b" ]; then
   interpolation_print=""
   interpolation=""
+elif [ $interpolation = "bl" ]; then
+  interpolation_print="_Biln"
+  interpolation="--interpolation Bilinear"
 elif [ $interpolation = "n" ]; then
   interpolation_print="_Nrst"
   interpolation="--interpolation Nearest"
@@ -123,7 +126,7 @@ elif [ $interpolation = "p" ]; then
   interpolation_print="_PxSh"
   interpolation="--interpolation PixelShuffle"
 else
-  echo "no valid $interpolation ! Please input (b | n | s)."
+  echo "no valid $interpolation ! Please input (b | bl | n | p | s)."
 fi
 # fifth is sr scale
 scale=$6

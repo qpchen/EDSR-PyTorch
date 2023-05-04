@@ -6,40 +6,13 @@
 # ./scripts/train_srarn_v9.sh [mode] [cuda_device] [accummulation_step] [model_size] [interpolation] [sr_scale] [lr_patch_size] [LR_scheduler_class] [init LR] [stage Res] [acb_norm] [upsampling]
 # run example for v9test_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 test b 2 48 ms skip 1acb3 batch befln nolr 2e-4
 # ########### training commands ###########
-# ./scripts/train_raan.sh train 0 1 s b 2 48 ms 4e-4 noStageRes batch NN # training
+# training: ./scripts/train_raan.sh train 0,1 1 s bc 2 48 ms 4e-4 noStageRes batch NN
 
+# training: ./scripts/train_raan.sh resume 1 1 t bc 2 48 ms 4e-4 noStageRes batch NN
+# training: ./scripts/train_raan.sh train 0 1 t bc 3 48 ms 4e-4 noStageRes batch NN
 
-# ./scripts/train_raan.sh train 0 1 xt b 2 48 ms 4e-4 noStageRes batch NN  # training t640
-
-# ################### test: 1acb3 head; BN; before LN;  ######################
-# for batch_befLN/v9l2_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 l2 b 2 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # training shen a100
-
-# for batch_befLN/v9l3_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1,2,3 1 l3 b 2 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # training shen  # larger batch for multi-GPU
-# for batch_befLN/v9l3_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 0,1,2,3 1 l3 b 3 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # training shen  # larger batch for multi-GPU
-# for batch_befLN/v9l3_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0,1,2,3 2 l3 b 4 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # training shen  # larger batch for multi-GPU
-# for batch_befLN/v9l3_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0 2 l3 b 4 48 ms 1acb3 1acb3 batch befln nolr 4e-4  # training shen a100  # larger lr
-
-
-# for batch_befLN/v9fbxt_s64_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 fbxt b 2 64 ms 1acb3 1acb3 batch befln nolr 2e-4  # training shen
-# for batch_befLN/v9fbxt_s64_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 fbxt b 3 64 ms 1acb3 1acb3 batch befln nolr 2e-4  # training shen
-# for batch_befLN/v9fbxt_s64_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0 1 fbxt b 4 64 ms 1acb3 1acb3 batch befln nolr 2e-4  # training shen
-# for batch_befLN/v9fbxt_s64_3acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 fbxt b 2 64 ms 3acb3 1acb3 batch befln nolr 2e-4  # training t640  # for param less than 100K
-# for batch_befLN/v9fbxt_s64_3acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 fbxt b 3 64 ms 3acb3 1acb3 batch befln nolr 2e-4  # training t640
-# for batch_befLN/v9fbxt_s64_3acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0 1 fbxt b 4 64 ms 3acb3 1acb3 batch befln nolr 2e-4  # training shen
-# for batch_befLN/v9fblt_s64_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 fblt b 2 64 ms 1acb3 1acb3 batch befln nolr 2e-4  # training shen
-# for batch_befLN/v9fblt_s64_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 2 1 fblt b 3 64 ms 1acb3 1acb3 batch befln nolr 2e-4  # training shen
-# for batch_befLN/v9fblt_s64_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 3 1 fblt b 4 64 ms 1acb3 1acb3 batch befln nolr 2e-4  # training shen
-# for batch_befLN/v9fs_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 fs b 2 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # training shen
-# for batch_befLN/v9fs_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 fs b 3 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # training shen
-# for batch_befLN/v9fs_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0 1 fs b 4 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # training shen
-
-
-
-# for batch_befLN/v9fbxt_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 fbxt b 2 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # pause shen  # bad for p48
-# for batch_befLN/v9fblt_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 fblt b 2 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # pause shen  # bad for p48
-# for batch/v9fbxt_s64_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 fbxt b 2 64 ms 1acb3 1acb3 batch ln nolr 2e-4  # done shen  # bad 37.899  p48:37.871
-# for batch_noLN/v9fbxt_s64_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 fbxt b 2 64 ms 1acb3 1acb3 batch no nolr 2e-4  # done shen  # better 37.919 p48:37.903
-# for batch/v9fblt_s64_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 fblt b 2 64 ms 1acb3 1acb3 batch ln nolr 2e-4  # waiting shen
+# training t640: ./scripts/train_raan.sh resume 0 1 xt bc 2 48 ms 4e-4 noStageRes batch NN
+# training t640: ./scripts/train_raan.sh train 1 1 xt bc 3 48 ms 4e-4 noStageRes batch NN
 
 # #####################################
 # accept input
@@ -56,7 +29,7 @@ size=$4
 if [ $size = "l" ]; then
   options="--epochs 1000 --decay 500-800-900-950 --srarn_up_feat 180 --depths 8+8+8+8+8+8+8+8+8+8 --dims 180+180+180+180+180+180+180+180+180+180 --mlp_ratios 4+4+4+4+4+4+4+4+4+4 --batch_size 32"
 # ############## model_normal #############
-elif [ $size = "n" ]; then  # model_b use PixelShuffle upsampling with no activate layer, same as SwinIR
+elif [ $size = "n" ]; then
   options="--epochs 1000 --decay 500-800-900-950 --srarn_up_feat 180 --depths 6+6+6+6+6+6+6+6 --dims 180+180+180+180+180+180+180+180 --mlp_ratios 4+4+4+4+4+4+4+4 --batch_size 32"
 # ############## model_small #############
 elif [ $size = "s" ]; then
@@ -76,21 +49,23 @@ else
 fi
 # if the output add interpolation of input
 interpolation=$5
-if [ $interpolation = "b" ]; then  # use bicubic interpolation
+if [ $interpolation = "bc" ]; then
   interpolation_print=""
   interpolation=""
-elif [ $interpolation = "n" ]; then
+elif [ $interpolation = "bl" ]; then
+  interpolation_print="_Biln"
+  interpolation="--interpolation Bilinear"
+elif [ $interpolation = "nr" ]; then
   interpolation_print="_Nrst"
   interpolation="--interpolation Nearest"
-elif [ $interpolation = "s" ]; then
+elif [ $interpolation = "sk" ]; then
   interpolation_print="_Skip"
   interpolation="--interpolation Skip"
-elif [ $interpolation = "p" ]; then
+elif [ $interpolation = "ps" ]; then
   interpolation_print="_PxSh"
   interpolation="--interpolation PixelShuffle"
 else
-  echo "no valid $interpolation ! Please input (b | n | s)."
-  exit
+  echo "no valid $interpolation ! Please input (bc | bl | nr | ps | sk)."
 fi
 # fifth is sr scale
 scale=$6
