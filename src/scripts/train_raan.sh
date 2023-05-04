@@ -53,16 +53,16 @@ if [ $interpolation = "bc" ]; then
   interpolation_print=""
   interpolation=""
 elif [ $interpolation = "bl" ]; then
-  interpolation_print="_AddBiln"
+  interpolation_print="_AddBL"
   interpolation="--interpolation Bilinear"
 elif [ $interpolation = "nr" ]; then
-  interpolation_print="_AddNrst"
+  interpolation_print="_AddNr"
   interpolation="--interpolation Nearest"
 elif [ $interpolation = "sk" ]; then
-  interpolation_print="_AddSkip"
+  interpolation_print="_AddSk"
   interpolation="--interpolation Skip"
 elif [ $interpolation = "ps" ]; then
-  interpolation_print="_AddPxSh"
+  interpolation_print="_AddPS"
   interpolation="--interpolation PixelShuffle"
 else
   echo "no valid $interpolation ! Please input (bc | bl | nr | ps | sk)."
