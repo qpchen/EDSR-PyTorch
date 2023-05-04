@@ -95,7 +95,7 @@ fi
 stageres=${10}
 if [ $stageres = "useStageRes" ]; then
   stageres_opt="--stage_res"
-  stageres_print="_useStgRes"
+  stageres_print="_StgRes"
 elif [ $stageres = "noStageRes" ]; then  # better on test! better on other?
   stageres_opt=""
   stageres_print="_noStgRes"
