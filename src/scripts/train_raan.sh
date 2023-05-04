@@ -28,8 +28,8 @@ size=$4
 # ############## model_large #############
 if [ $size = "l" ]; then
   options="--epochs 1000 --decay 500-800-900-950 --srarn_up_feat 180 --depths 8+8+8+8+8+8+8+8+8+8 --dims 180+180+180+180+180+180+180+180+180+180 --mlp_ratios 4+4+4+4+4+4+4+4+4+4 --batch_size 32"
-# ############## model_normal #############
-elif [ $size = "n" ]; then
+# ############## model_base #############
+elif [ $size = "b" ]; then
   options="--epochs 1000 --decay 500-800-900-950 --srarn_up_feat 180 --depths 6+6+6+6+6+6+6+6 --dims 180+180+180+180+180+180+180+180 --mlp_ratios 4+4+4+4+4+4+4+4 --batch_size 32"
 # ############## model_small #############
 elif [ $size = "s" ]; then
