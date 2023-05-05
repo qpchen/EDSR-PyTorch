@@ -36,6 +36,10 @@ elif [ $2 = "fbxt" ]; then
   dim_configs="--srarn_up_feat 24 --depths 6+6 --dims 24+24"
 elif [ $2 = "fs" ]; then
   dim_configs="--srarn_up_feat 60 --depths 6+6+6+6+6 --dims 60+60+60+60+60"
+elif [ $2 = "base" ]; then
+  dim_configs="--ShMn_feats 64 --ShMkSize 7"
+elif [ $2 = "tiny" ]; then
+  dim_configs="--ShMn_feats 32 --ShMkSize 3"
 fi
 
 if [ $model = "FSRCNN" ]; then
@@ -77,6 +81,8 @@ elif [ $model = "EDSR" ]; then
   python main.py --n_threads 6 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --model EDSR --n_resblocks 32 --n_feats 256 --res_scale 0.1 --save ../runtime_models/logs/EDSR_x$3  --pre_train ../models/EDSR_x$3.pt --test_only --reset --runtime --times $5 $6 #--no_count --save_result 
 elif [ $model = "RCAN" ]; then
   python main.py --n_threads 6 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --template RCAN --save ../runtime_models/logs/RCAN_x$3 --test_only --reset --runtime --times $5 $6 #--no_count --save_result 
+elif [ $model = "ShuffleMixer" ]; then
+  python main.py --n_threads 6 --scale $3 --patch_size $patch --data_test 720P --n_colors 3 $dim_configs --model ShuffleMixer --save ../runtime_models/logs/ShuffleMixer-$2_x$3 --pre_train ../runtime_models/shufflemixer_$2_x$3.pth --test_only --reset --runtime --times $5 $6 #--no_count --save_result 
 else
   # echo "The model $1 is not supported!"
   python main.py --n_threads 6 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --model $model --save ../runtime_models/logs/${model}_x$3 --pre_train ../runtime_models/${model}_x$3.pt --test_only --reset --runtime --times $5 $6 #--no_count --save_result 

@@ -236,6 +236,13 @@ parser.add_argument('--mlp_ratios', type=str, default='4+4',
 parser.add_argument('--stage_res', action='store_true',
                     help='use residual connect at stage level')
 
+# ShuffleMixer settings
+parser.add_argument('--ShMn_feats', type=int, default=64,
+                    help='Number of channels. (Use in ShuffleMixer, base 64, tiny 32)')
+parser.add_argument('--ShMkSize', type=int, default=7,
+                    help='kernel size of Depthwise convolution. (Use in ShuffleMixer, base 7, tiny 3)')
+
+
 args = parser.parse_args()
 # add following means receive [] as input, replace the way of main.py [], to use in jupyter notebook
 # args = parser.parse_args(args=[])
