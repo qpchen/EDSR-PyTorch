@@ -14,6 +14,23 @@
 # training t640: ./scripts/train_raan.sh resume 0 1 xt bc 2 48 ms 4e-4 noStageRes batch NN
 # training t640: ./scripts/train_raan.sh train 1 1 xt bc 3 48 ms 4e-4 noStageRes batch NN
 
+# ##### test add bilinear ########
+# training: ./scripts/train_raan.sh train 1 1 t bl 2 48 ms 4e-4 noStageRes batch NN
+# waiting: ./scripts/train_raan.sh train 0 1 xt bl 2 48 ms 4e-4 noStageRes batch NN
+
+# ##### test add nearest ########
+# training: ./scripts/train_raan.sh train 0 1 t nr 2 48 ms 4e-4 noStageRes batch NN
+# waiting: ./scripts/train_raan.sh train 0 1 xt nr 2 48 ms 4e-4 noStageRes batch NN
+
+# ##### test add pixel shuffle ########
+# training: ./scripts/train_raan.sh train 3 1 t ps 2 48 ms 4e-4 noStageRes batch NN
+# waiting: ./scripts/train_raan.sh train 0 1 xt ps 2 48 ms 4e-4 noStageRes batch NN
+
+# ##### test small mlp_ratios ########
+# waiting: ./scripts/train_raan.sh train 3 1 t_mlp2 bl 2 48 ms 4e-4 noStageRes batch NN
+# waiting: ./scripts/train_raan.sh train 0 1 xt_mlp2 bl 2 48 ms 4e-4 noStageRes batch NN
+
+
 # #####################################
 # accept input
 # first is run mode, 
@@ -37,9 +54,13 @@ elif [ $size = "s" ]; then
 # ############## model_tiny #############
 elif [ $size = "t" ]; then
   options="--epochs 2000 --decay 1000-1600-1800-1900 --srarn_up_feat 42 --depths 6+6+6 --dims 42+42+42 --mlp_ratios 4+4+4 --batch_size 32"
+elif [ $size = "t_mlp2" ]; then
+  options="--epochs 2000 --decay 1000-1600-1800-1900 --srarn_up_feat 42 --depths 6+6+6 --dims 42+42+42 --mlp_ratios 2+2+2 --batch_size 32"
 # ############## model_xt extremely tiny #############
 elif [ $size = "xt" ]; then
   options="--epochs 3000 --decay 1500-2400-2700-2850 --srarn_up_feat 24 --depths 6+6 --dims 24+24 --mlp_ratios 4+4 --batch_size 32"
+elif [ $size = "xt_mlp2" ]; then
+  options="--epochs 3000 --decay 1500-2400-2700-2850 --srarn_up_feat 24 --depths 6+6 --dims 24+24 --mlp_ratios 2+2 --batch_size 32"
 # ############## test_model #############
 elif [ $size = "test" ]; then  # test with lower costs
   options="--epochs 3000 --decay 1500-2400-2700-2850 --srarn_up_feat 6 --depths 2+4 --dims 6+12 --mlp_ratios 4+4 --batch_size 4"
