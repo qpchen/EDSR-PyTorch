@@ -25,7 +25,7 @@
 # training: ./scripts/train_raan.sh train 0,1 1 xs nr 2 48 ms 8e-4 noStageRes batch NN ACB 21
 
 # training: ./scripts/train_raan.sh resume 0 1 t nr 2 48 ms 4e-4 noStageRes batch NN ACB 21
-# training: ./scripts/train_raan.sh train 1 1 t nr 3 48 ms 4e-4 noStageRes batch NN ACB 21
+# training: ./scripts/train_raan.sh resume 1 1 t nr 3 48 ms 4e-4 noStageRes batch NN ACB 21
 # training: ./scripts/train_raan.sh train 0 1 t nr 4 48 ms 4e-4 noStageRes batch NN ACB 21
 
 # training: ./scripts/train_raan.sh train 1 1 xt nr 2 48 ms 4e-4 noStageRes batch NN ACB 21
@@ -33,15 +33,15 @@
 # training: ./scripts/train_raan.sh train 1 1 xt nr 4 48 ms 4e-4 noStageRes batch NN ACB 21
 
   # ####ablation staty
-  # 1 waiting: ./scripts/train_raan.sh train 1 1 xt nr 2 48 ms 4e-4 noStageRes batch NN noACB 21
+  # 1 waiting: ./scripts/train_raan.sh train 0 1 xt nr 2 48 ms 4e-4 noStageRes batch NN noACB 21
   # 1 waiting: ./scripts/train_raan.sh train 1 1 xt nr 2 48 ms 4e-4 noStageRes inst NN ACB 21
-  # 1 waiting: ./scripts/train_raan.sh train 1 1 xt nr 2 48 ms 4e-4 noStageRes no NN ACB 21
-  # 2 waiting: ./scripts/train_raan.sh train 1 1 xt nr 2 48 ms 4e-4 noStageRes batch NN ACB 7
-  # 2 waiting: ./scripts/train_raan.sh train 1 1 xt nr 2 48 ms 4e-4 noStageRes batch NN ACB 14
+  # 1 waiting: ./scripts/train_raan.sh train 2 1 xt nr 2 48 ms 4e-4 noStageRes no NN ACB 21
+  # 2 waiting: ./scripts/train_raan.sh train 3 1 xt nr 2 48 ms 4e-4 noStageRes batch NN ACB 7
+  # 2 waiting: ./scripts/train_raan.sh train 0 1 xt nr 2 48 ms 4e-4 noStageRes batch NN ACB 14
   # 2 waiting: ./scripts/train_raan.sh train 1 1 xt nr 2 48 ms 4e-4 noStageRes batch NN ACB 28
-  # 3 waiting: ./scripts/train_raan.sh train 1 1 xt nr 2 48 ms 4e-4 useStageRes batch NN ACB 21
-  # 4 waiting: ./scripts/train_raan.sh train 0 1 xt_mlp2 nr 2 48 ms 4e-4 noStageRes batch NN ACB 21
-  # 6 waiting: ./scripts/train_raan.sh train 1 1 xt nr 2 48 ms 4e-4 noStageRes batch PSnA ACB 21
+  # 3 waiting: ./scripts/train_raan.sh train 2 1 xt nr 2 48 ms 4e-4 useStageRes batch NN ACB 21
+  # 4 waiting: ./scripts/train_raan.sh train 3 1 xt_mlp2 nr 2 48 ms 4e-4 noStageRes batch NN ACB 21
+  # 6 waiting: ./scripts/train_raan.sh train 0 1 xt nr 2 48 ms 4e-4 noStageRes batch PSnA ACB 21
   # 6 waiting: ./scripts/train_raan.sh train 1 1 xt nr 2 48 ms 4e-4 noStageRes batch NNnPA ACB 21
 
 # ##### test add pixel shuffle ######## _t: 38.089 327
@@ -204,9 +204,9 @@ fi
 # #####################################
 # prepare program options parameters
 # v9 must use layernorm
-run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $interpolation --acb_norm $acb $stageres_opt --upsampling $upsam_opt --loss 1*SmoothL1 --lr $initlr --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class $lr_class $use_acb_opt --model RAAN"
+run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $interpolation --acb_norm $acb $stageres_opt --upsampling $upsam_opt --loss 1*SmoothL1 --lr $initlr --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class $lr_class $use_acb_opt $LKAk_opt --model RAAN"
 father_dir="../raan${upsam_print}${use_acb_print}${acb_print}${stageres_print}${interpolation_print}${lr_print}${initlr_print}"
-file_name="v1${size}${patch_print}_x${scale}"
+file_name="v1${size}${patch_print}${LKAk_print}_x${scale}"
 save_dir="${father_dir}/${file_name}"
 log_file="${father_dir}/logs/${file_name}.log"
 
