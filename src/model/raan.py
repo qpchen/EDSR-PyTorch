@@ -54,14 +54,14 @@ class Mlp(nn.Module):
 
 
 class LKA(nn.Module):
-    def __init__(self, dim, use_acb=True, deploy=False, acb_norm="batch"):
+    def __init__(self, dim, dw_ker=5, dwd_ker=7, dwd_pad=9, dwd_dil=3, use_acb=True, deploy=False, acb_norm="batch"):
         super().__init__()
         if use_acb:
-            self.conv0 = acb.ACBlock(dim, dim, 5, padding=2, groups=dim, deploy=deploy, norm=acb_norm)
-            self.conv_spatial = acb.ACBlock(dim, dim, 7, stride=1, padding=9, groups=dim, dilation=3, deploy=deploy, norm=acb_norm)
+            self.conv0 = acb.ACBlock(dim, dim, dw_ker, padding=(dw_ker-1)//2, groups=dim, deploy=deploy, norm=acb_norm)
+            self.conv_spatial = acb.ACBlock(dim, dim, dwd_ker, stride=1, padding=dwd_pad, groups=dim, dilation=dwd_dil, deploy=deploy, norm=acb_norm)
         else:
-            self.conv0 = nn.Conv2d(dim, dim, 5, padding=2, groups=dim)
-            self.conv_spatial = nn.Conv2d(dim, dim, 7, stride=1, padding=9, groups=dim, dilation=3)
+            self.conv0 = nn.Conv2d(dim, dim, dw_ker, padding=(dw_ker-1)//2, groups=dim)
+            self.conv_spatial = nn.Conv2d(dim, dim, dwd_ker, stride=1, padding=dwd_pad, groups=dim, dilation=dwd_dil)
         self.conv1 = nn.Conv2d(dim, dim, 1)
 
 
@@ -75,12 +75,12 @@ class LKA(nn.Module):
 
 
 class Attention(nn.Module):
-    def __init__(self, d_model, use_acb=True, deploy=False, acb_norm="batch"):
+    def __init__(self, d_model, dw_ker=5, dwd_ker=7, dwd_pad=9, dwd_dil=3, use_acb=True, deploy=False, acb_norm="batch"):
         super().__init__()
 
         self.proj_1 = nn.Conv2d(d_model, d_model, 1)
         self.activation = nn.GELU()
-        self.spatial_gating_unit = LKA(d_model, use_acb=use_acb, deploy=deploy, acb_norm=acb_norm)
+        self.spatial_gating_unit = LKA(d_model, dw_ker=dw_ker, dwd_ker=dwd_ker, dwd_pad=dwd_pad, dwd_dil=dwd_dil, use_acb=use_acb, deploy=deploy, acb_norm=acb_norm)
         self.proj_2 = nn.Conv2d(d_model, d_model, 1)
 
     def forward(self, x):
@@ -94,11 +94,11 @@ class Attention(nn.Module):
 
 
 class Block(nn.Module):
-    def __init__(self, dim, mlp_ratio=4., drop=0.,drop_path=0., act_layer=nn.GELU, use_acb=True, deploy=False, acb_norm="batch"):
+    def __init__(self, dim, mlp_ratio=4., drop=0.,drop_path=0., act_layer=nn.GELU, dw_ker=5, dwd_ker=7, dwd_pad=9, dwd_dil=3, use_acb=True, deploy=False, acb_norm="batch"):
         super().__init__()
         self.norm1 = nn.BatchNorm2d(dim)
         # self.norm1 = LayerNorm(dim, data_format="channels_first")
-        self.attn = Attention(dim, use_acb=use_acb, deploy=deploy, acb_norm=acb_norm)
+        self.attn = Attention(dim, dw_ker=dw_ker, dwd_ker=dwd_ker, dwd_pad=dwd_pad, dwd_dil=dwd_dil, use_acb=use_acb, deploy=deploy, acb_norm=acb_norm)
         self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
 
         self.norm2 = nn.BatchNorm2d(dim)
@@ -252,6 +252,12 @@ class RAAN(nn.Module):
         use_norm = not args.no_layernorm
         use_inf = args.load_inf
         acb_norm = args.acb_norm
+        # lka_kernel = args.LKAkSize  # default: 21
+        dwd_dil = args.DWDdil  # default: 3
+        dwd_ker = args.DWDkSize  # default: 7
+        # dwd_ker = lka_kernel // dwd_dil  # default: 7
+        dw_ker = 2 * dwd_dil - 1  # default: 5
+        dwd_pad = ((dwd_ker - 1) // 2) * dwd_dil  # default: 9
         if args.srarn_up_feat == 0:
             num_up_feat = embed_dims[-1]
         else:
@@ -302,7 +308,7 @@ class RAAN(nn.Module):
                                             deploy=use_inf, acb_norm=acb_norm)
 
             block = nn.ModuleList([Block(
-                dim=embed_dims[i], mlp_ratio=mlp_ratios[i], drop=drop_rate, drop_path=dpr[cur + j], use_acb=use_acb, deploy=use_inf, acb_norm=acb_norm)
+                dim=embed_dims[i], mlp_ratio=mlp_ratios[i], drop=drop_rate, drop_path=dpr[cur + j], dw_ker=dw_ker, dwd_ker=dwd_ker, dwd_pad=dwd_pad, dwd_dil=dwd_dil, use_acb=use_acb, deploy=use_inf, acb_norm=acb_norm)
                 for j in range(depths[i])])
             norm = norm_layer(embed_dims[i])
             cur += depths[i]
@@ -345,7 +351,7 @@ class RAAN(nn.Module):
                     common.Upsampler(convblock, self.scale, num_up_feat, act='gelu', deploy=use_inf, norm=acb_norm),
                     convblock(num_up_feat, in_chans, 3, 1, 1, deploy=use_inf, norm=acb_norm)
                 )
-        elif self.upsampling == 'Nearest':
+        elif self.upsampling == 'Nearest' or self.upsampling == 'NearestNoPA':
             # Nearest + Conv/ACBlock
             if (self.scale & (self.scale - 1)) == 0:  # 缩放因子等于 2^n
                 for i in range(int(math.log(self.scale, 2))):  #  循环 n 次
@@ -362,13 +368,20 @@ class RAAN(nn.Module):
                 # 报错，缩放因子不对
                 raise ValueError(f'scale {self.scale} is not supported. ' 'Supported scales: 2^n and 3.')
 
-            self.postup = nn.Sequential(
-                PA(num_up_feat),
-                nn.GELU(),
-                acb.ACBlock(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf, norm=acb_norm) if use_acb else nn.Conv2d(num_up_feat, num_up_feat, 3, 1, 1),
-                nn.GELU(),
-                acb.ACBlock(num_up_feat, in_chans, 3, 1, 1, deploy=use_inf, norm=acb_norm) if use_acb else nn.Conv2d(num_up_feat, in_chans, 3, 1, 1)
-            )
+            if self.upsampling == 'Nearest':
+                self.postup = nn.Sequential(
+                    PA(num_up_feat),
+                    nn.GELU(),
+                    acb.ACBlock(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf, norm=acb_norm) if use_acb else nn.Conv2d(num_up_feat, num_up_feat, 3, 1, 1),
+                    nn.GELU(),
+                    acb.ACBlock(num_up_feat, in_chans, 3, 1, 1, deploy=use_inf, norm=acb_norm) if use_acb else nn.Conv2d(num_up_feat, in_chans, 3, 1, 1)
+                )
+            else:
+                self.postup = nn.Sequential(
+                    acb.ACBlock(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf, norm=acb_norm) if use_acb else nn.Conv2d(num_up_feat, num_up_feat, 3, 1, 1),
+                    nn.GELU(),
+                    acb.ACBlock(num_up_feat, in_chans, 3, 1, 1, deploy=use_inf, norm=acb_norm) if use_acb else nn.Conv2d(num_up_feat, in_chans, 3, 1, 1)
+                )
         
         if self.interpolation == 'PixelShuffle':
             convblock = common.default_conv
@@ -450,7 +463,7 @@ class RAAN(nn.Module):
         elif self.upsampling == 'PixelShuffle':
             out = self.preup(self.preup_norm(out))
             out = self.pixelshuffle(out)
-        elif self.upsampling == 'Nearest':
+        elif self.upsampling == 'Nearest' or self.upsampling == 'NearestNoPA':
             out = self.preup(self.preup_norm(out))
             if (self.scale & (self.scale - 1)) == 0:  # 缩放因子等于 2^n
                 for i in range(int(math.log(self.scale, 2))):  #  循环 n 次

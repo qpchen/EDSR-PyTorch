@@ -235,6 +235,12 @@ parser.add_argument('--mlp_ratios', type=str, default='4+4',
                     help='MLp ratios at each stage')
 parser.add_argument('--stage_res', action='store_true',
                     help='use residual connect at stage level')
+# parser.add_argument('--LKAkSize', type=int, default=21,
+#                     help='kernel size of convolution decomposed by LKA. (default 21, DW-D-Conv kernel=LKAkSize/LKAdilation)')
+parser.add_argument('--DWDkSize', type=int, default=7,
+                    help='kernel size of DepthWise dilation convolution. (default 7)')
+parser.add_argument('--DWDdil', type=int, default=3,
+                    help='dilation of DepthWise dilation convolution. (default 3)')
 
 # ShuffleMixer settings
 parser.add_argument('--ShMn_feats', type=int, default=64,
