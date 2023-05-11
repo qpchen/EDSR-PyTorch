@@ -54,7 +54,7 @@ class Mlp(nn.Module):
 
 
 class LKA(nn.Module):
-    def __init__(self, dim, dw_ker=5, dwd_ker=7, dwd_pad=9, dwd_dil=3, use_acb=True, deploy=False, acb_norm="batch"):
+    def __init__(self, dim, dw_ker=5, dwd_ker=7, dwd_pad=9, dwd_dil=3, use_acb=True, deploy=False, acb_norm="batch", use_attn=True):
         super().__init__()
         if use_acb:
             self.conv0 = acb.ACBlock(dim, dim, dw_ker, padding=(dw_ker-1)//2, groups=dim, deploy=deploy, norm=acb_norm)
@@ -63,24 +63,26 @@ class LKA(nn.Module):
             self.conv0 = nn.Conv2d(dim, dim, dw_ker, padding=(dw_ker-1)//2, groups=dim)
             self.conv_spatial = nn.Conv2d(dim, dim, dwd_ker, stride=1, padding=dwd_pad, groups=dim, dilation=dwd_dil)
         self.conv1 = nn.Conv2d(dim, dim, 1)
-
+        self.use_multi = use_attn
 
     def forward(self, x):
         u = x.clone()        
         attn = self.conv0(x)
         attn = self.conv_spatial(attn)
         attn = self.conv1(attn)
-
-        return u * attn
+        if self.use_multi:
+            return u * attn
+        else:
+            return attn
 
 
 class Attention(nn.Module):
-    def __init__(self, d_model, dw_ker=5, dwd_ker=7, dwd_pad=9, dwd_dil=3, use_acb=True, deploy=False, acb_norm="batch"):
+    def __init__(self, d_model, dw_ker=5, dwd_ker=7, dwd_pad=9, dwd_dil=3, use_acb=True, deploy=False, acb_norm="batch", use_attn=True):
         super().__init__()
 
         self.proj_1 = nn.Conv2d(d_model, d_model, 1)
         self.activation = nn.GELU()
-        self.spatial_gating_unit = LKA(d_model, dw_ker=dw_ker, dwd_ker=dwd_ker, dwd_pad=dwd_pad, dwd_dil=dwd_dil, use_acb=use_acb, deploy=deploy, acb_norm=acb_norm)
+        self.spatial_gating_unit = LKA(d_model, dw_ker=dw_ker, dwd_ker=dwd_ker, dwd_pad=dwd_pad, dwd_dil=dwd_dil, use_acb=use_acb, deploy=deploy, acb_norm=acb_norm, use_attn=use_attn)
         self.proj_2 = nn.Conv2d(d_model, d_model, 1)
 
     def forward(self, x):
@@ -94,11 +96,11 @@ class Attention(nn.Module):
 
 
 class Block(nn.Module):
-    def __init__(self, dim, mlp_ratio=4., drop=0.,drop_path=0., act_layer=nn.GELU, dw_ker=5, dwd_ker=7, dwd_pad=9, dwd_dil=3, use_acb=True, deploy=False, acb_norm="batch"):
+    def __init__(self, dim, mlp_ratio=4., drop=0.,drop_path=0., act_layer=nn.GELU, dw_ker=5, dwd_ker=7, dwd_pad=9, dwd_dil=3, use_acb=True, deploy=False, acb_norm="batch", use_attn=True):
         super().__init__()
         self.norm1 = nn.BatchNorm2d(dim)
         # self.norm1 = LayerNorm(dim, data_format="channels_first")
-        self.attn = Attention(dim, dw_ker=dw_ker, dwd_ker=dwd_ker, dwd_pad=dwd_pad, dwd_dil=dwd_dil, use_acb=use_acb, deploy=deploy, acb_norm=acb_norm)
+        self.attn = Attention(dim, dw_ker=dw_ker, dwd_ker=dwd_ker, dwd_pad=dwd_pad, dwd_dil=dwd_dil, use_acb=use_acb, deploy=deploy, acb_norm=acb_norm, use_attn=use_attn)
         self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
 
         self.norm2 = nn.BatchNorm2d(dim)
@@ -252,6 +254,7 @@ class RAAN(nn.Module):
         use_norm = not args.no_layernorm
         use_inf = args.load_inf
         acb_norm = args.acb_norm
+        use_attn = not args.no_attn
         # lka_kernel = args.LKAkSize  # default: 21
         dwd_dil = args.DWDdil  # default: 3
         dwd_ker = args.DWDkSize  # default: 7
@@ -308,7 +311,7 @@ class RAAN(nn.Module):
                                             deploy=use_inf, acb_norm=acb_norm)
 
             block = nn.ModuleList([Block(
-                dim=embed_dims[i], mlp_ratio=mlp_ratios[i], drop=drop_rate, drop_path=dpr[cur + j], dw_ker=dw_ker, dwd_ker=dwd_ker, dwd_pad=dwd_pad, dwd_dil=dwd_dil, use_acb=use_acb, deploy=use_inf, acb_norm=acb_norm)
+                dim=embed_dims[i], mlp_ratio=mlp_ratios[i], drop=drop_rate, drop_path=dpr[cur + j], dw_ker=dw_ker, dwd_ker=dwd_ker, dwd_pad=dwd_pad, dwd_dil=dwd_dil, use_acb=use_acb, deploy=use_inf, acb_norm=acb_norm, use_attn=use_attn)
                 for j in range(depths[i])])
             norm = norm_layer(embed_dims[i])
             cur += depths[i]

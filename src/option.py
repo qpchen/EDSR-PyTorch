@@ -230,7 +230,7 @@ parser.add_argument('--runtime', action='store_true',
 parser.add_argument('--times', type=int, default=10,
                     help='running model for multi times to calculate the average runtime.')
 
-# RAAN settings
+# ALAN settings
 parser.add_argument('--mlp_ratios', type=str, default='4+4',
                     help='MLp ratios at each stage')
 parser.add_argument('--stage_res', action='store_true',
@@ -241,6 +241,8 @@ parser.add_argument('--DWDkSize', type=int, default=7,
                     help='kernel size of DepthWise dilation convolution. (default 7)')
 parser.add_argument('--DWDdil', type=int, default=3,
                     help='dilation of DepthWise dilation convolution. (default 3)')
+parser.add_argument('--no_attn', action='store_true',
+                    help='do not use element-wise multiply as attention in LKA')
 
 # ShuffleMixer settings
 parser.add_argument('--ShMn_feats', type=int, default=64,
