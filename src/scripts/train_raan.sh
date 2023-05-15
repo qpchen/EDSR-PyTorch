@@ -200,13 +200,13 @@ elif [ $LKAk = "28" ]; then
   LKAk_print="_LK28"
   LKAk_opt="--DWDkSize 7 --DWDdil 4"
 elif [ $LKAk = "39" ]; then 
-  LKAk_print="_LK28"
+  LKAk_print="_LK39"
   LKAk_opt="--DWDkSize 7 --DWDdil 5"
 elif [ $LKAk = "47" ]; then 
-  LKAk_print="_LK28"
+  LKAk_print="_LK47"
   LKAk_opt="--DWDkSize 7 --DWDdil 6"
 elif [ $LKAk = "55" ]; then 
-  LKAk_print="_LK28"
+  LKAk_print="_LK55"
   LKAk_opt="--DWDkSize 7 --DWDdil 7"
 else
   echo "no valid $LKAk ! Please input (7 | 14 | 21 | 28)."
