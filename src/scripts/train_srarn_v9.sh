@@ -64,12 +64,12 @@
 # batch_befLN/v9fs_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0 1 fs b 4 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # done shen
 
   # ############## test larger init LR ###############  !!! fs paused at epoch 1000 and good enough, l3 need further train
-  # batch_befLN/v9fs_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 fs b 2 48 ms 1acb3 1acb3 batch befln nolr 8e-4  # pause shen
-  # batch_befLN/v9fs_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 0 1 fs b 3 48 ms 1acb3 1acb3 batch befln nolr 8e-4  # pause shen
-  # batch_befLN/v9fs_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 2 1 fs b 4 48 ms 1acb3 1acb3 batch befln nolr 8e-4  # pause shen
-  # batch_befLN/v9l3_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1,2,3 1 l3 b 2 48 ms 1acb3 1acb3 batch befln nolr 8e-4  # pause shen  # larger batch multi-GPU
-  # batch_befLN/v9l3_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 0,1,2,3 1 l3 b 3 48 ms 1acb3 1acb3 batch befln nolr 8e-4  # pause shen  # larger batch multi-GPU
-  # batch_befLN/v9l3_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0,1 1 l3 b 4 48 ms 1acb3 1acb3 batch befln nolr 16e-4  # training shen a100  # larger lr
+  # batch_befLN/v9fs_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 fs b 2 48 ms 1acb3 1acb3 batch befln nolr 8e-4  # done shen
+  # batch_befLN/v9fs_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh resume 0 1 fs b 3 48 ms 1acb3 1acb3 batch befln nolr 8e-4  # training shen
+  # batch_befLN/v9fs_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh resume 1 1 fs b 4 48 ms 1acb3 1acb3 batch befln nolr 8e-4  # training shen
+  # batch_befLN/v9l3_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh resume 0,1,2,3 1 l3 b 2 48 ms 1acb3 1acb3 batch befln nolr 8e-4  # training shen  # larger batch multi-GPU
+  # batch_befLN/v9l3_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh resume 0,1,2,3 1 l3 b 3 48 ms 1acb3 1acb3 batch befln nolr 8e-4  # training shen  # larger batch multi-GPU
+  # batch_befLN/v9l3_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh resume 0,1 1 l3 b 4 48 ms 1acb3 1acb3 batch befln nolr 16e-4  # pause shen a100  # larger lr
   ###################################################
   # ########## change upsampling to PS && larger init LR #############
   # batch_befLN/v9l3_UpPS_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1,2,3 1 l3_UpPS b 2 48 ms 1acb3 1acb3 batch befln nolr 8e-4  # pause shen  # larger batch multi-GPU
@@ -115,7 +115,7 @@ elif [ $size = "l2" ]; then  # model_b use PixelShuffle upsampling with no activ
 elif [ $size = "l2_ps" ]; then  # model_b use PixelShuffle upsampling with no activate layer, same as SwinIR
   options="--epochs 1000 --decay 500-800-900-950 --upsampling PixelShuffle --no_act_ps --srarn_up_feat 120 --depths 8+8+8+8+8+8+8+8 --dims 120+120+120+120+120+120+120+120 --batch_size 32"
 elif [ $size = "l3" ]; then  # model_b use PixelShuffle upsampling with no activate layer, same as SwinIR
-  options="--epochs 1000 --decay 800-900-950 --upsampling Nearest --no_act_ps --srarn_up_feat 180 --depths 6+6+6+6+6+6+6+6 --dims 180+180+180+180+180+180+180+180 --batch_size 32"
+  options="--epochs 1000 --decay 500-800-900-950 --upsampling Nearest --no_act_ps --srarn_up_feat 180 --depths 6+6+6+6+6+6+6+6 --dims 180+180+180+180+180+180+180+180 --batch_size 32"
 elif [ $size = "l3_UpPS" ]; then  # model_b use PixelShuffle upsampling with no activate layer, same as SwinIR
   options="--epochs 1000 --decay 500-800-900-950 --upsampling PixelShuffle --no_act_ps --srarn_up_feat 180 --depths 6+6+6+6+6+6+6+6 --dims 180+180+180+180+180+180+180+180 --batch_size 32"
 elif [ $size = "l4" ]; then  # model_b use PixelShuffle upsampling with no activate layer, same as SwinIR
@@ -124,7 +124,7 @@ elif [ $size = "l4" ]; then  # model_b use PixelShuffle upsampling with no activ
 elif [ $size = "s" ]; then
   options="--epochs 1500 --decay 750-1200-1350-1425 --upsampling Nearest --srarn_up_feat 60 --depths 6+6+6+6 --dims 60+60+60+60 --batch_size 32"
 elif [ $size = "fs" ]; then
-  options="--epochs 1500 --decay 1200-1350-1425 --upsampling Nearest --srarn_up_feat 60 --depths 6+6+6+6+6 --dims 60+60+60+60+60 --batch_size 32"
+  options="--epochs 1500 --decay 750-1200-1350-1425 --upsampling Nearest --srarn_up_feat 60 --depths 6+6+6+6+6 --dims 60+60+60+60+60 --batch_size 32"
 # ############## fixed block model_lt larger tiny #############
 elif [ $size = "fblt" ]; then
   options="--epochs 2000 --decay 1000-1600-1800-1900 --upsampling Nearest --srarn_up_feat 42 --depths 6+6+6 --dims 42+42+42 --batch_size 32"
@@ -287,6 +287,11 @@ then
   echo "load inference version of acb to eval:"
   echo "$run_command --data_test Set5+Set14+B100+Urban100+Manga109 --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf"
   $run_command --data_test Set5+Set14+B100+Urban100+Manga109 --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf
+elif [ $mode = "eval_plus" ]
+then
+  echo "load inference version of acb to eval:"
+  echo "$run_command --data_test Set5+Set14+B100+Urban100+Manga109 --save ${save_dir}_test_plus --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf --self_ensemble"
+  $run_command --data_test Set5+Set14+B100+Urban100+Manga109 --save ${save_dir}_test_plus --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf --self_ensemble
 elif [ $mode = "runtime" ]
 then
   # echo "load inference version of acb to test the runtime:"
