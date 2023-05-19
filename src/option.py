@@ -169,6 +169,8 @@ parser.add_argument('--rf2', type=int, default='4',
 # ACBlock or DBBlock inference-time settings
 parser.add_argument('--use_acb', action='store_true',
                     help='use ACBlock instead of Conv2D')
+parser.add_argument('--use_dbb', action='store_true',
+                    help='use DBBlock instead of Conv2D, when use_acb set to true')
 parser.add_argument('--load_inf', action='store_true',
                     help='Load ACBlock or DBBlock using inference-time Structure')
 parser.add_argument('--inf_switch', action='store_true',

@@ -181,8 +181,11 @@ if [ $use_acb = "ACB" ]; then  # best? use Nearest-Neibor
 elif [ $use_acb = "noACB" ]; then 
   use_acb_print="_noACB"
   use_acb_opt=""
+elif [ $use_acb = "DBB" ]; then 
+  use_acb_print="_DBB"
+  use_acb_opt="--use_acb --use_dbb"
 else
-  echo "no valid $use_acb ! Please input (ACB | noACB)."
+  echo "no valid $use_acb ! Please input (ACB | DBB | noACB)."
   exit
 fi
 # set large kernel (LKA) size

@@ -10,17 +10,18 @@ import math
 
 from model import common
 from model import acb
+from model.diversebranchblock import DiverseBranchBlock
 
 def make_model(args, parent=False):
     return RAAN(args)
 
 class Mlp(nn.Module):
-    def __init__(self, in_features, hidden_features=None, out_features=None, act_layer=nn.GELU, drop=0., use_acb=True, deploy=False, acb_norm="batch"):
+    def __init__(self, in_features, hidden_features=None, out_features=None, act_layer=nn.GELU, drop=0., use_acb=True, use_dbb=False, deploy=False, acb_norm="batch"):
         super().__init__()
         out_features = out_features or in_features
         hidden_features = hidden_features or in_features
         self.fc1 = nn.Conv2d(in_features, hidden_features, 1)
-        self.dwconv = DWConv(hidden_features, use_acb=use_acb, deploy=deploy, acb_norm=acb_norm)
+        self.dwconv = DWConv(hidden_features, use_acb=use_acb, use_dbb=use_dbb, deploy=deploy, acb_norm=acb_norm)
         self.act = act_layer()
         self.fc2 = nn.Conv2d(hidden_features, out_features, 1)
         self.drop = nn.Dropout(drop)
@@ -54,11 +55,16 @@ class Mlp(nn.Module):
 
 
 class LKA(nn.Module):
-    def __init__(self, dim, dw_ker=5, dwd_ker=7, dwd_pad=9, dwd_dil=3, use_acb=True, deploy=False, acb_norm="batch", use_attn=True):
+    def __init__(self, dim, dw_ker=5, dwd_ker=7, dwd_pad=9, dwd_dil=3, use_acb=True, use_dbb=False, deploy=False, acb_norm="batch", use_attn=True):
         super().__init__()
         if use_acb:
-            self.conv0 = acb.ACBlock(dim, dim, dw_ker, padding=(dw_ker-1)//2, groups=dim, deploy=deploy, norm=acb_norm)
-            self.conv_spatial = acb.ACBlock(dim, dim, dwd_ker, stride=1, padding=dwd_pad, groups=dim, dilation=dwd_dil, deploy=deploy, norm=acb_norm)
+            if use_dbb:
+                self.conv0 = DiverseBranchBlock(dim, dim, dw_ker, padding=(dw_ker-1)//2, groups=dim, deploy=deploy)
+                # self.conv_spatial = DiverseBranchBlock(dim, dim, dwd_ker, stride=1, padding=dwd_pad, groups=dim, dilation=dwd_dil, deploy=deploy)  # 不能处理 padding != kernel_size // 2的情况
+                self.conv_spatial = nn.Conv2d(dim, dim, dwd_ker, stride=1, padding=dwd_pad, groups=dim, dilation=dwd_dil)
+            else:
+                self.conv0 = acb.ACBlock(dim, dim, dw_ker, padding=(dw_ker-1)//2, groups=dim, deploy=deploy, norm=acb_norm)
+                self.conv_spatial = acb.ACBlock(dim, dim, dwd_ker, stride=1, padding=dwd_pad, groups=dim, dilation=dwd_dil, deploy=deploy, norm=acb_norm)
         else:
             self.conv0 = nn.Conv2d(dim, dim, dw_ker, padding=(dw_ker-1)//2, groups=dim)
             self.conv_spatial = nn.Conv2d(dim, dim, dwd_ker, stride=1, padding=dwd_pad, groups=dim, dilation=dwd_dil)
@@ -77,12 +83,12 @@ class LKA(nn.Module):
 
 
 class Attention(nn.Module):
-    def __init__(self, d_model, dw_ker=5, dwd_ker=7, dwd_pad=9, dwd_dil=3, use_acb=True, deploy=False, acb_norm="batch", use_attn=True):
+    def __init__(self, d_model, dw_ker=5, dwd_ker=7, dwd_pad=9, dwd_dil=3, use_acb=True, use_dbb=False, deploy=False, acb_norm="batch", use_attn=True):
         super().__init__()
 
         self.proj_1 = nn.Conv2d(d_model, d_model, 1)
         self.activation = nn.GELU()
-        self.spatial_gating_unit = LKA(d_model, dw_ker=dw_ker, dwd_ker=dwd_ker, dwd_pad=dwd_pad, dwd_dil=dwd_dil, use_acb=use_acb, deploy=deploy, acb_norm=acb_norm, use_attn=use_attn)
+        self.spatial_gating_unit = LKA(d_model, dw_ker=dw_ker, dwd_ker=dwd_ker, dwd_pad=dwd_pad, dwd_dil=dwd_dil, use_acb=use_acb, use_dbb=use_dbb, deploy=deploy, acb_norm=acb_norm, use_attn=use_attn)
         self.proj_2 = nn.Conv2d(d_model, d_model, 1)
 
     def forward(self, x):
@@ -96,17 +102,17 @@ class Attention(nn.Module):
 
 
 class Block(nn.Module):
-    def __init__(self, dim, mlp_ratio=4., drop=0.,drop_path=0., act_layer=nn.GELU, dw_ker=5, dwd_ker=7, dwd_pad=9, dwd_dil=3, use_acb=True, deploy=False, acb_norm="batch", use_attn=True):
+    def __init__(self, dim, mlp_ratio=4., drop=0.,drop_path=0., act_layer=nn.GELU, dw_ker=5, dwd_ker=7, dwd_pad=9, dwd_dil=3, use_acb=True, use_dbb=False, deploy=False, acb_norm="batch", use_attn=True):
         super().__init__()
         self.norm1 = nn.BatchNorm2d(dim)
         # self.norm1 = LayerNorm(dim, data_format="channels_first")
-        self.attn = Attention(dim, dw_ker=dw_ker, dwd_ker=dwd_ker, dwd_pad=dwd_pad, dwd_dil=dwd_dil, use_acb=use_acb, deploy=deploy, acb_norm=acb_norm, use_attn=use_attn)
+        self.attn = Attention(dim, dw_ker=dw_ker, dwd_ker=dwd_ker, dwd_pad=dwd_pad, dwd_dil=dwd_dil, use_acb=use_acb, use_dbb=use_dbb, deploy=deploy, acb_norm=acb_norm, use_attn=use_attn)
         self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
 
         self.norm2 = nn.BatchNorm2d(dim)
         # self.norm2 = LayerNorm(dim, data_format="channels_first")
         mlp_hidden_dim = int(dim * mlp_ratio)
-        self.mlp = Mlp(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop, use_acb=use_acb, deploy=deploy, acb_norm=acb_norm)
+        self.mlp = Mlp(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop, use_acb=use_acb, use_dbb=use_dbb, deploy=deploy, acb_norm=acb_norm)
         layer_scale_init_value = 1e-2            
         self.layer_scale_1 = nn.Parameter(
             layer_scale_init_value * torch.ones((dim)), requires_grad=True)
@@ -140,10 +146,14 @@ class OverlapPatchEmbed(nn.Module):
     """ Image to Patch Embedding
     """
 
-    def __init__(self, img_size=224, patch_size=7, stride=4, in_chans=3, embed_dim=768, use_acb=True, deploy=False, acb_norm="batch"):
+    def __init__(self, img_size=224, patch_size=7, stride=4, in_chans=3, embed_dim=768, use_acb=True, use_dbb=False, deploy=False, acb_norm="batch"):
         super().__init__()
         if use_acb:
-            self.proj = acb.ACBlock(in_chans, embed_dim, kernel_size=patch_size, stride=stride,
+            if use_dbb:
+                self.proj = DiverseBranchBlock(in_chans, embed_dim, kernel_size=patch_size, stride=stride,
+                                padding=patch_size // 2, deploy=deploy)
+            else:
+                self.proj = acb.ACBlock(in_chans, embed_dim, kernel_size=patch_size, stride=stride,
                                 padding=patch_size // 2, deploy=deploy, norm=acb_norm)
         else:
             patch_size = to_2tuple(patch_size)
@@ -177,10 +187,13 @@ class OverlapPatchEmbed(nn.Module):
 
 
 class DWConv(nn.Module):
-    def __init__(self, dim=768, use_acb=True, deploy=False, acb_norm="batch"):
+    def __init__(self, dim=768, use_acb=True, use_dbb=False, deploy=False, acb_norm="batch"):
         super(DWConv, self).__init__()
         if use_acb:
-            self.dwconv = acb.ACBlock(dim, dim, 3, 1, 1, groups=dim, deploy=deploy, norm=acb_norm)
+            if use_dbb:
+                self.dwconv = DiverseBranchBlock(dim, dim, 3, 1, 1, groups=dim, deploy=deploy)
+            else:
+                self.dwconv = acb.ACBlock(dim, dim, 3, 1, 1, groups=dim, deploy=deploy, norm=acb_norm)
         else:
             self.dwconv = nn.Conv2d(dim, dim, 3, 1, 1, bias=True, groups=dim)
 
@@ -251,6 +264,7 @@ class RAAN(nn.Module):
         num_stages=len(depths)
         # flag=False
         use_acb = args.use_acb
+        use_dbb = args.use_dbb
         use_norm = not args.no_layernorm
         use_inf = args.load_inf
         acb_norm = args.acb_norm
@@ -307,11 +321,11 @@ class RAAN(nn.Module):
                                             stride=1,
                                             in_chans=in_chans if i == 0 else embed_dims[i - 1],
                                             embed_dim=embed_dims[i],
-                                            use_acb=use_acb, 
+                                            use_acb=use_acb, use_dbb=use_dbb, 
                                             deploy=use_inf, acb_norm=acb_norm)
 
             block = nn.ModuleList([Block(
-                dim=embed_dims[i], mlp_ratio=mlp_ratios[i], drop=drop_rate, drop_path=dpr[cur + j], dw_ker=dw_ker, dwd_ker=dwd_ker, dwd_pad=dwd_pad, dwd_dil=dwd_dil, use_acb=use_acb, deploy=use_inf, acb_norm=acb_norm, use_attn=use_attn)
+                dim=embed_dims[i], mlp_ratio=mlp_ratios[i], drop=drop_rate, drop_path=dpr[cur + j], dw_ker=dw_ker, dwd_ker=dwd_ker, dwd_pad=dwd_pad, dwd_dil=dwd_dil, use_acb=use_acb, use_dbb=use_dbb, deploy=use_inf, acb_norm=acb_norm, use_attn=use_attn)
                 for j in range(depths[i])])
             norm = norm_layer(embed_dims[i])
             cur += depths[i]
