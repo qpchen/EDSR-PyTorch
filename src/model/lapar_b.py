@@ -9,7 +9,7 @@ import torch.nn.init as init
 from . import lapar_weightnet as LW
 
 def make_model(args, parent=False):
-    return LAPAR_A(args)
+    return LAPAR_B(args)
 
 class ComponentDecConv(nn.Module):
     def __init__(self, k_path, k_size):
@@ -25,16 +25,16 @@ class ComponentDecConv(nn.Module):
         return out
 
 # patch size default 64
-class LAPAR_A(nn.Module):
+class LAPAR_B(nn.Module):
     # def __init__(self, config):
     def __init__(self, args):
-        super(LAPAR_A, self).__init__()
+        super(LAPAR_B, self).__init__()
 
         self.k_size = 5#config.MODEL.KERNEL_SIZE
         self.s = args.scale[0]#config.MODEL.SCALE
         in_chl = args.n_colors
-        nf = 32
-        n_block = 4
+        nf = 24
+        n_block = 3
         out_chl = 72
         scale = args.scale[0]
 
