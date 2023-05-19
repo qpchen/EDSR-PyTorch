@@ -5,15 +5,17 @@
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/src/main.py",
+            // "program": "${workspaceFolder}/src/main.py",
+            "program": "${workspaceFolder}/src/lam.py",
             "cwd": "${workspaceFolder}/src",
             "args": [
+                // "--cpu",
                 "--n_GPUs",
                 "1",
                 "--scale",
-                "2",
+                // "2",
                 // "3",
-                // "4",
+                "4",
                 "--patch_size",
                 // "12",
                 "96",
@@ -23,8 +25,8 @@
                 // "192",
                 // "256",
                 "--batch_size",
-                "4",  // test
-                // "32",
+                // "4",  // test
+                "32",
                 "--accumulation_step",
                 "1",
                 "--data_train",
@@ -36,11 +38,14 @@
                 // "1-2650",
                 // "1-3550",
                 "--data_test",
+                "Demo",
                 // "720P",
-                "Set5",
+                // "Set5",
                 // "Set5+Set14",
                 // "Set5+Set14+B100+Urban100",
                 // "Set5+Set14+B100+Urban100+DIV2K",
+                "--dir_demo",
+                "../test",
                 "--loss",
                 "1*SmoothL1",
                 // "1*L1",
@@ -75,20 +80,20 @@
                 // "1000-1600-1800-1900",  // SRARN-T
                 // "1500-2400-2700-2850",  // SRARN-XT
                 "--depths",
-                "2+2",  //test
+                // "2+2",  //test
                 // "3+3",  //0
                 // "2+4+2",  //a
                 // "2+2+4+2",  //b
                 // "2+2+6+2",  //c              // SwinIR level when training params 612K
                 // "3+3+9+3",  //d              // ConvNeXt-T  // SwinIR level?
                 // "3+3+27+3",  //e             // ConvNeXt-S/B/L/XL  // Swin level
-                // "6+6+6+6",  //f             // SwinIR-S
+                "6+6+6+6",  //f             // SwinIR-S
                 // "6+6+6+6+6+6",  //g(=e)             // SwinIR-C
                 // "6+6+6+6+6+6+6+6+6",  //h             // SwinIR-L
                 // "3+3+3+3",  //i              // SRARN-T
                 // "2+2+2+2",  //j              // SRARN-XT
                 "--dims",
-                "8+8",  // test
+                // "8+8",  // test
                 // "12+24",  //0
                 // "12+24+48",  //1
                 // "12+24+48+96",  //2
@@ -100,7 +105,7 @@
                 // "128+256+512+1024",  //8     // ConvNeXt-B  // Swin level
                 // "192+384+768+1536",  //9     // ConvNeXt-L
                 // "256+512+1024+2048",  //10    // ConvNeXt-XL
-                // "60+60+60+60",  //11         // SwinIR-S
+                "60+60+60+60",  //11         // SwinIR-S
                 // "180+180+180+180+180+180",  //12 // SwinIR-C
                 // "240+240+240+240+240+240+240+240+240", //13      SwinIR-L
                 // "30+30+30+30",  //14         // SRARN-T
@@ -112,7 +117,8 @@
                 // "0.4",  // ConvNeXt-S
                 // "0.5",  // ConvNeXt-B/L
                 "--mlp_ratios",
-                "4+4",
+                // "4+4",
+                "4+4+4+4",
                 "--upsampling",
                 // "PixelShuffleDirect",
                 // "Deconv",
@@ -138,7 +144,8 @@
                 // "--no_act_ps",
                 // "--no_bicubic",
                 "--interpolation",
-                "PixelShuffle",
+                "Nearest",
+                // "PixelShuffle",
                 // "--no_layernorm",
                 "--norm_at",
                 "before",
@@ -152,21 +159,22 @@
                 // "LapSRN",
                 "RAAN",
                 "--use_acb",
-                "--stage_res",
+                // "--stage_res",
                 "--save",
+                "../lams",
                 // "test",
                 // "srarn/srarn_v2t_x2",
                 // "srarn/srarn_v2s_x2",
                 // "../srarn/srarn_x2",
                 // "srarn/v5_test",
-                "srarn/test",
-                "--reset"
+                // "srarn/test",
+                // "--reset"
                 // "--load",
                 // "--resume",
                 // "-1"
-                // "--test_only",
-                // "--save_result",
-                // "--pre_train",
+                "--test_only",
+                "--save_result",
+                "--pre_train",
                 // "../experiment/srarn/test/model/model_best.pt",
                 // "--inf_switch"
                 // "../experiment/srarn/v5_test/model/model_best.pt",
@@ -174,7 +182,8 @@
                 // "../srarn/srarn_x2/model/model_best.pt",
                 // "../srarn/srarn_x2/model/inf_model.pt",
                 // "../experiment/srarn/test/model/inf_model.pt",
-                // "--load_inf"
+                "../runtime_models/alan_v1xs_x4.pt",
+                "--load_inf"
             ],
             "env": {
                 "PYTHONUNBUFFERED": "1",
