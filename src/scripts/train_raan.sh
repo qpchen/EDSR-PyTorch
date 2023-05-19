@@ -190,14 +190,14 @@ LKAk=${14}
 if [ $LKAk = "21" ]; then  # default
   LKAk_print=""
   LKAk_opt=""
-elif [ $LKAk = "14" ]; then 
-  LKAk_print="_LK14"
-  LKAk_opt="--DWDkSize 7 --DWDdil 2"
 elif [ $LKAk = "7" ]; then 
   LKAk_print="_LK7"
   LKAk_opt="--DWDkSize 7 --DWDdil 1"
-elif [ $LKAk = "28" ]; then 
-  LKAk_print="_LK28"
+elif [ $LKAk = "15" ]; then 
+  LKAk_print="_LK15"
+  LKAk_opt="--DWDkSize 7 --DWDdil 2"
+elif [ $LKAk = "31" ]; then 
+  LKAk_print="_LK31"
   LKAk_opt="--DWDkSize 7 --DWDdil 4"
 elif [ $LKAk = "39" ]; then 
   LKAk_print="_LK39"
@@ -260,6 +260,11 @@ then
   echo "load inference version of acb to eval:"
   echo "$run_command --data_test Set5+Set14+B100+Urban100+Manga109 --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf"
   $run_command --data_test Set5+Set14+B100+Urban100+Manga109 --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf
+elif [ $mode = "eval_plus" ]
+then
+  echo "load inference version of acb to eval:"
+  echo "$run_command --data_test Set5+Set14+B100+Urban100+Manga109 --save ${save_dir}_test_plus --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf --self_ensemble"
+  $run_command --data_test Set5+Set14+B100+Urban100+Manga109 --save ${save_dir}_test_plus --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf --self_ensemble
 elif [ $mode = "runtime" ]
 then
   # echo "load inference version of acb to test the runtime:"
