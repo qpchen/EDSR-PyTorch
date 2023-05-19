@@ -44,6 +44,9 @@ python main.py --model EDSR --scale 2 --save edsr_x2 --n_resblocks 32 --n_feats 
 # Advanced - Test with JPEG images 
 #python main.py --model MDSR --data_test Demo --scale 2+3+4 --pre_train download --test_only --save_results
 
+# Advanced - Test with real LR historical dataset images 
+#python main.py --model MDSR --data_test Demo --dir_demo ../../dataset/historical/LR --scale 2+3+4 --pre_train download --test_only --save_results
+
 # Advanced - Training with adversarial loss
 #python main.py --template GAN --scale 4 --save edsr_gan --reset --patch_size 96 --loss 5*VGG54+0.15*GAN --pre_train download
 
