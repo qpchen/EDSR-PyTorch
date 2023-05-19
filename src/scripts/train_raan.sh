@@ -187,7 +187,7 @@ else
 fi
 # set large kernel (LKA) size
 LKAk=${14}
-if [ $LKAk = "21" ]; then  # default
+if [ $LKAk = "23" ]; then  # default
   LKAk_print=""
   LKAk_opt=""
 elif [ $LKAk = "7" ]; then 
