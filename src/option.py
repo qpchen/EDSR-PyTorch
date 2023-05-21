@@ -245,6 +245,9 @@ parser.add_argument('--DWDdil', type=int, default=3,
                     help='dilation of DepthWise dilation convolution. (default 3)')
 parser.add_argument('--no_attn', action='store_true',
                     help='do not use element-wise multiply as attention in LKA')
+parser.add_argument('--bb_norm', default='BN',
+                    choices=('BN', 'LN', 'no'),
+                    help='norm type of backbone (BN | LN | no)')
 
 # ShuffleMixer settings
 parser.add_argument('--ShMn_feats', type=int, default=64,

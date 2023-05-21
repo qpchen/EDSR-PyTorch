@@ -102,14 +102,25 @@ class Attention(nn.Module):
 
 
 class Block(nn.Module):
-    def __init__(self, dim, mlp_ratio=4., drop=0.,drop_path=0., act_layer=nn.GELU, dw_ker=5, dwd_ker=7, dwd_pad=9, dwd_dil=3, use_acb=True, use_dbb=False, deploy=False, acb_norm="batch", use_attn=True):
+    def __init__(self, dim, mlp_ratio=4., drop=0.,drop_path=0., act_layer=nn.GELU, dw_ker=5, dwd_ker=7, dwd_pad=9, dwd_dil=3, bb_norm="BN", use_acb=True, use_dbb=False, deploy=False, acb_norm="batch", use_attn=True):
         super().__init__()
-        self.norm1 = nn.BatchNorm2d(dim)
-        # self.norm1 = LayerNorm(dim, data_format="channels_first")
+        # if acb_norm not in ["batch", "layer", "no", "v8old", "inst"]:
+        #     raise NotImplementedError 
+        # if bb_norm not in ["BN", "LN", "no"]:
+        #     raise NotImplementedError 
+        self.bb_norm = bb_norm
+        if bb_norm == "BN":
+            self.norm1 = nn.BatchNorm2d(dim)
+            self.norm2 = nn.BatchNorm2d(dim)
+        elif bb_norm == "LN":
+            self.norm1 = nn.LayerNorm(dim, eps=1e-6)
+            self.norm2 = nn.LayerNorm(dim, eps=1e-6)
+            # self.norm1 = LayerNorm(dim, data_format="channels_first")
+            # self.norm2 = LayerNorm(dim, data_format="channels_first")
         self.attn = Attention(dim, dw_ker=dw_ker, dwd_ker=dwd_ker, dwd_pad=dwd_pad, dwd_dil=dwd_dil, use_acb=use_acb, use_dbb=use_dbb, deploy=deploy, acb_norm=acb_norm, use_attn=use_attn)
         self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
 
-        self.norm2 = nn.BatchNorm2d(dim)
+        # self.norm2 = nn.BatchNorm2d(dim)
         # self.norm2 = LayerNorm(dim, data_format="channels_first")
         mlp_hidden_dim = int(dim * mlp_ratio)
         self.mlp = Mlp(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop, use_acb=use_acb, use_dbb=use_dbb, deploy=deploy, acb_norm=acb_norm)
@@ -137,8 +148,23 @@ class Block(nn.Module):
                 m.bias.data.zero_()
 
     def forward(self, x):
-        x = x + self.drop_path(self.layer_scale_1.unsqueeze(-1).unsqueeze(-1) * self.attn(self.norm1(x)))
-        x = x + self.drop_path(self.layer_scale_2.unsqueeze(-1).unsqueeze(-1) * self.mlp(self.norm2(x)))
+        skip = x
+        if self.bb_norm == "BN":
+            x = self.norm1(x)
+        elif self.bb_norm == "LN":
+            x = x.permute(0, 2, 3, 1) # (N, C, H, W) -> (N, H, W, C)
+            x = self.norm1(x)
+            x = x.permute(0, 3, 1, 2) # (N, H, W, C) -> (N, C, H, W)
+        x = skip + self.drop_path(self.layer_scale_1.unsqueeze(-1).unsqueeze(-1) * self.attn(x))
+        
+        skip = x
+        if self.bb_norm == "BN":
+            x = self.norm2(x)
+        elif self.bb_norm == "LN":
+            x = x.permute(0, 2, 3, 1) # (N, C, H, W) -> (N, H, W, C)
+            x = self.norm2(x)
+            x = x.permute(0, 3, 1, 2) # (N, H, W, C) -> (N, C, H, W)
+        x = skip + self.drop_path(self.layer_scale_2.unsqueeze(-1).unsqueeze(-1) * self.mlp(x))
         return x
 
 
@@ -146,8 +172,12 @@ class OverlapPatchEmbed(nn.Module):
     """ Image to Patch Embedding
     """
 
-    def __init__(self, img_size=224, patch_size=7, stride=4, in_chans=3, embed_dim=768, use_acb=True, use_dbb=False, deploy=False, acb_norm="batch"):
+    def __init__(self, img_size=224, patch_size=7, stride=4, in_chans=3, embed_dim=768, bb_norm="BN", use_acb=True, use_dbb=False, deploy=False, acb_norm="batch"):
         super().__init__()
+        # if acb_norm not in ["batch", "layer", "no", "v8old", "inst"]:
+        #     raise NotImplementedError 
+        # if bb_norm not in ["BN", "LN", "no"]:
+        #     raise NotImplementedError 
         if use_acb:
             if use_dbb:
                 self.proj = DiverseBranchBlock(in_chans, embed_dim, kernel_size=patch_size, stride=stride,
@@ -159,8 +189,12 @@ class OverlapPatchEmbed(nn.Module):
             patch_size = to_2tuple(patch_size)
             self.proj = nn.Conv2d(in_chans, embed_dim, kernel_size=patch_size, stride=stride,
                                   padding=(patch_size[0] // 2, patch_size[1] // 2))
-        self.norm = nn.BatchNorm2d(embed_dim)
-        # self.norm = LayerNorm(embed_dim, data_format="channels_first")
+        self.bb_norm = bb_norm
+        if bb_norm == "BN":
+            self.norm = nn.BatchNorm2d(embed_dim)
+        elif bb_norm == "LN":
+            # self.norm = LayerNorm(embed_dim, data_format="channels_first")
+            self.norm = nn.LayerNorm(embed_dim, eps=1e-6)
 
         #self.apply(self._init_weights)
 
@@ -182,7 +216,12 @@ class OverlapPatchEmbed(nn.Module):
     def forward(self, x):
         x = self.proj(x)
         _, _, H, W = x.shape
-        x = self.norm(x)        
+        if self.bb_norm == "BN":
+            x = self.norm(x)
+        elif self.bb_norm == "LN":
+            x = x.permute(0, 2, 3, 1) # (N, C, H, W) -> (N, H, W, C)
+            x = self.norm(x)
+            x = x.permute(0, 3, 1, 2) # (N, H, W, C) -> (N, C, H, W)
         return x, H, W
 
 
@@ -269,6 +308,7 @@ class RAAN(nn.Module):
         use_inf = args.load_inf
         acb_norm = args.acb_norm
         use_attn = not args.no_attn
+        bb_norm = args.bb_norm
         # lka_kernel = args.LKAkSize  # default: 21
         dwd_dil = args.DWDdil  # default: 3
         dwd_ker = args.DWDkSize  # default: 7
@@ -321,11 +361,12 @@ class RAAN(nn.Module):
                                             stride=1,
                                             in_chans=in_chans if i == 0 else embed_dims[i - 1],
                                             embed_dim=embed_dims[i],
+                                            bb_norm=bb_norm, 
                                             use_acb=use_acb, use_dbb=use_dbb, 
                                             deploy=use_inf, acb_norm=acb_norm)
 
             block = nn.ModuleList([Block(
-                dim=embed_dims[i], mlp_ratio=mlp_ratios[i], drop=drop_rate, drop_path=dpr[cur + j], dw_ker=dw_ker, dwd_ker=dwd_ker, dwd_pad=dwd_pad, dwd_dil=dwd_dil, use_acb=use_acb, use_dbb=use_dbb, deploy=use_inf, acb_norm=acb_norm, use_attn=use_attn)
+                dim=embed_dims[i], mlp_ratio=mlp_ratios[i], drop=drop_rate, drop_path=dpr[cur + j], dw_ker=dw_ker, dwd_ker=dwd_ker, dwd_pad=dwd_pad, dwd_dil=dwd_dil, bb_norm=bb_norm, use_acb=use_acb, use_dbb=use_dbb, deploy=use_inf, acb_norm=acb_norm, use_attn=use_attn)
                 for j in range(depths[i])])
             norm = norm_layer(embed_dims[i])
             cur += depths[i]
@@ -505,117 +546,3 @@ class RAAN(nn.Module):
         
         return out
 
-
-
-def _conv_filter(state_dict, patch_size=16):
-    """ convert patch embedding weight from manual patchify + linear proj to conv"""
-    out_dict = {}
-    for k, v in state_dict.items():
-        if 'patch_embed.proj.weight' in k:
-            v = v.reshape((v.shape[0], 3, patch_size, patch_size))
-        out_dict[k] = v
-
-    return out_dict
-
-
-model_urls = {
-    "van_b0": "https://huggingface.co/Visual-Attention-Network/VAN-Tiny-original/resolve/main/van_tiny_754.pth.tar",
-    "van_b1": "https://huggingface.co/Visual-Attention-Network/VAN-Small-original/resolve/main/van_small_811.pth.tar",
-    "van_b2": "https://huggingface.co/Visual-Attention-Network/VAN-Base-original/resolve/main/van_base_828.pth.tar",
-    "van_b3": "https://huggingface.co/Visual-Attention-Network/VAN-Large-original/resolve/main/van_large_839.pth.tar",
-}
-
-
-def load_model_weights(model, arch, kwargs):
-    url = model_urls[arch]
-    checkpoint = torch.hub.load_state_dict_from_url(
-        url=url, map_location="cpu", check_hash=True
-    )
-    strict = True
-    if "num_classes" in kwargs and kwargs["num_classes"] != 1000:
-        strict = False
-        del checkpoint["state_dict"]["head.weight"]
-        del checkpoint["state_dict"]["head.bias"]
-    model.load_state_dict(checkpoint["state_dict"], strict=strict)
-    return model
-
-
-@register_model
-def van_b0(pretrained=False, **kwargs):
-    model = VAN(
-        embed_dims=[32, 64, 160, 256], mlp_ratios=[8, 8, 4, 4],
-        norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[3, 3, 5, 2],
-        **kwargs)
-    model.default_cfg = _cfg()
-    if pretrained:
-        model = load_model_weights(model, "van_b0", kwargs)
-    return model
-
-
-@register_model
-def van_b1(pretrained=False, **kwargs):
-    model = VAN(
-        embed_dims=[64, 128, 320, 512], mlp_ratios=[8, 8, 4, 4],
-        norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[2, 2, 4, 2],
-        **kwargs)
-    model.default_cfg = _cfg()
-    if pretrained:
-        model = load_model_weights(model, "van_b1", kwargs)
-    return model
-
-@register_model
-def van_b2(pretrained=False, **kwargs):
-    model = VAN(
-        embed_dims=[64, 128, 320, 512], mlp_ratios=[8, 8, 4, 4],
-        norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[3, 3, 12, 3],
-        **kwargs)
-    model.default_cfg = _cfg()
-    if pretrained:
-        model = load_model_weights(model, "van_b2", kwargs)
-    return model
-
-@register_model
-def van_b3(pretrained=False, **kwargs):
-    model = VAN(
-        embed_dims=[64, 128, 320, 512], mlp_ratios=[8, 8, 4, 4],
-        norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[3, 5, 27, 3],
-        **kwargs)
-    model.default_cfg = _cfg()
-    if pretrained:
-        model = load_model_weights(model, "van_b3", kwargs)
-    return model
-
-@register_model
-def van_b4(pretrained=False, **kwargs):
-    model = VAN(
-        embed_dims=[64, 128, 320, 512], mlp_ratios=[8, 8, 4, 4],
-        norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[3, 6, 40, 3],
-        **kwargs)
-    model.default_cfg = _cfg()
-    if pretrained:
-        model = load_model_weights(model, "van_b4", kwargs)
-    return model
-
-
-@register_model
-def van_b5(pretrained=False, **kwargs):
-    model = VAN(
-        embed_dims=[96, 192, 480, 768], mlp_ratios=[8, 8, 4, 4],
-        norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[3, 3, 24, 3],
-        **kwargs)
-    model.default_cfg = _cfg()
-    if pretrained:
-        model = load_model_weights(model, "van_b5", kwargs)
-    return model
-
-
-@register_model
-def van_b6(pretrained=False, **kwargs):
-    model = VAN(
-        embed_dims=[96, 192, 384, 768], mlp_ratios=[8, 8, 4, 4],
-        norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[6,6,90,6],
-        **kwargs)
-    model.default_cfg = _cfg()
-    if pretrained:
-        model = load_model_weights(model, "van_b6", kwargs)
-    return model
