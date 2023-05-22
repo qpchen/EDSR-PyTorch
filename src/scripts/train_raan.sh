@@ -16,7 +16,8 @@
 # training t640: ./scripts/train_raan.sh resume 1 1 xt bc 3 48 ms 4e-4 noStageRes batch NN ACB 23 BN
 
     # ################# ablation ##################
-    # 1. no ACB, 2. ACB no, 3. StageRes, 4. 31x31, 5. replace ACB with DDB in backbone, 6. noACB + StageRes + 31, 7. DBB + StageRes + 31, 8. backbone norm, 9. ACB no + backbone no/LN
+    # 1. no ACB, 2. ACB no, 3. StageRes, 4. 31x31, 5. replace ACB with DDB in backbone, 6. noACB + StageRes + 31, 7. DBB + StageRes + 31, 8. backbone no norm, 9. ACB no + backbone no/LN
+    # 10. ACB no + backbone no/LN + stage noLN + no addLR
     # Hybrid version? noACB + StageRes? 
     # add unShufflePixel?
 
@@ -27,9 +28,10 @@
     # 5. training No1: ./scripts/train_raan.sh train 1,3 1 t bc 2 48 ms 4e-4 noStageRes batch NN DBB 23 BN
     # 6. training No1: ./scripts/train_raan.sh train 2 1 t bc 2 48 ms 4e-4 useStageRes batch NN noACB 31 BN
     # 7. pause: ./scripts/train_raan.sh train 3 1 t bc 2 48 ms 4e-4 useStageRes batch NN DBB 31 BN
-    # 8. training No5: ./scripts/train_raan.sh train 1 1 t bc 2 48 ms 4e-4 noStageRes batch NN ACB 23 LN
-    # 8. training No5: ./scripts/train_raan.sh train 1 1 t bc 2 48 ms 4e-4 noStageRes batch NN ACB 23 no
-    # 9. training No5: ./scripts/train_raan.sh train 1 1 t bc 2 48 ms 4e-4 noStageRes no NN ACB 23 no
+    # 8. giveup No2: ./scripts/train_raan.sh train 0 1 t bc 2 48 ms 4e-4 noStageRes batch NN ACB 23 LN  # giveup, too slow, don't know how to code for speed up
+    # 8. training No6: ./scripts/train_raan.sh train 0 1 t bc 2 48 ms 4e-4 noStageRes batch NN ACB 23 no  # gradient explose, so keep LN in each stage try again
+    # 9. training No6: ./scripts/train_raan.sh train 1 1 t bc 2 48 ms 4e-4 noStageRes no NN ACB 23 no
+    # 10. training No6: ./scripts/train_raan.sh train 1 1 t sk 2 48 ms 4e-4 noStageRes no NN ACB 23 no
 
 # ##### test add bilinear ######## bad _t: 38.069 327, 38.082 476, 38.095 711, 38.118 965
 # done: ./scripts/train_raan.sh resume 2 1 t bl 2 48 ms 4e-4 noStageRes batch NN ACB 23 BN
@@ -243,17 +245,23 @@ else
   echo "no valid $LKAk ! Please input (7 | 15 | 23 | 31 | 39 | 47 | 55)."
   exit
 fi
-# backbone norm use BN | LN | no
+# backbone norm use BN | LN | no, without '--no_layernorm' to keep LN in each stage
 bb_norm=${15}
-bb_norm_opt="--bb_norm $bb_norm"
+# bb_norm_opt="--bb_norm $bb_norm"
 if [ $bb_norm = "BN" ]; then  # best? use Nearest-Neibor
+  bb_norm_opt="--bb_norm $bb_norm"
   bb_norm_print=""
 elif [ $bb_norm = "LN" ]; then 
+  bb_norm_opt="--bb_norm $bb_norm"
   bb_norm_print="_bbLN"
 elif [ $bb_norm = "no" ]; then 
+  bb_norm_opt="--bb_norm $bb_norm"
   bb_norm_print="_bbnoN"
+elif [ $bb_norm = "noAll" ]; then 
+  bb_norm_opt="--bb_norm $bb_norm --no_layernorm"
+  bb_norm_print="_allnoN"
 else
-  echo "no valid $bb_norm ! Please input (BN | LN | no)."
+  echo "no valid $bb_norm ! Please input (BN | LN | no | noAll)."
   exit
 fi
 
