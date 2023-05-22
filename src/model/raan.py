@@ -369,14 +369,14 @@ class RAAN(nn.Module):
             block = nn.ModuleList([Block(
                 dim=embed_dims[i], mlp_ratio=mlp_ratios[i], drop=drop_rate, drop_path=dpr[cur + j], dw_ker=dw_ker, dwd_ker=dwd_ker, dwd_pad=dwd_pad, dwd_dil=dwd_dil, bb_norm=bb_norm, use_acb=use_acb, use_dbb=use_dbb, deploy=use_inf, acb_norm=acb_norm, use_attn=use_attn)
                 for j in range(depths[i])])
-            if bb_norm != "no":
-                norm = norm_layer(embed_dims[i])
+            # if bb_norm != "no":
+            norm = norm_layer(embed_dims[i])
             cur += depths[i]
 
             setattr(self, f"patch_embed{i + 1}", patch_embed)
             setattr(self, f"block{i + 1}", block)
-            if bb_norm != "no":
-                setattr(self, f"norm{i + 1}", norm)
+            # if bb_norm != "no":
+            setattr(self, f"norm{i + 1}", norm)
 
         # ##################################################################################
         # Upsampling
@@ -491,6 +491,7 @@ class RAAN(nn.Module):
         for i in range(self.num_stages):
             patch_embed = getattr(self, f"patch_embed{i + 1}")
             block = getattr(self, f"block{i + 1}")
+            norm = getattr(self, f"norm{i + 1}")
             x, H, W = patch_embed(x)
             if i == 0:
                 input = x
@@ -498,13 +499,12 @@ class RAAN(nn.Module):
                 stage_input = x
             for blk in block:
                 x = blk(x)
-            if self.bb_norm != "no":
-                norm = getattr(self, f"norm{i + 1}")
-                x = x.flatten(2).transpose(1, 2)
-                # x = x.permute(0, 2, 3, 1).contiguous()
-                x = norm(x)
-                x = x.reshape(B, H, W, -1).permute(0, 3, 1, 2).contiguous()
-                # x = x.permute(0, 3, 1, 2).contiguous()
+            # if self.bb_norm != "no":
+            x = x.flatten(2).transpose(1, 2)
+            # x = x.permute(0, 2, 3, 1).contiguous()
+            x = norm(x)
+            x = x.reshape(B, H, W, -1).permute(0, 3, 1, 2).contiguous()
+            # x = x.permute(0, 3, 1, 2).contiguous()
             if self.stage_res:
                 x = x + stage_input
 
