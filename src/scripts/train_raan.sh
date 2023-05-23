@@ -31,7 +31,8 @@
     # 8. giveup No2: ./scripts/train_raan.sh train 0 1 t bc 2 48 ms 4e-4 noStageRes batch NN ACB 23 LN  # giveup, too slow, don't know how to code for speed up
     # 8. training No6: ./scripts/train_raan.sh train 0 1 t bc 2 48 ms 4e-4 noStageRes batch NN ACB 23 no  # gradient explose, so keep LN in each stage try again
     # 9. training No6: ./scripts/train_raan.sh train 1 1 t bc 2 48 ms 4e-4 noStageRes no NN ACB 23 no
-    # 10. training No6: ./scripts/train_raan.sh train 1 1 t sk 2 48 ms 4e-4 noStageRes no NN ACB 23 no
+    # 10. training No4: ./scripts/train_raan.sh train 0 1 t sk 2 48 ms 4e-4 noStageRes no NN ACB 23 no
+    # 10. training No4: ./scripts/train_raan.sh train 1 1 t sk 2 48 ms 4e-4 noStageRes no NN ACB 23 noAll
 
 # ##### test add bilinear ######## bad _t: 38.069 327, 38.082 476, 38.095 711, 38.118 965
 # done: ./scripts/train_raan.sh resume 2 1 t bl 2 48 ms 4e-4 noStageRes batch NN ACB 23 BN
@@ -249,16 +250,16 @@ fi
 bb_norm=${15}
 # bb_norm_opt="--bb_norm $bb_norm"
 if [ $bb_norm = "BN" ]; then  # best? use Nearest-Neibor
-  bb_norm_opt="--bb_norm $bb_norm"
+  bb_norm_opt="--bb_norm BN"
   bb_norm_print=""
 elif [ $bb_norm = "LN" ]; then 
-  bb_norm_opt="--bb_norm $bb_norm"
+  bb_norm_opt="--bb_norm LN"
   bb_norm_print="_bbLN"
 elif [ $bb_norm = "no" ]; then 
-  bb_norm_opt="--bb_norm $bb_norm"
+  bb_norm_opt="--bb_norm no"
   bb_norm_print="_bbnoN"
 elif [ $bb_norm = "noAll" ]; then 
-  bb_norm_opt="--bb_norm $bb_norm --no_layernorm"
+  bb_norm_opt="--bb_norm no --no_layernorm"
   bb_norm_print="_allnoN"
 else
   echo "no valid $bb_norm ! Please input (BN | LN | no | noAll)."
