@@ -518,7 +518,12 @@ class RAAN(nn.Module):
         
         out = self.forward_features(x)
 
-        if self.upsampling == 'Deconv':
+        if self.scale == 1:
+            if self.upsampling == 'Nearest' or self.upsampling == 'NearestNoPA':
+                out = self.postup(self.preup(self.preup_norm(out)))
+            elif self.upsampling == 'PixelShuffle':
+                out = self.preup(self.preup_norm(out))
+        elif self.upsampling == 'Deconv':
             out = self.deconv(out)
         elif self.upsampling == 'PixelShuffleDirect':
             out = self.pixelshuffledirect(out)
@@ -536,7 +541,9 @@ class RAAN(nn.Module):
 
         # a: add interpolate
         # if not self.no_bicubic:
-        if self.interpolation == 'Bicubic':
+        if self.scale == 1:
+            out = out + x
+        elif self.interpolation == 'Bicubic':
             out = out + F.interpolate(x, scale_factor=self.scale, mode='bicubic')
         elif self.interpolation == 'Bilinear':
             out = out + F.interpolate(x, scale_factor=self.scale, mode='bilinear')

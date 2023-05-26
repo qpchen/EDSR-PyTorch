@@ -43,6 +43,13 @@ parser.add_argument('--chop', action='store_true',
                     help='enable memory-efficient forward')
 parser.add_argument('--no_augment', action='store_true',
                     help='do not use data augmentation')
+parser.add_argument('--degradation', type=str, default='bicubic',
+                    choices=('bicubic', 'BD', 'DN', 'Noise', 'Blur', 'JPEG', 'Gray_Noise'),
+                    help='The degradation model for data (bicubic, BD, DN, Noise, Blur, JPEG, Gray_Noise)')
+parser.add_argument('--sigma', type=int, default=15, 
+                    help='number of sigma for Noise degradation (15 | 25 | 50)')
+parser.add_argument('--quality', type=int, default=10, 
+                    help='number of quality for JPEG degradation (10 | 20 | 30 | 40)')
 
 # Model specifications
 parser.add_argument('--model', default='EDSR',
