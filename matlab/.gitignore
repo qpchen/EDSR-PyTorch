@@ -3,13 +3,10 @@
 
 *
 !.gitignore
-!Evaluate_PSNR_SSIM_SRACN.m
-!Prepare_TestData_HR_LR.m
-!Move_SR_img.ipynb
-!rename_forEDSR.ipynb
-!Move_gen2dataset_dir.ipynb
+!*.m
+!*.ipynb
 # !PSNR_SSIM_Results_BI_model.txt
-!PSNR_SSIM_Means_Results_BI_model.txt
+#!logs/PSNR_SSIM_Means_Results_BI_model.txt
 
 !HR
 HR/*
@@ -34,3 +31,7 @@ OriginalTestData/*
 !OriginalTestData/Set5
 !OriginalTestData/Set5/baby.bmp
 
+
+!Prepare_TrainData
+Prepare_TrainData/*
+!Prepare_TrainData/*.m

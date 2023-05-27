@@ -1,11 +1,12 @@
 function Prepare_TestData_HR_LR()
 clear all; close all; clc
 path_original = './OriginalTestData';
-%dataset  = {'Set14', 'B100', 'Urban100', 'Manga109'};
-dataset  = {'720P', '1080P', '4K'};
-ext = {'*.jpg', '*.png', '*.bmp'};
+dataset  = {'Set5', 'Set14', 'B100', 'Urban100', 'Manga109'};
+% dataset = {'DIV2K', 'Flickr2K'};
+%dataset  = {'720P', '1080P', '4K'};
+ext = {'*.jpg', '*.png', '*.bmp', '*.tif'};
 
-degradation = 'BI'; % BI, BD, DN
+degradation = 'DN'; % BI, BD, DN
 if strcmp(degradation, 'BI') 
     scale_all = [2,3,4,8];
 else
