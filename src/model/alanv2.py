@@ -329,6 +329,7 @@ class ALANV2(nn.Module):
         self.stage_res = args.stage_res
         self.bb_norm = bb_norm
         self.stage_norm = not args.no_layernorm
+        self.down_fea = args.down_fea
         
         # RGB mean for DIV2K
         if in_chans == 3:
@@ -349,28 +350,33 @@ class ALANV2(nn.Module):
         #         ,nn.GELU()
         #     )
         
-
         # ##################################################################################
         # Deep Feature Extraction. Must use LayerNorm, or the output just use the bicubic, with PSNR fixed
         dpr = [x.item() for x in torch.linspace(0, drop_path_rate, sum(depths))]  # stochastic depth decay rule
         cur = 0
+
+        if self.down_fea:
+            self.down_fea = nn.PixelUnshuffle(2)
+            self.up_fea = nn.PixelShuffle(2)
 
         for i in range(num_stages):
             patch_embed = OverlapPatchEmbed(img_size=img_size, # if i == 0 else img_size // (2 ** (i + 1)),
                                             patch_size=7 if i == 0 else 3,
                                             # stride=4 if i == 0 else 2,
                                             stride=1,
-                                            in_chans=in_chans if i == 0 else embed_dims[i - 1],
-                                            embed_dim=embed_dims[i],
+                                            in_chans=in_chans if i == 0 else (embed_dims[i - 1] * 4) if self.down_fea else embed_dims[i - 1],
+                                            embed_dim=embed_dims[i] if i == 0 else (embed_dims[i] * 4) if self.down_fea else embed_dims[i],
                                             bb_norm=bb_norm, 
                                             use_acb=use_acb, use_dbb=use_dbb, 
                                             deploy=use_inf, acb_norm=acb_norm)
 
             block = nn.ModuleList([Block(
-                dim=embed_dims[i], mlp_ratio=mlp_ratios[i], drop=drop_rate, drop_path=dpr[cur + j], dw_ker=dw_ker, dwd_ker=dwd_ker, dwd_pad=dwd_pad, dwd_dil=dwd_dil, bb_norm=bb_norm, use_acb=use_acb, use_dbb=use_dbb, deploy=use_inf, acb_norm=acb_norm, use_attn=use_attn)
+                dim=(embed_dims[i] * 4) if self.down_fea else embed_dims[i], 
+                mlp_ratio=mlp_ratios[i], drop=drop_rate, drop_path=dpr[cur + j], dw_ker=dw_ker, dwd_ker=dwd_ker, dwd_pad=dwd_pad, dwd_dil=dwd_dil, 
+                bb_norm=bb_norm, use_acb=use_acb, use_dbb=use_dbb, deploy=use_inf, acb_norm=acb_norm, use_attn=use_attn)
                 for j in range(depths[i])])
             if self.stage_norm:
-                norm = norm_layer(embed_dims[i])
+                norm = norm_layer((embed_dims[i] * 4) if self.down_fea else embed_dims[i])
             cur += depths[i]
 
             setattr(self, f"patch_embed{i + 1}", patch_embed)
@@ -494,6 +500,10 @@ class ALANV2(nn.Module):
             x, H, W = patch_embed(x)
             if i == 0:
                 input = x
+                if self.down_fea: 
+                    x = self.down_fea(x)
+                    H = H // 2
+                    W = W // 2
             if self.stage_res:
                 stage_input = x
             for blk in block:
@@ -508,6 +518,7 @@ class ALANV2(nn.Module):
             if self.stage_res:
                 x = x + stage_input
 
+        if self.down_fea: x = self.up_fea(x)
         x = input + x   # Residual of the whole deep feature Extraction
 
         return x

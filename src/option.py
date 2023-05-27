@@ -255,6 +255,8 @@ parser.add_argument('--no_attn', action='store_true',
 parser.add_argument('--bb_norm', default='BN',
                     choices=('BN', 'LN', 'no'),
                     help='norm type of backbone (BN | LN | no)')
+parser.add_argument('--down_fea', action='store_true',
+                    help='use feature down before extraction, and up after')
 
 # ShuffleMixer settings
 parser.add_argument('--ShMn_feats', type=int, default=64,
