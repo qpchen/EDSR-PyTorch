@@ -1,87 +1,101 @@
 #!/bin/bash
 
 ################################################################################
-######################      SRARN V9_D1acb3 noACBnorm befln nolr 2e-4       ######################
+######################      SRARN V9_D1acb3 noACBnorm befln nolr 2e-4 bicubic 0 0       ######################
 ################################################################################
 # ./scripts/train_srarn_v9.sh [mode] [cuda_device] [accummulation_step] [model] [interpolation] [sr_scale] [lr_patch_size] [LR_scheduler_class] [init LR] [block_conv] [deep_conv] [acb_norm] [LN] [addLR]
-# run example v9test_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 test b 2 48 ms skip 1acb3 batch befln nolr 2e-4
+# run example v9test_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 test b 2 48 ms skip 1acb3 batch befln nolr 2e-4 bicubic 0 0
 # ########### training commands ###########
 # ###### on Starlight: ######
-# run example v9ba_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 ba b 2 48 ms skip 1acb3 batch befln nolr 2e-4  # 38.243 v8  # PixelShuffleAct+BicubicAdd same as v5
-# run example v9b_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 b b 2 48 ms skip 1acb3 batch befln nolr 2e-4  # 38.257 v8  # PixelShuffleNOAct+BicubicAdd
+# run example v9ba_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 ba b 2 48 ms skip 1acb3 batch befln nolr 2e-4 bicubic 0 0  # 38.243 v8  # PixelShuffleAct+BicubicAdd same as v5
+# run example v9b_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 b b 2 48 ms skip 1acb3 batch befln nolr 2e-4 bicubic 0 0  # 38.257 v8  # PixelShuffleNOAct+BicubicAdd
 
-# run example v9bn_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 bn b 2 48 ms skip 1acb3 batch befln nolr 2e-4  # 38.266 v8: Nearest+BicubicAdd 
-# run example v9bn_D1acb3_x3: ./scripts/train_srarn_v9.sh train 0,1 1 bn b 3 48 ms skip 1acb3 batch befln nolr 2e-4
-# run example v9bn_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0,1 1 bn b 4 48 ms skip 1acb3 batch befln nolr 2e-4
-# run example v9bnL_Nrst_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 bnL n 2 48 ms skip 1acb3 batch befln nolr 2e-4  # 38.266 v8: Nearest+BicubicAdd 
-# run example v9bL_Nrst_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 4 bL n 2 48 ms skip 1acb3 batch befln nolr 2e-4  # 38.257 v8  # PixelShuffleNOAct+BicubicAdd
+# run example v9bn_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 bn b 2 48 ms skip 1acb3 batch befln nolr 2e-4 bicubic 0 0  # 38.266 v8: Nearest+BicubicAdd 
+# run example v9bn_D1acb3_x3: ./scripts/train_srarn_v9.sh train 0,1 1 bn b 3 48 ms skip 1acb3 batch befln nolr 2e-4 bicubic 0 0
+# run example v9bn_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0,1 1 bn b 4 48 ms skip 1acb3 batch befln nolr 2e-4 bicubic 0 0
+# run example v9bnL_Nrst_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1 1 bnL n 2 48 ms skip 1acb3 batch befln nolr 2e-4 bicubic 0 0  # 38.266 v8: Nearest+BicubicAdd 
+# run example v9bL_Nrst_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 4 bL n 2 48 ms skip 1acb3 batch befln nolr 2e-4 bicubic 0 0  # 38.257 v8  # PixelShuffleNOAct+BicubicAdd
 
-# run example v9s_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s b 2 64 ms skip 1acb3 inst befln nolr 2e-4  # comparing
-# run example v9s_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s b 2 64 ms skip 1acb3 batch befln nolr 2e-4
-# run example v9s_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s b 2 64 ms skip 1acb3 batch befln addlr 2e-4  # comparing
-# run example v9s_s64_Nrst_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s n 2 64 ms skip 1acb3 batch befln nolr 2e-4  # comparing
+# run example v9s_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s b 2 64 ms skip 1acb3 inst befln nolr 2e-4 bicubic 0 0  # comparing
+# run example v9s_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s b 2 64 ms skip 1acb3 batch befln nolr 2e-4 bicubic 0 0
+# run example v9s_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s b 2 64 ms skip 1acb3 batch befln addlr 2e-4 bicubic 0 0  # comparing
+# run example v9s_s64_Nrst_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 s n 2 64 ms skip 1acb3 batch befln nolr 2e-4 bicubic 0 0  # comparing
 
-# run example v9s_s64_D1acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 s b 3 64 ms skip 1acb3 batch befln nolr 2e-4
-# run example v9s_s64_D1acb3_x4: ./scripts/train_srarn_v9.sh train 1 1 s b 4 64 ms skip 1acb3 batch befln nolr 2e-4
+# run example v9s_s64_D1acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 s b 3 64 ms skip 1acb3 batch befln nolr 2e-4 bicubic 0 0
+# run example v9s_s64_D1acb3_x4: ./scripts/train_srarn_v9.sh train 1 1 s b 4 64 ms skip 1acb3 batch befln nolr 2e-4 bicubic 0 0
 
-# run example v9lt_s64_D3acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 lt b 2 64 ms skip 1acb3 batch befln nolr 2e-4
-# run example v9lt_s64_D3acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 lt b 3 64 ms skip 1acb3 batch befln nolr 2e-4
-# run example v9lt_s64_D3acb3_x4: ./scripts/train_srarn_v9.sh train 1 1 lt b 4 64 ms skip 1acb3 batch befln nolr 2e-4
+# run example v9lt_s64_D3acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 lt b 2 64 ms skip 1acb3 batch befln nolr 2e-4 bicubic 0 0
+# run example v9lt_s64_D3acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 lt b 3 64 ms skip 1acb3 batch befln nolr 2e-4 bicubic 0 0
+# run example v9lt_s64_D3acb3_x4: ./scripts/train_srarn_v9.sh train 1 1 lt b 4 64 ms skip 1acb3 batch befln nolr 2e-4 bicubic 0 0
 
-# run example v9t_s64_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0 1 t b 4 64 ms skip 1acb3 batch befln nolr 2e-4
-# run example v9t_s64_D1acb3_x3: ./scripts/train_srarn_v9.sh train 0 1 t b 3 64 ms skip 1acb3 batch befln nolr 2e-4
+# run example v9t_s64_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0 1 t b 4 64 ms skip 1acb3 batch befln nolr 2e-4 bicubic 0 0
+# run example v9t_s64_D1acb3_x3: ./scripts/train_srarn_v9.sh train 0 1 t b 3 64 ms skip 1acb3 batch befln nolr 2e-4 bicubic 0 0
 
 # ###### on t640: ######
-# run example v9t_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 t b 2 64 ms skip 1acb3 batch befln nolr 2e-4
-# run example v9xt_s64_D3acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 xt b 2 64 ms skip 1acb3 batch befln nolr 2e-4
-# run example v9xt_s64_D3acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 xt b 3 64 ms skip 1acb3 batch befln nolr 2e-4
-# run example v9xt_s64_D3acb3_x4: ./scripts/train_srarn_v9.sh train 1 1 xt b 4 64 ms skip 1acb3 batch befln nolr 2e-4
+# run example v9t_s64_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 t b 2 64 ms skip 1acb3 batch befln nolr 2e-4 bicubic 0 0
+# run example v9xt_s64_D3acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 xt b 2 64 ms skip 1acb3 batch befln nolr 2e-4 bicubic 0 0
+# run example v9xt_s64_D3acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 xt b 3 64 ms skip 1acb3 batch befln nolr 2e-4 bicubic 0 0
+# run example v9xt_s64_D3acb3_x4: ./scripts/train_srarn_v9.sh train 1 1 xt b 4 64 ms skip 1acb3 batch befln nolr 2e-4 bicubic 0 0
 
-# run example v9xt_s64_D3acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 xt n 2 64 ms skip 1acb3 batch befln nolr 2e-4
+# run example v9xt_s64_D3acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 xt n 2 64 ms skip 1acb3 batch befln nolr 2e-4 bicubic 0 0
 
-# run example v9xt_s64_D3acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 xt b 2 64 ms skip 1acb3 batch befln addlr 2e-4  # bad
+# run example v9xt_s64_D3acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 xt b 2 64 ms skip 1acb3 batch befln addlr 2e-4 bicubic 0 0  # bad
 
 # ################### test: 1acb3 head; BN; before LN;  ######################
-# batch_befLN/v9l2_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 l2 b 2 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # giveup shen a100
+# batch_befLN/v9l2_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 l2 b 2 48 ms 1acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # giveup shen a100
 
-# batch_befLN/v9l3_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1,2,3 1 l3 b 2 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # done shen  # larger batch multi-GPU
-# batch_befLN/v9l3_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 0,1,2,3 1 l3 b 3 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # pause shen  # larger batch multi-GPU
-# batch_befLN/v9l3_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0,1,2,3 2 l3 b 4 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # giveup shen # accum_step may bad  # larger batch multi-GPU
-# batch_befLN/v9l3_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0 2 l3 b 4 48 ms 1acb3 1acb3 batch befln nolr 4e-4  # giveup shen a100 # accum_step may bad  # larger lr
-# batch_befLN/v9l3_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0,1 1 l3 b 4 48 ms 1acb3 1acb3 batch befln nolr 4e-4  # pause shen a100  # larger lr
+# batch_befLN/v9l3_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1,2,3 1 l3 b 2 48 ms 1acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # done shen  # larger batch multi-GPU
+# batch_befLN/v9l3_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 0,1,2,3 1 l3 b 3 48 ms 1acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # pause shen  # larger batch multi-GPU
+# batch_befLN/v9l3_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0,1,2,3 2 l3 b 4 48 ms 1acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # giveup shen # accum_step may bad  # larger batch multi-GPU
+# batch_befLN/v9l3_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0 2 l3 b 4 48 ms 1acb3 1acb3 batch befln nolr 4e-4 bicubic 0 0  # giveup shen a100 # accum_step may bad  # larger lr
+# batch_befLN/v9l3_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0,1 1 l3 b 4 48 ms 1acb3 1acb3 batch befln nolr 4e-4 bicubic 0 0  # pause shen a100  # larger lr
 
-# batch_befLN/v9fbxt_s64_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 fbxt b 2 64 ms 1acb3 1acb3 batch befln nolr 2e-4  # done shen
-# batch_befLN/v9fbxt_s64_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 fbxt b 3 64 ms 1acb3 1acb3 batch befln nolr 2e-4  # done shen
-# batch_befLN/v9fbxt_s64_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0 1 fbxt b 4 64 ms 1acb3 1acb3 batch befln nolr 2e-4  # done shen
-# batch_befLN/v9fbxt_s64_3acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 fbxt b 2 64 ms 3acb3 1acb3 batch befln nolr 2e-4  # done t640  # param less than 100K
-# batch_befLN/v9fbxt_s64_3acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 fbxt b 3 64 ms 3acb3 1acb3 batch befln nolr 2e-4  # done t640
-# batch_befLN/v9fbxt_s64_3acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0 1 fbxt b 4 64 ms 3acb3 1acb3 batch befln nolr 2e-4  # done shen
-# batch_befLN/v9fblt_s64_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 fblt b 2 64 ms 1acb3 1acb3 batch befln nolr 2e-4  # done shen
-# batch_befLN/v9fblt_s64_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 2 1 fblt b 3 64 ms 1acb3 1acb3 batch befln nolr 2e-4  # done shen
-# batch_befLN/v9fblt_s64_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 3 1 fblt b 4 64 ms 1acb3 1acb3 batch befln nolr 2e-4  # done shen
-# batch_befLN/v9fs_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 fs b 2 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # done shen
-# batch_befLN/v9fs_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 fs b 3 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # done shen
-# batch_befLN/v9fs_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0 1 fs b 4 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # done shen
+# batch_befLN/v9fbxt_s64_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 fbxt b 2 64 ms 1acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # done shen
+# batch_befLN/v9fbxt_s64_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 fbxt b 3 64 ms 1acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # done shen
+# batch_befLN/v9fbxt_s64_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0 1 fbxt b 4 64 ms 1acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # done shen
+# batch_befLN/v9fbxt_s64_3acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 fbxt b 2 64 ms 3acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # done t640  # param less than 100K
+# batch_befLN/v9fbxt_s64_3acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 fbxt b 3 64 ms 3acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # done t640
+# batch_befLN/v9fbxt_s64_3acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0 1 fbxt b 4 64 ms 3acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # done shen
+# batch_befLN/v9fblt_s64_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 fblt b 2 64 ms 1acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # done shen
+# batch_befLN/v9fblt_s64_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 2 1 fblt b 3 64 ms 1acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # done shen
+# batch_befLN/v9fblt_s64_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 3 1 fblt b 4 64 ms 1acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # done shen
+# batch_befLN/v9fs_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 fs b 2 48 ms 1acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # done shen
+# batch_befLN/v9fs_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 fs b 3 48 ms 1acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # done shen
+# batch_befLN/v9fs_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0 1 fs b 4 48 ms 1acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # done shen
 
   # ############## test larger init LR ###############  !!! fs paused at epoch 1000 and good enough, l3 need further train
-  # batch_befLN/v9fs_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 fs b 2 48 ms 1acb3 1acb3 batch befln nolr 8e-4  # done shen
-  # batch_befLN/v9fs_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh resume 0 1 fs b 3 48 ms 1acb3 1acb3 batch befln nolr 8e-4  # training shen
-  # batch_befLN/v9fs_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh resume 1 1 fs b 4 48 ms 1acb3 1acb3 batch befln nolr 8e-4  # training shen
-  # batch_befLN/v9l3_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh resume 0,1,2,3 1 l3 b 2 48 ms 1acb3 1acb3 batch befln nolr 8e-4  # training shen  # larger batch multi-GPU
-  # batch_befLN/v9l3_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh resume 0,1,2,3 1 l3 b 3 48 ms 1acb3 1acb3 batch befln nolr 8e-4  # training shen  # larger batch multi-GPU
-  # batch_befLN/v9l3_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh resume 0,1 1 l3 b 4 48 ms 1acb3 1acb3 batch befln nolr 16e-4  # pause shen a100  # larger lr
+  # batch_befLN/v9fs_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 fs b 2 48 ms 1acb3 1acb3 batch befln nolr 8e-4 bicubic 0 0  # done shen
+  # batch_befLN/v9fs_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh resume 0 1 fs b 3 48 ms 1acb3 1acb3 batch befln nolr 8e-4 bicubic 0 0  # done shen no6
+  # batch_befLN/v9fs_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh resume 1 1 fs b 4 48 ms 1acb3 1acb3 batch befln nolr 8e-4 bicubic 0 0  # done shen no6
+  # batch_befLN/v9l3_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh resume 0,1,2,3 1 l3 b 2 48 ms 1acb3 1acb3 batch befln nolr 8e-4 bicubic 0 0  # giveup shen no2  # bad: too large lr multi-GPU
+  # batch_befLN/v9l3_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh resume 0,1,2,3 1 l3 b 3 48 ms 1acb3 1acb3 batch befln nolr 8e-4 bicubic 0 0  # giveup shen no4  # bad: too large lr multi-GPU
+  # batch_befLN/v9l3_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh resume 0,1 1 l3 b 4 48 ms 1acb3 1acb3 batch befln nolr 16e-4 bicubic 0 0  # giveup shen a100  # bad: too large lr
   ###################################################
   # ########## change upsampling to PS && larger init LR #############
-  # batch_befLN/v9l3_UpPS_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1,2,3 1 l3_UpPS b 2 48 ms 1acb3 1acb3 batch befln nolr 8e-4  # pause shen  # larger batch multi-GPU
-  # batch_befLN/v9l3_UpPS_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 0,1,2,3 1 l3_UpPS b 3 48 ms 1acb3 1acb3 batch befln nolr 8e-4  # pause shen  # larger batch multi-GPU
-  # batch_befLN/v9l3_UpPS_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0,1 1 l3_UpPS b 4 48 ms 1acb3 1acb3 batch befln nolr 16e-4  # pause shen a100  # larger lr
+  # batch_befLN/v9l3_UpPS_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0,1,2,3 1 l3_UpPS b 2 48 ms 1acb3 1acb3 batch befln nolr 8e-4 bicubic 0 0  # pause shen  # larger batch multi-GPU
+  # batch_befLN/v9l3_UpPS_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 0,1,2,3 1 l3_UpPS b 3 48 ms 1acb3 1acb3 batch befln nolr 8e-4 bicubic 0 0  # pause shen  # larger batch multi-GPU
+  # batch_befLN/v9l3_UpPS_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0,1 1 l3_UpPS b 4 48 ms 1acb3 1acb3 batch befln nolr 16e-4 bicubic 0 0  # pause shen a100  # larger lr
   ##################################################
+  # ########## Image Restoration IR #############
+    # BD, 
+    # ./scripts/train_srarn_v9.sh train 1 1 fs b 3 48 ms 1acb3 1acb3 batch befln nolr 5e-4 BD 0 0
+    # DN, 
+    # ./scripts/train_srarn_v9.sh train 0 1 fs b 3 48 ms 1acb3 1acb3 batch befln nolr 5e-4 DN 0 0
+    # Noise, 
+    # ./scripts/train_srarn_v9.sh train 0 1 fs b 1 48 ms 1acb3 1acb3 batch befln nolr 5e-4 Noise 15 0
+    # Gray_Noise
+    # ./scripts/train_srarn_v9.sh train 1 1 fs b 1 48 ms 1acb3 1acb3 batch befln nolr 5e-4 Gray_Noise 15 0
+    # Blur, 
+    # ./scripts/train_srarn_v9.sh train 0 1 fs b 1 48 ms 1acb3 1acb3 batch befln nolr 5e-4 Blur 0 0
+    # JPEG, 
+    # ./scripts/train_srarn_v9.sh train 1 1 fs b 1 48 ms 1acb3 1acb3 batch befln nolr 5e-4 JPEG 0 10
 
-# batch_befLN/v9fbxt_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 fbxt b 2 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # pause shen  # bad p48
-# batch_befLN/v9fblt_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 fblt b 2 48 ms 1acb3 1acb3 batch befln nolr 2e-4  # pause shen  # bad p48
-# batch/v9fbxt_s64_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 fbxt b 2 64 ms 1acb3 1acb3 batch ln nolr 2e-4  # done shen  # bad 37.899  p48:37.871
-# batch_noLN/v9fbxt_s64_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 fbxt b 2 64 ms 1acb3 1acb3 batch no nolr 2e-4  # done shen  # better 37.919 p48:37.903
-# batch/v9fblt_s64_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 fblt b 2 64 ms 1acb3 1acb3 batch ln nolr 2e-4  # waiting shen
+
+# batch_befLN/v9fbxt_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 fbxt b 2 48 ms 1acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # pause shen  # bad p48
+# batch_befLN/v9fblt_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 fblt b 2 48 ms 1acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # pause shen  # bad p48
+# batch/v9fbxt_s64_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 fbxt b 2 64 ms 1acb3 1acb3 batch ln nolr 2e-4 bicubic 0 0  # done shen  # bad 37.899  p48:37.871
+# batch_noLN/v9fbxt_s64_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 fbxt b 2 64 ms 1acb3 1acb3 batch no nolr 2e-4 bicubic 0 0  # done shen  # better 37.919 p48:37.903
+# batch/v9fblt_s64_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 fblt b 2 64 ms 1acb3 1acb3 batch ln nolr 2e-4 bicubic 0 0  # waiting shen
 
 # #####################################
 # accept input
@@ -240,15 +254,57 @@ if [ $initlr = "2e-4" ]; then
 else
   initlr_print="_$initlr"
 fi
+# degradation option bicubic, BD, DN, Noise, Blur, JPEG, Gray_Noise
+deg=${15}
+deg_opt="--degradation $deg"
+deg_print="_$deg"
+if [ $deg = "bicubic" ]; then
+  deg_print=""
+  val_set="Set5"
+  test_set="Set5+Set14+B100+Urban100+Manga109"
+elif [ $deg = "BD" ]; then 
+  val_set="Set5"
+  test_set="Set5+Set14+B100+Urban100+Manga109"
+elif [ $deg = "DN" ]; then 
+  val_set="Set5"
+  test_set="Set5+Set14+B100+Urban100+Manga109"
+elif [ $deg = "Noise" ]; then 
+  val_set="McMaster"
+  test_set="McMaster+Kodak24+CBSD68+Urban100"
+elif [ $deg = "Gray_Noise" ]; then 
+  deg_opt="$deg_opt --n_colors 1"
+  val_set="Set12"
+  test_set="Set12+BSD68+Urban100_Gray"
+elif [ $deg = "Blur" ]; then 
+  val_set="McMaster"
+  test_set="McMaster+Kodak24+Urban100"
+elif [ $deg = "JPEG" ]; then 
+  val_set="Classic5"
+  test_set="Classic5+LIVE1"
+fi
+# number of sigma for Noise degradation (15 | 25 | 50)
+sigma=${16}
+if [ $sigma = 0 ]; then
+  sigma_print=""
+else
+  sigma_print="_N$sigma"
+fi
+# number of quality for JPEG degradation (10 | 20 | 30 | 40)
+quality=${17}
+if [ $quality = 0 ]; then
+  quality_print=""
+else
+  quality_print="_Q$quality"
+fi
 
 
 # #####################################
 # prepare program options parameters
 # v9 must use layernorm
-run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $interpolation --res_connect $res --deep_conv $deep --acb_norm $acb --loss 1*SmoothL1 --lr $initlr --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class $lr_class $norm_opt $addlr_opt --model SRARNV9"
-# run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $interpolation --res_connect $res --deep_conv $deep --loss 1*L1 --lr $initlr --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class CosineWarmRestart --model SRARNV9"
-save_dir="../srarn_v9${acb_print}${norm_print}${initlr_print}/v9${size}${patch_print}${addlr_print}${interpolation_print}${res_print}${deep_print}${lr_print}_x${scale}"
-log_file="../srarn_v9${acb_print}${norm_print}${initlr_print}/logs/v9${size}${patch_print}${addlr_print}${interpolation_print}${res_print}${deep_print}${lr_print}_x${scale}.log"
+run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $interpolation --res_connect $res --deep_conv $deep --acb_norm $acb --loss 1*SmoothL1 --lr $initlr --optimizer ADAM --skip_threshold 1e6 --lr_class $lr_class $norm_opt $addlr_opt --data_train DIV2K_IR --data_test $val_set $deg_opt --sigma $sigma --quality $quality --model SRARNV9"
+# run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $interpolation --res_connect $res --deep_conv $deep --loss 1*L1 --lr $initlr --optimizer ADAM --skip_threshold 1e6 --lr_class CosineWarmRestart --model SRARNV9"
+save_dir="../srarn_v9${acb_print}${norm_print}${initlr_print}/v9${size}${patch_print}${addlr_print}${interpolation_print}${res_print}${deep_print}${lr_print}${deg_print}${sigma_print}${quality_print}_x${scale}"
+log_file="../srarn_v9${acb_print}${norm_print}${initlr_print}/logs/v9${size}${patch_print}${addlr_print}${interpolation_print}${res_print}${deep_print}${lr_print}${deg_print}${sigma_print}${quality_print}_x${scale}.log"
 
 if [ ! -d "../srarn_v9${acb_print}${norm_print}${initlr_print}" ]; then
   mkdir "../srarn_v9${acb_print}${norm_print}${initlr_print}"
@@ -285,13 +341,13 @@ then
 elif [ $mode = "eval" ]
 then
   echo "load inference version of acb to eval:"
-  echo "$run_command --data_test Set5+Set14+B100+Urban100+Manga109 --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf"
-  $run_command --data_test Set5+Set14+B100+Urban100+Manga109 --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf
+  echo "$run_command --data_test $test_set --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf"
+  $run_command --data_test $test_set --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf
 elif [ $mode = "eval_plus" ]
 then
   echo "load inference version of acb to eval:"
-  echo "$run_command --data_test Set5+Set14+B100+Urban100+Manga109 --save ${save_dir}_test_plus --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf --self_ensemble"
-  $run_command --data_test Set5+Set14+B100+Urban100+Manga109 --save ${save_dir}_test_plus --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf --self_ensemble
+  echo "$run_command --data_test $test_set --save ${save_dir}_test_plus --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf --self_ensemble"
+  $run_command --data_test $test_set --save ${save_dir}_test_plus --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf --self_ensemble
 elif [ $mode = "runtime" ]
 then
   # echo "load inference version of acb to test the runtime:"
