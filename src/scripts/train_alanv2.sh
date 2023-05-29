@@ -326,14 +326,17 @@ else
 fi
 # use feature down before extraction, and up after (feaDU | no)
 feaDown=${19}
-if [ $feaDown = "feaDU" ]; then
+if [ $feaDown = "feaDU" ]; then  # old code down first
   feaDown_opt="--down_fea"
   feaDown_print="_feaDU"
 elif [ $feaDown = "no" ]; then 
   feaDown_opt=""
   feaDown_print=""
+elif [ $feaDown = "feaUD" ]; then
+  feaDown_opt="--down_fea"
+  feaDown_print="_feaUD"
 else
-  echo "no valid $feaDown ! Please input (feaDU | no)."
+  echo "no valid $feaDown ! Please input (feaDU | feaUD | no)."
   exit
 fi
 

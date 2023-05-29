@@ -304,6 +304,7 @@ class ALANV2(nn.Module):
         # flag=False
         use_acb = args.use_acb
         use_dbb = args.use_dbb
+        conv_layer = common.default_dbb if use_acb and use_dbb else common.default_acb if use_acb else common.default_conv2d
         use_inf = args.load_inf
         acb_norm = args.acb_norm
         use_attn = not args.no_attn
@@ -364,19 +365,19 @@ class ALANV2(nn.Module):
                                             patch_size=7 if i == 0 else 3,
                                             # stride=4 if i == 0 else 2,
                                             stride=1,
-                                            in_chans=in_chans if i == 0 else (embed_dims[i - 1] * 4) if self.down_fea else embed_dims[i - 1],
-                                            embed_dim=embed_dims[i] if i == 0 else (embed_dims[i] * 4) if self.down_fea else embed_dims[i],
+                                            in_chans=in_chans if i == 0 else (embed_dims[i - 1] // 4) if self.down_fea else embed_dims[i - 1],
+                                            embed_dim=embed_dims[i] if i == 0 else (embed_dims[i] // 4) if self.down_fea else embed_dims[i],
                                             bb_norm=bb_norm, 
                                             use_acb=use_acb, use_dbb=use_dbb, 
                                             deploy=use_inf, acb_norm=acb_norm)
 
             block = nn.ModuleList([Block(
-                dim=(embed_dims[i] * 4) if self.down_fea else embed_dims[i], 
+                dim=(embed_dims[i] // 4) if self.down_fea else embed_dims[i], 
                 mlp_ratio=mlp_ratios[i], drop=drop_rate, drop_path=dpr[cur + j], dw_ker=dw_ker, dwd_ker=dwd_ker, dwd_pad=dwd_pad, dwd_dil=dwd_dil, 
                 bb_norm=bb_norm, use_acb=use_acb, use_dbb=use_dbb, deploy=use_inf, acb_norm=acb_norm, use_attn=use_attn)
                 for j in range(depths[i])])
             if self.stage_norm:
-                norm = norm_layer((embed_dims[i] * 4) if self.down_fea else embed_dims[i])
+                norm = norm_layer((embed_dims[i] // 4) if self.down_fea else embed_dims[i])
             cur += depths[i]
 
             setattr(self, f"patch_embed{i + 1}", patch_embed)
@@ -389,7 +390,8 @@ class ALANV2(nn.Module):
         self.preup_norm = LayerNorm(embed_dims[-1], eps=1e-6, data_format="channels_first")
         if self.upsampling != 'PixelShuffleDirect' and self.upsampling != 'Deconv':
             self.preup = nn.Sequential(
-                acb.ACBlock(embed_dims[-1], num_up_feat, 3, 1, 1, deploy=use_inf, norm=acb_norm) if use_acb else nn.Conv2d(embed_dims[-1], num_up_feat, 3, 1, 1)
+                # DiverseBranchBlock(embed_dims[-1], num_up_feat, 3, 1, 1, deploy=use_inf) if use_acb and use_dbb else acb.ACBlock(embed_dims[-1], num_up_feat, 3, 1, 1, deploy=use_inf, norm=acb_norm) if use_acb else nn.Conv2d(embed_dims[-1], num_up_feat, 3, 1, 1)
+                conv_layer(embed_dims[-1], num_up_feat, 3, 1, 1, deploy=use_inf, norm=acb_norm)
                 ,nn.GELU()
             )
         # Upsampling layer.
@@ -398,39 +400,25 @@ class ALANV2(nn.Module):
             self.deconv = nn.ConvTranspose2d(embed_dims[-1], in_chans, (9, 9), (self.scale, self.scale),
                                              (4, 4), (self.scale - 1, self.scale - 1))
         elif self.upsampling == 'PixelShuffleDirect':
-            if use_acb:
-                convblock = common.default_acb
-            else:
-                convblock = common.default_conv
-            self.pixelshuffledirect = common.UpsamplerDirect(convblock, self.scale, embed_dims[-1], in_chans, deploy=use_inf, norm=acb_norm)
+            self.pixelshuffledirect = common.UpsamplerDirect(conv_layer, self.scale, embed_dims[-1], in_chans, deploy=use_inf, norm=acb_norm)
         elif self.upsampling == 'PixelShuffle':
-            if use_acb:
-                convblock = common.default_acb
-            else:
-                convblock = common.default_conv
             if args.no_act_ps:
                 self.pixelshuffle = nn.Sequential(
-                    common.Upsampler(convblock, self.scale, num_up_feat, act=False, deploy=use_inf, norm=acb_norm), #act='gelu' for v5
-                    convblock(num_up_feat, in_chans, 3, 1, 1, deploy=use_inf, norm=acb_norm)
+                    common.Upsampler(conv_layer, self.scale, num_up_feat, act=False, deploy=use_inf, norm=acb_norm), #act='gelu' for v5
+                    conv_layer(num_up_feat, in_chans, 3, 1, 1, deploy=use_inf, norm=acb_norm)
                 )
             else:  # default option
                 self.pixelshuffle = nn.Sequential(
-                    common.Upsampler(convblock, self.scale, num_up_feat, act='gelu', deploy=use_inf, norm=acb_norm),
-                    convblock(num_up_feat, in_chans, 3, 1, 1, deploy=use_inf, norm=acb_norm)
+                    common.Upsampler(conv_layer, self.scale, num_up_feat, act='gelu', deploy=use_inf, norm=acb_norm),
+                    conv_layer(num_up_feat, in_chans, 3, 1, 1, deploy=use_inf, norm=acb_norm)
                 )
         elif self.upsampling == 'Nearest' or self.upsampling == 'NearestNoPA':
             # Nearest + Conv/ACBlock
             if (self.scale & (self.scale - 1)) == 0:  # 缩放因子等于 2^n
                 for i in range(int(math.log(self.scale, 2))):  #  循环 n 次
-                    if use_acb:
-                        self.add_module(f'up{i}', acb.ACBlock(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf, norm=acb_norm))
-                    else:
-                        self.add_module(f'up{i}', nn.Conv2d(num_up_feat, num_up_feat, 3, 1, 1))
+                    self.add_module(f'up{i}', conv_layer(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf, norm=acb_norm))
             elif self.scale == 3:  # 缩放因子等于 3
-                if use_acb:
-                    self.up = acb.ACBlock(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf, norm=acb_norm)
-                else:
-                    self.up = nn.Conv2d(num_up_feat, num_up_feat, 3, 1, 1)
+                self.up = conv_layer(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf, norm=acb_norm)
             else:
                 # 报错，缩放因子不对
                 raise ValueError(f'scale {self.scale} is not supported. ' 'Supported scales: 2^n and 3.')
@@ -439,15 +427,15 @@ class ALANV2(nn.Module):
                 self.postup = nn.Sequential(
                     PA(num_up_feat),
                     nn.GELU(),
-                    acb.ACBlock(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf, norm=acb_norm) if use_acb else nn.Conv2d(num_up_feat, num_up_feat, 3, 1, 1),
+                    conv_layer(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf, norm=acb_norm),
                     nn.GELU(),
-                    acb.ACBlock(num_up_feat, in_chans, 3, 1, 1, deploy=use_inf, norm=acb_norm) if use_acb else nn.Conv2d(num_up_feat, in_chans, 3, 1, 1)
+                    conv_layer(num_up_feat, in_chans, 3, 1, 1, deploy=use_inf, norm=acb_norm)
                 )
             else:
                 self.postup = nn.Sequential(
-                    acb.ACBlock(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf, norm=acb_norm) if use_acb else nn.Conv2d(num_up_feat, num_up_feat, 3, 1, 1),
+                    conv_layer(num_up_feat, num_up_feat, 3, 1, 1, deploy=use_inf, norm=acb_norm),
                     nn.GELU(),
-                    acb.ACBlock(num_up_feat, in_chans, 3, 1, 1, deploy=use_inf, norm=acb_norm) if use_acb else nn.Conv2d(num_up_feat, in_chans, 3, 1, 1)
+                    conv_layer(num_up_feat, in_chans, 3, 1, 1, deploy=use_inf, norm=acb_norm)
                 )
         
         if self.interpolation == 'PixelShuffle':
@@ -501,9 +489,9 @@ class ALANV2(nn.Module):
             if i == 0:
                 input = x
                 if self.down_fea: 
-                    x = self.down_fea(x)
-                    H = H // 2
-                    W = W // 2
+                    x = self.up_fea(x)
+                    H = H * 2
+                    W = W * 2
             if self.stage_res:
                 stage_input = x
             for blk in block:
@@ -518,7 +506,7 @@ class ALANV2(nn.Module):
             if self.stage_res:
                 x = x + stage_input
 
-        if self.down_fea: x = self.up_fea(x)
+        if self.down_fea: x = self.down_fea(x)
         x = input + x   # Residual of the whole deep feature Extraction
 
         return x

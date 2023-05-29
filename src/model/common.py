@@ -6,6 +6,7 @@ import torch.nn.functional as F
 
 from model import acb
 from model.acb_old import ACBlock
+from model.diversebranchblock import DiverseBranchBlock
 
 def default_conv(in_channels, out_channels, kernel_size, bias=True, deploy=False, norm="batch"):
     return nn.Conv2d(
@@ -22,7 +23,21 @@ def default_acb(in_channels, out_channels, kernel_size, stride=1, padding=-1, di
     else:
         return acb.ACBlock(in_channels, out_channels, kernel_size, stride=stride, padding=padding, 
                         dilation=dilation, groups=groups, padding_mode=padding_mode, deploy=deploy, norm=norm)
-                        
+
+def default_dbb(in_channels, out_channels, kernel_size, stride=1, padding=-1, dilation=1, groups=1, 
+                bias=True, padding_mode='zeros', use_original_conv=False, deploy=False, norm="batch"):
+    if padding == -1:
+        padding = (kernel_size//2)
+    return DiverseBranchBlock(in_channels, out_channels, kernel_size, stride=stride, padding=padding, 
+                        dilation=dilation, groups=groups, padding_mode=padding_mode, deploy=deploy)
+
+def default_conv2d(in_channels, out_channels, kernel_size, stride=1, padding=-1, dilation=1, groups=1, 
+                bias=True, padding_mode='zeros', use_original_conv=False, deploy=False, norm="batch"):
+    if padding == -1:
+        padding = (kernel_size//2)
+    return nn.Conv2d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, 
+                        dilation=dilation, groups=groups, bias=bias, padding_mode=padding_mode)
+
 def default_acbv5(in_channels, out_channels, kernel_size, stride=1, padding=-1, dilation=1, groups=1, 
                 bias=True, padding_mode='zeros', use_original_conv=False, deploy=False, norm="batch"):
     if padding == -1:
