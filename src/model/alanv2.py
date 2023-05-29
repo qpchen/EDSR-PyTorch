@@ -113,10 +113,12 @@ class Block(nn.Module):
             self.norm1 = nn.BatchNorm2d(dim)
             self.norm2 = nn.BatchNorm2d(dim)
         elif bb_norm == "LN":
-            self.norm1 = nn.LayerNorm(dim, eps=1e-6)
-            self.norm2 = nn.LayerNorm(dim, eps=1e-6)
-            # self.norm1 = LayerNorm(dim, data_format="channels_first")
-            # self.norm2 = LayerNorm(dim, data_format="channels_first")
+            # self.norm1 = nn.LayerNorm(dim, eps=1e-6)
+            # self.norm2 = nn.LayerNorm(dim, eps=1e-6)
+            # self.norm1 = LayerNorm(dim)
+            # self.norm2 = LayerNorm(dim)
+            self.norm1 = LayerNorm(dim, data_format="channels_first")
+            self.norm2 = LayerNorm(dim, data_format="channels_first")
         self.attn = Attention(dim, dw_ker=dw_ker, dwd_ker=dwd_ker, dwd_pad=dwd_pad, dwd_dil=dwd_dil, use_acb=use_acb, use_dbb=use_dbb, deploy=deploy, acb_norm=acb_norm, use_attn=use_attn)
         self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
 
@@ -152,18 +154,18 @@ class Block(nn.Module):
         if self.bb_norm == "BN":
             x = self.norm1(x)
         elif self.bb_norm == "LN":
-            x = x.permute(0, 2, 3, 1) # (N, C, H, W) -> (N, H, W, C)
+            # x = x.permute(0, 2, 3, 1) # (N, C, H, W) -> (N, H, W, C)
             x = self.norm1(x)
-            x = x.permute(0, 3, 1, 2) # (N, H, W, C) -> (N, C, H, W)
+            # x = x.permute(0, 3, 1, 2) # (N, H, W, C) -> (N, C, H, W)
         x = skip + self.drop_path(self.layer_scale_1.unsqueeze(-1).unsqueeze(-1) * self.attn(x))
         
         skip = x
         if self.bb_norm == "BN":
             x = self.norm2(x)
         elif self.bb_norm == "LN":
-            x = x.permute(0, 2, 3, 1) # (N, C, H, W) -> (N, H, W, C)
+            # x = x.permute(0, 2, 3, 1) # (N, C, H, W) -> (N, H, W, C)
             x = self.norm2(x)
-            x = x.permute(0, 3, 1, 2) # (N, H, W, C) -> (N, C, H, W)
+            # x = x.permute(0, 3, 1, 2) # (N, H, W, C) -> (N, C, H, W)
         x = skip + self.drop_path(self.layer_scale_2.unsqueeze(-1).unsqueeze(-1) * self.mlp(x))
         return x
 
@@ -193,8 +195,9 @@ class OverlapPatchEmbed(nn.Module):
         if bb_norm == "BN":
             self.norm = nn.BatchNorm2d(embed_dim)
         elif bb_norm == "LN":
-            # self.norm = LayerNorm(embed_dim, data_format="channels_first")
-            self.norm = nn.LayerNorm(embed_dim, eps=1e-6)
+            self.norm = LayerNorm(embed_dim, data_format="channels_first")
+            # self.norm = LayerNorm(embed_dim)
+            # self.norm = nn.LayerNorm(embed_dim, eps=1e-6)
 
         #self.apply(self._init_weights)
 
@@ -219,9 +222,9 @@ class OverlapPatchEmbed(nn.Module):
         if self.bb_norm == "BN":
             x = self.norm(x)
         elif self.bb_norm == "LN":
-            x = x.permute(0, 2, 3, 1) # (N, C, H, W) -> (N, H, W, C)
+            # x = x.permute(0, 2, 3, 1) # (N, C, H, W) -> (N, H, W, C)
             x = self.norm(x)
-            x = x.permute(0, 3, 1, 2) # (N, H, W, C) -> (N, C, H, W)
+            # x = x.permute(0, 3, 1, 2) # (N, H, W, C) -> (N, C, H, W)
         return x, H, W
 
 
