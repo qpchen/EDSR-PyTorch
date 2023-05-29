@@ -29,7 +29,7 @@ def default_dbb(in_channels, out_channels, kernel_size, stride=1, padding=-1, di
     if padding == -1:
         padding = (kernel_size//2)
     return DiverseBranchBlock(in_channels, out_channels, kernel_size, stride=stride, padding=padding, 
-                        dilation=dilation, groups=groups, padding_mode=padding_mode, deploy=deploy)
+                        dilation=dilation, groups=groups, deploy=deploy)
 
 def default_conv2d(in_channels, out_channels, kernel_size, stride=1, padding=-1, dilation=1, groups=1, 
                 bias=True, padding_mode='zeros', use_original_conv=False, deploy=False, norm="batch"):
