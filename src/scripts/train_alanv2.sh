@@ -66,6 +66,7 @@
 # done: ./scripts/train_alanv2.sh train 1 1 xt nr 4 48 ms 4e-4 noStageRes batch NN ACB 23 BN bicubic 0 0 no
 
 # training t640: ./scripts/train_alanv2.sh train 1 1 xt nr 2 48 ms 4e-4 noStageRes batch NN ACB 23 BN bicubic 0 0 feaDU
+# training t640: ./scripts/train_alanv2.sh train 0 1 xt nr 2 48 ms 4e-4 noStageRes batch NN ACB 23 BN bicubic 0 0 feaUD
 
   # ####ablation staty: 1. 把ACB替换回Conv和ACB用instN及不用bn；2. LKA使用不同核；3. stage使用residual connect；4. MLP ratio；5. LR 插值用不同方法；6. 上采样不同方法；7. stage、block等数量设置；8. LKA不使用attention
   # 1 done: ./scripts/train_alanv2.sh train 0 1 xt nr 2 48 ms 4e-4 noStageRes batch NN noACB 23 BN bicubic 0 0 no
@@ -85,8 +86,40 @@
   # 8 done t640: ./scripts/train_alanv2.sh train 1 1 t_noAttn nr 2 48 ms 4e-4 noStageRes batch NN ACB 23 BN bicubic 0 0 no
 
     # ############### optimize #################
-    # 1. ACB no; 2. 
+    # 1. DDB + DDB(upsampling) + StageRes; 2. feaDU; 3. no ACB + LN + StageRes; 4. no ACB + StageRes
+    # 1. done: ./scripts/train_alanv2.sh train 0 1 t nr 2 48 ms 5e-4 useStageRes no NN DBB 23 BN bicubic 0 0 no
+    # 2. pause: ./scripts/train_alanv2.sh train 1 1 t4 nr 2 48 ms 5e-4 noStageRes batch NN ACB 23 BN bicubic 0 0 feaUD
+    # 3. done: ./scripts/train_alanv2.sh train 0 1 t4 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no
+    # 4. done: ./scripts/train_alanv2.sh train 0 1 t4 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no
 
+    # done No5: ./scripts/train_alanv2.sh train 0 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no
+    # done No5: ./scripts/train_alanv2.sh train 1 1 t nr 3 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no
+    # done No1: ./scripts/train_alanv2.sh train 0 1 t nr 4 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no
+
+    # done No1: ./scripts/train_alanv2.sh train 1 1 xt nr 4 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no
+    # training t640: ./scripts/train_alanv2.sh resume 0 1 xt nr 3 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no
+    # training t640: ./scripts/train_alanv2.sh resume 1 1 xt nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no
+
+    # training No2: ./scripts/train_alanv2.sh train 0 1 xs nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no
+    # training No2: ./scripts/train_alanv2.sh train 1 1 xs nr 3 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no
+    # training No5: ./scripts/train_alanv2.sh resume 0 1 xs nr 4 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no
+
+    # training No1: ./scripts/train_alanv2.sh resume 1 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN Noise 50 0 no
+    # training No5: ./scripts/train_alanv2.sh train 1 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN Noise 10 0 no
+    # training No1: ./scripts/train_alanv2.sh train 0 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN Noise 30 0 no
+    # training No4: ./scripts/train_alanv2.sh train 0 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN Noise 70 0 no
+
+    # done No4: ./scripts/train_alanv2.sh train 1 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN Gray_Noise 50 0 no
+    # training No4: ./scripts/train_alanv2.sh train 1 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN Gray_Noise 10 0 no
+    # training No6: ./scripts/train_alanv2.sh train 0 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN Gray_Noise 30 0 no
+    # training No6: ./scripts/train_alanv2.sh train 1 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN Gray_Noise 70 0 no
+
+    # done No4: ./scripts/train_alanv2.sh train 0 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN JPEG 0 10 no
+    # done No6: ./scripts/train_alanv2.sh train 0 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN JPEG 0 20 no
+    # done No6: ./scripts/train_alanv2.sh train 1 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN JPEG 0 30 no
+    # done No7: ./scripts/train_alanv2.sh train 0 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN JPEG 0 40 no
+
+    # done No7: ./scripts/train_alanv2.sh train 1 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN Blur 0 0 no
 
 
   # 1 done: ./scripts/train_alanv2.sh train 1 1 t nr 2 48 ms 4e-4 noStageRes batch NN noACB 23 BN bicubic 0 0 no
@@ -321,7 +354,7 @@ if [ $sigma = 0 ]; then
 else
   sigma_print="_N$sigma"
 fi
-# number of sigma for Noise degradation (15 | 25 | 50)
+# number of quality for JPEG  (10 | 20 | 30 | 40)
 quality=${18}
 if [ $quality = 0 ]; then
   quality_print=""
