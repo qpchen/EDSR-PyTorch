@@ -121,6 +121,17 @@
 
     # done No7: ./scripts/train_alanv2.sh train 1 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN Blur 0 0 no
 
+      # ablation: 2. LKA size; 3. MLP ratio；4. LKA不使用attention; 5. stage、block等数量设置；
+      #2 training No7: ./scripts/train_alanv2.sh train 0 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 7 BN bicubic 0 0 no
+      #2 training No7: ./scripts/train_alanv2.sh train 1 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 15 BN bicubic 0 0 no
+      #2 waiting: ./scripts/train_alanv2.sh train 0 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 31 BN bicubic 0 0 no
+      #2 waiting: ./scripts/train_alanv2.sh train 0 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 39 BN bicubic 0 0 no
+      #2 waiting: ./scripts/train_alanv2.sh train 0 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 47 BN bicubic 0 0 no
+      #2 waiting: ./scripts/train_alanv2.sh train 0 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 55 BN bicubic 0 0 no
+      #3 waiting: ./scripts/train_alanv2.sh train 0 1 t_mlp2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no
+      #4 waiting: ./scripts/train_alanv2.sh train 0 1 t_noAttn nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no
+      #5 pause: ./scripts/train_alanv2.sh train 0 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no
+
 
   # 1 done: ./scripts/train_alanv2.sh train 1 1 t nr 2 48 ms 4e-4 noStageRes batch NN noACB 23 BN bicubic 0 0 no
   # 1 pause: ./scripts/train_alanv2.sh train 2 1 t nr 2 48 ms 4e-4 noStageRes no NN ACB 23 BN bicubic 0 0 no
