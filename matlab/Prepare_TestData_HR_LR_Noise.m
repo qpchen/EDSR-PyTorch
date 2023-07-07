@@ -6,9 +6,10 @@ path_original = './OriginalTestData';
 % dataset  = {'720P'};
 ext = {'*.jpg', '*.png', '*.bmp', '*.tif'};
 
-degradation = 'JPEG'; % Noise, Blur, JPEG, Gray_Noise
+degradation = 'Gray_Noise'; % Noise, Blur, JPEG, Gray_Noise
 % noise level
 %sigma_all = [15, 25, 50]; % noise level
+%sigma_all = [10, 30, 70]; % noise level
 % Blur setting
 kernelsize = 25;
 deviation = 1.6;
@@ -20,11 +21,13 @@ if strcmp(degradation, 'Blur')
     prefix = 'k25n';
     dataset  = {'McMaster', 'Kodak24', 'Urban100'};
 elseif strcmp(degradation, 'Noise') 
-    sigma_all = [15, 25, 50];
+    sigma_all = [10, 30, 70];
+%     sigma_all = [15, 25, 50];
     prefix = 'n';
     dataset  = {'CBSD68', 'Kodak24', 'McMaster', 'Urban100'};
 elseif strcmp(degradation, 'Gray_Noise') 
-    sigma_all = [15, 25, 50];
+    sigma_all = [10, 30, 70];
+%     sigma_all = [15, 25, 50];
     prefix = 'n';
     dataset  = {'Set12', 'BSD68', 'Urban100_Gray'};
 elseif strcmp(degradation, 'JPEG') 

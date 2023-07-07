@@ -6,7 +6,7 @@ dataset  = {'Set5', 'Set14', 'B100', 'Urban100', 'Manga109'};
 %dataset  = {'720P', '1080P', '4K'};
 ext = {'*.jpg', '*.png', '*.bmp', '*.tif'};
 
-degradation = 'DN'; % BI, BD, DN
+degradation = 'BI'; % BI, BD, DN
 if strcmp(degradation, 'BI') 
     scale_all = [2,3,4,8];
 else
@@ -50,6 +50,7 @@ for idx_set = 1:length(dataset)
             fn_HR = fullfile('./HR', dataset{idx_set}, ['x', num2str(scale)], [name_im(1:end-4), '_HR_x', num2str(scale), '.png']);
             fn_LR = fullfile(['./LR/LR', degradation], dataset{idx_set}, ['x', num2str(scale)], [name_im(1:end-4), '_LR', degradation, '_x', num2str(scale), '.png']);
             imwrite(im_HR, fn_HR, 'png');
+%             imwrite(im_ori, fn_HR, 'png');
             imwrite(im_LR, fn_LR, 'png');
         end
         fprintf('\n');

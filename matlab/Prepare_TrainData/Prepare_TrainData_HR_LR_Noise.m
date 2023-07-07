@@ -20,8 +20,8 @@ for idx_im = 1:nb_im
     DIV2K_HR{idx_im} = ImHR;
 end
 %% generate and save LR via imresize() with Bicubic
-%sigmas = [10, 30, 50, 70]; % noise level
-sigmas = [15, 25, 50]; % noise level
+sigmas = [10, 30, 70]; % noise level
+%sigmas = [15, 25, 50]; % noise level
 for sigma = sigmas
     for IdxIm = 1:nb_im
         fprintf('IdxIm=%d\n', IdxIm);
