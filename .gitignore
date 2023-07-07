@@ -85,6 +85,7 @@ src/model/modules/
 # Datasets
 # data/
 test/
+sign
 # tree of model experiment files
 srarn
 srarn_v6
