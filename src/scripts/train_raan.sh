@@ -88,13 +88,18 @@
 
   
     # ############### optimize #################
-    # 1. ACB no; 2. replace ACB with DDB in backbone; 3. StageRes; 4. backbone no norm; 5. no ACB
+    # 1. ACB no; 2. replace ACB with DDB in backbone; 3. StageRes; 4. backbone no norm; 5. no ACB; 6. StageRes + backbone no norm; 7. StageRes + backbone no norm + ACB no
+    # 8. DDB + StageRes + backbone no norm + ACB no(upsampling); 9. DDB + StageRes + ACB no(upsampling)
     # ./scripts/train_raan.sh resume 0 1 t nr 2 48 ms 4e-4 noStageRes batch NN ACB 23 BN bicubic 0 0
-    # 1. training: ./scripts/train_raan.sh train 1 1 t nr 2 48 ms 5e-4 noStageRes no NN ACB 23 BN bicubic 0 0
-    # 2. training: ./scripts/train_raan.sh train 1 1 t nr 2 48 ms 5e-4 noStageRes batch NN DBB 23 BN bicubic 0 0
-    # 3. training: ./scripts/train_raan.sh train 1 1 t nr 2 48 ms 5e-4 useStageRes batch NN ACB 23 BN bicubic 0 0
-    # 4. training: ./scripts/train_raan.sh train 1 1 t nr 2 48 ms 5e-4 noStageRes batch NN ACB 23 no bicubic 0 0
-    # 5. training: ./scripts/train_raan.sh train 1 1 t nr 2 48 ms 5e-4 noStageRes batch NN noACB 23 BN bicubic 0 0
+    # 1. done: ./scripts/train_raan.sh train 2 1 t nr 2 48 ms 5e-4 noStageRes no NN ACB 23 BN bicubic 0 0
+    # 2. pause No1-A: ./scripts/train_raan.sh train 0 1 t nr 2 48 ms 5e-4 noStageRes batch NN DBB 23 BN bicubic 0 0
+    # 3. done: ./scripts/train_raan.sh train 0 1 t nr 2 48 ms 5e-4 useStageRes batch NN ACB 23 BN bicubic 0 0
+    # 4. done: ./scripts/train_raan.sh train 0 1 t nr 2 48 ms 5e-4 noStageRes batch NN ACB 23 no bicubic 0 0
+    # 5. done: ./scripts/train_raan.sh train 0 1 t nr 2 48 ms 5e-4 noStageRes batch NN noACB 23 BN bicubic 0 0
+    # 6. done: ./scripts/train_raan.sh train 0 1 t nr 2 48 ms 5e-4 useStageRes batch NN ACB 23 no bicubic 0 0
+    # 7. done: ./scripts/train_raan.sh train 1 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 23 no bicubic 0 0
+    # 8. pause No2-A: ./scripts/train_raan.sh train 0 1 t nr 2 48 ms 5e-4 useStageRes no NN DBB 23 no bicubic 0 0  (Best: 38.016 @epoch 152)
+    # 9. pause No2-A: ./scripts/train_raan.sh train 1 1 t nr 2 48 ms 5e-4 useStageRes no NN DBB 23 BN bicubic 0 0  (Best: 38.067 @epoch 137)
 
 
 

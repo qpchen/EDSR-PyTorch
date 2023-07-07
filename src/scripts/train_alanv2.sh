@@ -102,17 +102,17 @@
 
     # done No2: ./scripts/train_alanv2.sh train 0 1 xs nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1
     # done No2: ./scripts/train_alanv2.sh train 1 1 xs nr 3 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1
-    # training No5: ./scripts/train_alanv2.sh resume 0 1 xs nr 4 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1
+    # done No5: ./scripts/train_alanv2.sh resume 0 1 xs nr 4 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1
 
     # done No1: ./scripts/train_alanv2.sh resume 1 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN Noise 50 0 no SmoothL1
-    # training No5: ./scripts/train_alanv2.sh train 1 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN Noise 10 0 no SmoothL1
-    # training No1: ./scripts/train_alanv2.sh train 0 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN Noise 30 0 no SmoothL1
-    # training No4: ./scripts/train_alanv2.sh train 0 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN Noise 70 0 no SmoothL1
+    # done No5: ./scripts/train_alanv2.sh train 1 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN Noise 10 0 no SmoothL1
+    # done No1: ./scripts/train_alanv2.sh train 0 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN Noise 30 0 no SmoothL1
+    # done No4: ./scripts/train_alanv2.sh train 0 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN Noise 70 0 no SmoothL1
 
     # done No4: ./scripts/train_alanv2.sh train 1 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN Gray_Noise 50 0 no SmoothL1
-    # training No4: ./scripts/train_alanv2.sh train 1 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN Gray_Noise 10 0 no SmoothL1
-    # training No6: ./scripts/train_alanv2.sh train 0 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN Gray_Noise 30 0 no SmoothL1
-    # training No6: ./scripts/train_alanv2.sh train 1 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN Gray_Noise 70 0 no SmoothL1
+    # done No4: ./scripts/train_alanv2.sh train 1 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN Gray_Noise 10 0 no SmoothL1
+    # done No6: ./scripts/train_alanv2.sh train 0 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN Gray_Noise 30 0 no SmoothL1
+    # done No6: ./scripts/train_alanv2.sh train 1 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN Gray_Noise 70 0 no SmoothL1
 
     # done No4: ./scripts/train_alanv2.sh train 0 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN JPEG 0 10 no SmoothL1
     # done No6: ./scripts/train_alanv2.sh train 0 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN JPEG 0 20 no SmoothL1
@@ -124,8 +124,8 @@
       # ablation: 2. LKA size; 3. MLP ratio；4. LKA不使用attention; 5. stage、block等数量设置；6. Loss
       #2 done No7: ./scripts/train_alanv2.sh train 0 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 7 BN bicubic 0 0 no SmoothL1
       #2 done No7: ./scripts/train_alanv2.sh train 1 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 15 BN bicubic 0 0 no SmoothL1
-      #2 training No2: ./scripts/train_alanv2.sh train 0 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 31 BN bicubic 0 0 no SmoothL1
-      #2 training No2: ./scripts/train_alanv2.sh train 1 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 39 BN bicubic 0 0 no SmoothL1
+      #2 done No2: ./scripts/train_alanv2.sh train 0 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 31 BN bicubic 0 0 no SmoothL1
+      #2 done No2: ./scripts/train_alanv2.sh train 1 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 39 BN bicubic 0 0 no SmoothL1
       #2 training t640: ./scripts/train_alanv2.sh train 0 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 47 BN bicubic 0 0 no SmoothL1
       #2 training t640: ./scripts/train_alanv2.sh train 1 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 55 BN bicubic 0 0 no SmoothL1
       #3 training No7: ./scripts/train_alanv2.sh train 0 1 t_mlp2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1
