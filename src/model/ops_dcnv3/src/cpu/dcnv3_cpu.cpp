@@ -11,7 +11,9 @@
 
 #include <vector>
 
-#include <find /usr/local/ -name cublas_v2.h/ATen.h>
+// #include <find /usr/local/ -name cublas_v2.h/ATen.h>
+#include <cublas_v2.h>
+#include <ATen/ATen.h>
 #include <ATen/cuda/CUDAContext.h>
 
 at::Tensor dcnv3_cpu_forward(const at::Tensor &input, const at::Tensor &offset,
