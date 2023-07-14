@@ -35,7 +35,7 @@ We provide scripts for reproducing all the results from our paper. You can train
 
 ## Dependencies
 * Python 3.6
-* PyTorch >= 1.0.0
+* PyTorch >= 1.10.0
 * numpy
 * scikit-image \[instead of skimage\]
 * **imageio**
@@ -45,13 +45,56 @@ We provide scripts for reproducing all the results from our paper. You can train
 * torchinfo
 * thop
 * timm
+* mmdet
+
 
 ## Code
-Clone this repository into any place you want.
+- Clone this repository into any place you want.
 ```bash
-git clone https://github.com/thstkdgus35/EDSR-PyTorch
+git clone https://github.com/qpchen/EDSR-PyTorch
 cd EDSR-PyTorch
 ```
+
+- Create a conda virtual environment and activate it:
+``` bash
+conda create -n dcan python=3.9 -y
+conda activate dcan
+```
+
+- Install `CUDA>=10.2` with `cudnn>=7` following
+  the [official installation instructions](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html)
+- Install `PyTorch>=1.10.0` and `torchvision>=0.9.0` with `CUDA>=10.2` following the [official installation instructions](https://pytorch.org/get-started/previous-versions/):
+
+For examples, to install torch==1.10.1 with CUDA==11.1:
+```bash
+pip install torch==1.10.1+cu111 torchvision==0.11.2+cu111 torchaudio==0.10.1 -f https://download.pytorch.org/whl/cu111/torch_stable.html
+```
+
+- Install `timm==0.6.11` and `mmcv-full==1.5.0`:
+
+```bash
+pip install -U openmim
+mim install mmcv-full==1.5.0
+pip install timm==0.6.11 mmdet==2.28.1
+```
+
+- Install other requirements:
+
+```bash
+pip install opencv-python termcolor yacs pyyaml scipy scikit-image imageio matplotlib tqdm torchinfo thop
+```
+
+- Compiling CUDA operators
+```bash
+cd ./src/model/ops_dcnv3
+sh ./make.sh
+# unit test (should see all checking is True)
+python test.py
+cd ../../..
+```
+- You can also install the operator using .whl files
+[DCNv3-1.0-whl](https://github.com/OpenGVLab/InternImage/releases/tag/whl_files)
+### Data Preparation
 
 ## Quickstart (Demo)
 You can test our super-resolution algorithm with your images. Place your images in ``test`` folder. (like ``test/<your_image>``) We support **png** and **jpeg** files.
