@@ -275,6 +275,9 @@ file_name="dcan_${size}${patch_print}${LKAk_print}${bb_norm_print}${feaDown_prin
 save_dir="${father_dir}/${file_name}"
 log_file="${father_dir}/logs/${file_name}.log"
 
+if [ ! -d "../DCAN" ]; then
+  mkdir "../DCAN"
+fi
 if [ ! -d "${father_dir}" ]; then
   mkdir "${father_dir}"
 fi
