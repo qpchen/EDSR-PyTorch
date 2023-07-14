@@ -11,6 +11,7 @@
 !train_srarn_v8_commands.sh
 !train_raan.sh
 !train_alanv2.sh
+!train_dcan.sh
 
 # Jupyter temp file
 *.ipynb_checkpoints/
