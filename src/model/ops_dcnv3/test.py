@@ -59,6 +59,7 @@ def check_forward_equal_with_pytorch_double():
                    output_pytorch.abs()).max()
     print('>>> forward double')
     print(f'* {fwdok} check_forward_equal_with_pytorch_double: max_abs_err {max_abs_err:.2e} max_rel_err {max_rel_err:.2e}')
+    # print((output_cuda - output_pytorch).abs()/output_pytorch.abs())
 
 
 @torch.no_grad()
