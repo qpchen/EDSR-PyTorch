@@ -92,7 +92,8 @@ class DCA(nn.Module):
             stride=1,
             pad=1,
             dilation=1,
-            group=groups,
+            # group=groups,
+            group=(channels//16), # TODO: template set for test
             offset_scale=offset_scale,
             act_layer=act_layer,
             norm_layer=norm_layer,
