@@ -6,6 +6,7 @@
 # ./scripts/runtime_batch.sh "LBNet LBNet-T" 48 "no" "2 3 4" "--save_result --no_count --cpu --times 3"
 # ./scripts/runtime_batch.sh "v5" 64 "fblt fbt fbxt" "2 3 4" "--save_result --no_count --cpu --times 50"
 # ./scripts/runtime_batch.sh "ALAN" 48 "v1xt v1t v1xs v1s" "2 3 4" "--save_result --no_count --n_GPUs 1 --times 50"
+# ./scripts/runtime_batch.sh "SwinIR" 64 "b t" "2 3 4" "--save_result --no_count --n_GPUs 1 --times 50"
 
 models=($1)
 patch=$2
