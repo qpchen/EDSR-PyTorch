@@ -664,7 +664,7 @@ class SwinIR(nn.Module):
         depths=args.depths
         num_heads=args.depths
         window_size=8
-        mlp_ratio=2
+        mlp_ratio=2.
         qkv_bias=True
         qk_scale=None
         drop_rate=0.
