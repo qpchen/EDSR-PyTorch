@@ -3,6 +3,9 @@
 # Originally Written by Ze Liu, Modified by Jingyun Liang.
 # -----------------------------------------------------------------------------------
 
+# python main.py --n_GPUs 1 --scale 2 --patch_size 128 --batch_size 32 --data_range 1-800 --data_test Set5 --loss '1*L1' --lr 2e-4 --optimizer ADAM --skip_threshold 1e6 --lr_class MultiStepLR --epochs 1000 --decay 500-800-900-950 --n_colors 3 --srarn_up_feat 60 --depths 6+6+6+6 --dims 60+60+60+60 --res_connect 1conv1 --model SwinIR --save SwinIR_t --reset
+# python main.py --n_GPUs 1 --scale 2 --patch_size 128 --batch_size 32 --data_range 1-800/801-900 --data_test DIV2K --loss '1*L1' --lr 2e-4 --optimizer ADAM --skip_threshold 1e6 --lr_class MultiStepLR --epochs 1000 --decay 500-800-900-950 --n_colors 3 --srarn_up_feat 60 --depths 6+6+6+6 --dims 60+60+60+60 --res_connect 1conv1 --model SwinIR --save SwinIR_t --reset
+
 import math
 import torch
 import torch.nn as nn
