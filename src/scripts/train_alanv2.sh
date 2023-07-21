@@ -126,12 +126,12 @@
       #2 done No7: ./scripts/train_alanv2.sh train 1 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 15 BN bicubic 0 0 no SmoothL1
       #2 done No2: ./scripts/train_alanv2.sh train 0 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 31 BN bicubic 0 0 no SmoothL1
       #2 done No2: ./scripts/train_alanv2.sh train 1 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 39 BN bicubic 0 0 no SmoothL1
-      #2 training t640: ./scripts/train_alanv2.sh train 0 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 47 BN bicubic 0 0 no SmoothL1
-      #2 training t640: ./scripts/train_alanv2.sh train 1 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 55 BN bicubic 0 0 no SmoothL1
-      #3 training No7: ./scripts/train_alanv2.sh train 0 1 t_mlp2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1
-      #4 training No7: ./scripts/train_alanv2.sh train 1 1 t_noAttn nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1
+      #2 done t640: ./scripts/train_alanv2.sh train 0 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 47 BN bicubic 0 0 no SmoothL1
+      #2 done t640: ./scripts/train_alanv2.sh resume 1 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 55 BN bicubic 0 0 no SmoothL1
+      #3 done No7: ./scripts/train_alanv2.sh train 0 1 t_mlp2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1
+      #4 done No7: ./scripts/train_alanv2.sh train 1 1 t_noAttn nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1
       #5 pause: ./scripts/train_alanv2.sh train 0 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1
-      #6 training No1: ./scripts/train_alanv2.sh train 1 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no L1
+      #6 done No1: ./scripts/train_alanv2.sh train 1 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no L1
 
 
 

@@ -180,7 +180,8 @@
                 // "SRARNV9",
                 // "LapSRN",
                 // "RAAN",
-                "ALANV2",
+                // "ALANV2",
+                "DCAN",
                 // "--down_fea",
                 "--use_acb",
                 // "--use_dbb",
@@ -212,7 +213,7 @@
             ],
             "env": {
                 "PYTHONUNBUFFERED": "1",
-                "CUDA_VISIBLE_DEVICES": "0"
+                "CUDA_VISIBLE_DEVICES": "1"
             },
             "console": "integratedTerminal",
             "justMyCode": true

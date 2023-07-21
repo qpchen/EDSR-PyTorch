@@ -11,7 +11,24 @@
 # training No1: ./scripts/train_dcan.sh train 2 1 t2 nr 4 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1
 
 # training No1: ./scripts/train_dcan.sh train 3 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1
-# waiting No: ./scripts/train_dcan.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN DBB 23 BN bicubic 0 0 no SmoothL1
+# training No2: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1
+# training No3: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 5e-4 useStageRes batch NN ACB 23 BN bicubic 0 0 no SmoothL1
+# training No4: ./scripts/train_dcan.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN DBB 23 BN bicubic 0 0 no SmoothL1
+
+# training No2: ./scripts/train_dcan.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no SmoothL1
+# training No2: ./scripts/train_dcan.sh train 1 1 t2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 no bicubic 0 0 no SmoothL1
+# giveup gradient explore at epoch 121: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 noAll bicubic 0 0 no SmoothL1
+
+# training No2: ./scripts/train_dcan.sh train 3 1 t2_noAttn nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1
+# training No3: ./scripts/train_dcan.sh train 0 1 xs2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1
+# done: ./scripts/train_dcan.sh train 1 1 xt2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1
+# done: ./scripts/train_dcan.sh train 3 1 xt2_dep4 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1
+# training No3: ./scripts/train_dcan.sh train 1 1 xt2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1
+# training No3: ./scripts/train_dcan.sh train 3 1 xt2_dep4 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1
+
+# waiting: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 4e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1
+# waiting: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 2e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1
+# waiting: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no L1
 
 # #####################################
 # accept input
