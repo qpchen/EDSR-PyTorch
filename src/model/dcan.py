@@ -388,10 +388,11 @@ class DCAN(nn.Module):
         self.stage_res = args.stage_res
         self.bb_norm = bb_norm
         self.stage_norm = not args.no_layernorm
-        self.down_fea = args.down_fea
+        self.use_wave = args.use_wave
+        wave_expand_patch = args.wave_patchup
         
         # RGB mean for DIV2K
-        if in_chans == 3:# and not self.down_fea:
+        if in_chans == 3:# and not self.use_wave:
             self.sub_mean = common.MeanShift(args.rgb_range)
             self.add_mean = common.MeanShift(args.rgb_range, sign=1)
         
@@ -414,13 +415,14 @@ class DCAN(nn.Module):
         dpr = [x.item() for x in torch.linspace(0, drop_path_rate, sum(depths))]  # stochastic depth decay rule
         cur = 0
 
-        if self.down_fea:
+        if self.use_wave:
             # self.down_fea = nn.PixelUnshuffle(2)
             # self.up_fea = nn.PixelShuffle(2)
             self.wave_forward = WaveletForward()
             self.wave_inverse = WaveletInverse()
             in_chans = in_chans * 4
-            embed_dims = [i * 4 for i in embed_dims]
+            if not wave_expand_patch:
+                embed_dims = [i * 4 for i in embed_dims]
 
         for i in range(num_stages):
             patch_embed = OverlapPatchEmbed(img_size=img_size, # if i == 0 else img_size // (2 ** (i + 1)),
@@ -450,7 +452,7 @@ class DCAN(nn.Module):
         # ##################################################################################
         # Upsampling
 
-        if self.down_fea:
+        if self.use_wave:
             in_chans = in_chans // 4
             embed_dims = [i // 4 for i in embed_dims]
         
@@ -577,12 +579,12 @@ class DCAN(nn.Module):
         if hasattr(self, 'sub_mean'):
             x = self.sub_mean(x)
         
-        if self.down_fea: 
+        if self.use_wave: 
             wavex = self.wave_forward(x)
             out = self.forward_features(wavex)
         else:
             out = self.forward_features(x)
-        if self.down_fea: out = self.wave_inverse(out)
+        if self.use_wave: out = self.wave_inverse(out)
 
         if self.scale == 1:
             if self.upsampling == 'Nearest' or self.upsampling == 'NearestNoPA':

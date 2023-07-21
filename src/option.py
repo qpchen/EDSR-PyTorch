@@ -258,6 +258,12 @@ parser.add_argument('--bb_norm', default='BN',
 parser.add_argument('--down_fea', action='store_true',
                     help='use feature down before extraction, and up after')
 
+# DCAN settings
+parser.add_argument('--use_wave', action='store_true',
+                    help='use haar wavelet before extraction, and inverse after')
+parser.add_argument('--wave_patchup', action='store_true',
+                    help='expand patch size instead of dimension when use wavelet')
+
 # ShuffleMixer settings
 parser.add_argument('--ShMn_feats', type=int, default=64,
                     help='Number of channels. (Use in ShuffleMixer, base 64, tiny 32)')
