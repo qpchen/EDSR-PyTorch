@@ -264,6 +264,11 @@ parser.add_argument('--ShMn_feats', type=int, default=64,
 parser.add_argument('--ShMkSize', type=int, default=7,
                     help='kernel size of Depthwise convolution. (Use in ShuffleMixer, base 7, tiny 3)')
 
+# SwinIR Ablation model settings
+parser.add_argument('--swinir_ablation', action='store_true',
+                    help='use ablation settings to replace MSA in SwinIR with CNNs')
+parser.add_argument('--swinir_mlpdwc', action='store_true',
+                    help='use ablation settings to add DWConv in MLP of SwinIR')
 
 args = parser.parse_args()
 # add following means receive [] as input, replace the way of main.py [], to use in jupyter notebook

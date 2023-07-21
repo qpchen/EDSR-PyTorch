@@ -3,6 +3,9 @@
 # Originally Written by Ze Liu, Modified by Jingyun Liang.
 # -----------------------------------------------------------------------------------
 
+# python main.py --n_GPUs 1 --scale 2 --patch_size 128 --batch_size 32 --data_range 1-800 --data_test Set5 --loss '1*L1' --lr 2e-4 --optimizer ADAM --skip_threshold 1e6 --lr_class MultiStepLR --epochs 1000 --decay 500-800-900-950 --n_colors 3 --srarn_up_feat 60 --depths 6+6+6+6 --dims 60+60+60+60 --res_connect 1conv1 --model SwinIR --save SwinIR_t --reset
+# python main.py --n_GPUs 1 --scale 2 --patch_size 128 --batch_size 32 --data_range 1-800/801-900 --data_test DIV2K --loss '1*L1' --lr 2e-4 --optimizer ADAM --skip_threshold 1e6 --lr_class MultiStepLR --epochs 1000 --decay 500-800-900-950 --n_colors 3 --srarn_up_feat 60 --depths 6+6+6+6 --dims 60+60+60+60 --res_connect 1conv1 --model SwinIR --save SwinIR_t --reset
+
 import math
 import torch
 import torch.nn as nn
@@ -27,6 +30,26 @@ class Mlp(nn.Module):
 
     def forward(self, x):
         x = self.fc1(x)
+        x = self.act(x)
+        x = self.drop(x)
+        x = self.fc2(x)
+        x = self.drop(x)
+        return x
+
+class FFN(nn.Module):
+    def __init__(self, in_features, hidden_features=None, out_features=None, act_layer=nn.GELU, drop=0.):
+        super().__init__()
+        out_features = out_features or in_features
+        hidden_features = hidden_features or in_features
+        self.fc1 = nn.Conv2d(in_features, hidden_features, 1)
+        self.dwconv = nn.Conv2d(hidden_features, hidden_features, 3, 1, 1, bias=True, groups=hidden_features)
+        self.act = act_layer()
+        self.fc2 = nn.Conv2d(hidden_features, out_features, 1)
+        self.drop = nn.Dropout(drop)
+
+    def forward(self, x):
+        x = self.fc1(x)
+        x = self.dwconv(x)
         x = self.act(x)
         x = self.drop(x)
         x = self.fc2(x)
@@ -186,7 +209,8 @@ class SwinTransformerBlock(nn.Module):
 
     def __init__(self, dim, input_resolution, num_heads, window_size=7, shift_size=0,
                  mlp_ratio=4., qkv_bias=True, qk_scale=None, drop=0., attn_drop=0., drop_path=0.,
-                 act_layer=nn.GELU, norm_layer=nn.LayerNorm):
+                 act_layer=nn.GELU, norm_layer=nn.LayerNorm, 
+                 ablation=False, dw_ker=5, dwd_ker=7, dwd_pad=9, dwd_dil=3, mlp_usedwc=False):
         super().__init__()
         self.dim = dim
         self.input_resolution = input_resolution
@@ -194,6 +218,8 @@ class SwinTransformerBlock(nn.Module):
         self.window_size = window_size
         self.shift_size = shift_size
         self.mlp_ratio = mlp_ratio
+        self.ablation = ablation
+        self.mlp_usedwc = mlp_usedwc
         if min(self.input_resolution) <= self.window_size:
             # if window size is larger than input resolution, we don't partition windows
             self.shift_size = 0
@@ -201,14 +227,22 @@ class SwinTransformerBlock(nn.Module):
         assert 0 <= self.shift_size < self.window_size, "shift_size must in 0-window_size"
 
         self.norm1 = norm_layer(dim)
-        self.attn = WindowAttention(
-            dim, window_size=to_2tuple(self.window_size), num_heads=num_heads,
-            qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, proj_drop=drop)
+        if ablation:
+            self.conv0 = nn.Conv2d(dim, dim, dw_ker, padding=(dw_ker-1)//2, groups=dim)
+            self.conv_spatial = nn.Conv2d(dim, dim, dwd_ker, stride=1, padding=dwd_pad, groups=dim, dilation=dwd_dil)
+            self.conv1 = nn.Conv2d(dim, dim, 1)
+        else:
+            self.attn = WindowAttention(
+                dim, window_size=to_2tuple(self.window_size), num_heads=num_heads,
+                qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, proj_drop=drop)
 
         self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
         self.norm2 = norm_layer(dim)
         mlp_hidden_dim = int(dim * mlp_ratio)
-        self.mlp = Mlp(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop)
+        if mlp_usedwc:
+            self.ffn = FFN(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop)
+        else:
+            self.mlp = Mlp(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop)
 
         if self.shift_size > 0:
             attn_mask = self.calculate_mask(self.input_resolution)
@@ -255,19 +289,25 @@ class SwinTransformerBlock(nn.Module):
         else:
             shifted_x = x
 
-        # partition windows
-        x_windows = window_partition(shifted_x, self.window_size)  # nW*B, window_size, window_size, C
-        x_windows = x_windows.view(-1, self.window_size * self.window_size, C)  # nW*B, window_size*window_size, C
+        if not self.ablation:
+            # partition windows
+            x_windows = window_partition(shifted_x, self.window_size)  # nW*B, window_size, window_size, C
+            x_windows = x_windows.view(-1, self.window_size * self.window_size, C)  # nW*B, window_size*window_size, C
 
-        # W-MSA/SW-MSA (to be compatible for testing on images whose shapes are the multiple of window size
-        if self.input_resolution == x_size:
-            attn_windows = self.attn(x_windows, mask=self.attn_mask)  # nW*B, window_size*window_size, C
+            # W-MSA/SW-MSA (to be compatible for testing on images whose shapes are the multiple of window size
+            if self.input_resolution == x_size:
+                attn_windows = self.attn(x_windows, mask=self.attn_mask)  # nW*B, window_size*window_size, C
+            else:
+                attn_windows = self.attn(x_windows, mask=self.calculate_mask(x_size).to(x.device))
+
+            # merge windows
+            attn_windows = attn_windows.view(-1, self.window_size, self.window_size, C)
+            shifted_x = window_reverse(attn_windows, self.window_size, H, W)  # B H' W' C
         else:
-            attn_windows = self.attn(x_windows, mask=self.calculate_mask(x_size).to(x.device))
-
-        # merge windows
-        attn_windows = attn_windows.view(-1, self.window_size, self.window_size, C)
-        shifted_x = window_reverse(attn_windows, self.window_size, H, W)  # B H' W' C
+            # CNN replaces MSA for ablation study
+            shifted_x = shifted_x.permute(0, 3, 1, 2) # (N, H, W, C) -> (N, C, H, W)
+            shifted_x = self.conv1(self.conv_spatial(self.conv0(shifted_x)))
+            shifted_x = shifted_x.permute(0, 2, 3, 1) # (N, C, H, W) -> (N, H, W, C)
 
         # reverse cyclic shift
         if self.shift_size > 0:
@@ -278,7 +318,10 @@ class SwinTransformerBlock(nn.Module):
 
         # FFN
         x = shortcut + self.drop_path(x)
-        x = x + self.drop_path(self.mlp(self.norm2(x)))
+        if self.mlp_usedwc:
+            x = x + self.drop_path(self.ffn(self.norm2(x).view(B, H, W, C).permute(0, 3, 1, 2)).permute(0, 2, 3, 1).view(B, H * W, C))
+        else:
+            x = x + self.drop_path(self.mlp(self.norm2(x)))
 
         return x
 
@@ -372,7 +415,8 @@ class BasicLayer(nn.Module):
 
     def __init__(self, dim, input_resolution, depth, num_heads, window_size,
                  mlp_ratio=4., qkv_bias=True, qk_scale=None, drop=0., attn_drop=0.,
-                 drop_path=0., norm_layer=nn.LayerNorm, downsample=None, use_checkpoint=False):
+                 drop_path=0., norm_layer=nn.LayerNorm, downsample=None, use_checkpoint=False, 
+                 ablation=False, mlp_usedwc=False):
 
         super().__init__()
         self.dim = dim
@@ -389,7 +433,9 @@ class BasicLayer(nn.Module):
                                  qkv_bias=qkv_bias, qk_scale=qk_scale,
                                  drop=drop, attn_drop=attn_drop,
                                  drop_path=drop_path[i] if isinstance(drop_path, list) else drop_path,
-                                 norm_layer=norm_layer)
+                                 norm_layer=norm_layer, 
+                                 ablation=ablation, dw_ker=5, dwd_ker=7, dwd_pad=9, dwd_dil=3, 
+                                 mlp_usedwc=mlp_usedwc)
             for i in range(depth)])
 
         # patch merging layer
@@ -446,7 +492,7 @@ class RSTB(nn.Module):
     def __init__(self, dim, input_resolution, depth, num_heads, window_size,
                  mlp_ratio=4., qkv_bias=True, qk_scale=None, drop=0., attn_drop=0.,
                  drop_path=0., norm_layer=nn.LayerNorm, downsample=None, use_checkpoint=False,
-                 img_size=224, patch_size=4, resi_connection='1conv'):
+                 img_size=224, patch_size=4, resi_connection='1conv', ablation=False, mlp_usedwc=False):
         super(RSTB, self).__init__()
 
         self.dim = dim
@@ -463,7 +509,8 @@ class RSTB(nn.Module):
                                          drop_path=drop_path,
                                          norm_layer=norm_layer,
                                          downsample=downsample,
-                                         use_checkpoint=use_checkpoint)
+                                         use_checkpoint=use_checkpoint, 
+                                         ablation=ablation, mlp_usedwc=mlp_usedwc)
 
         if resi_connection == '1conv':
             self.conv = nn.Conv2d(dim, dim, 3, 1, 1)
@@ -620,7 +667,7 @@ class UpsampleOneStep(nn.Sequential):
 
 
 class SwinIRA(nn.Module):
-    r""" SwinIR ablation
+    r""" SwinIR
         A PyTorch impl of : `SwinIR: Image Restoration Using Swin Transformer`, based on Swin Transformer.
 
     Args:
@@ -678,6 +725,8 @@ class SwinIRA(nn.Module):
         img_range=1.
         upsampler='pixelshuffledirect'  # 'pixelshuffle' or 'nearest+conv'
         resi_connection='1conv'  # '3conv'
+        ablation=args.swinir_ablation
+        mlp_usedwc=args.swinir_mlpdwc
 
         num_in_ch = in_chans
         num_out_ch = in_chans
@@ -748,8 +797,8 @@ class SwinIRA(nn.Module):
                          use_checkpoint=use_checkpoint,
                          img_size=img_size,
                          patch_size=patch_size,
-                         resi_connection=resi_connection
-
+                         resi_connection=resi_connection, 
+                         ablation=ablation, mlp_usedwc=mlp_usedwc
                          )
             self.layers.append(layer)
         self.norm = norm_layer(self.num_features)
