@@ -6,6 +6,7 @@ from functools import partial
 from timm.models.layers import DropPath, to_2tuple, trunc_normal_
 from timm.models.registry import register_model
 from timm.models.vision_transformer import _cfg
+from pytorch_wavelets import ScatLayer, DWTForward, DWTInverse
 import math
 
 from model import common
@@ -318,6 +319,29 @@ class LayerNorm(nn.Module):
             x = self.weight[:, None, None] * x + self.bias[:, None, None]
             return x
 
+class WaveletForward(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.xfm = DWTForward(J=1, wave='haar', mode='zero')
+
+    def forward(self, x):
+        Yl, Yh = self.xfm(x)
+        B, C, _, H, W = Yh[0].shape
+        return torch.cat((Yh[0].view(B, C * 3, H, W), Yl), dim=1)
+
+class WaveletInverse(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.ifm = DWTInverse(wave='haar', mode='zero')
+
+    def forward(self, x):
+        _, C, _, _ = x.shape
+        Yh, Yl = x.split(C // 4 * 3, 1)
+        B, C, H, W = Yh.shape
+        # assert C%3 == 0
+        Yh = [Yh.view(B, C // 3, 3, H, W), ]
+        return self.ifm((Yl, Yh))
+
 class DCAN(nn.Module):
     # def __init__(self, img_size=224, in_chans=3, num_classes=1000, embed_dims=[64, 128, 256, 512],
     #             mlp_ratios=[4, 4, 4, 4], drop_rate=0., drop_path_rate=0., norm_layer=nn.LayerNorm,
@@ -367,7 +391,7 @@ class DCAN(nn.Module):
         self.down_fea = args.down_fea
         
         # RGB mean for DIV2K
-        if in_chans == 3:
+        if in_chans == 3 and not self.down_fea:
             self.sub_mean = common.MeanShift(args.rgb_range)
             self.add_mean = common.MeanShift(args.rgb_range, sign=1)
         
@@ -391,27 +415,31 @@ class DCAN(nn.Module):
         cur = 0
 
         if self.down_fea:
-            self.down_fea = nn.PixelUnshuffle(2)
-            self.up_fea = nn.PixelShuffle(2)
+            # self.down_fea = nn.PixelUnshuffle(2)
+            # self.up_fea = nn.PixelShuffle(2)
+            self.wave_forward = WaveletForward()
+            self.wave_inverse = WaveletInverse()
+            in_chans = in_chans * 4
+            embed_dims = [i * 4 for i in embed_dims]
 
         for i in range(num_stages):
             patch_embed = OverlapPatchEmbed(img_size=img_size, # if i == 0 else img_size // (2 ** (i + 1)),
                                             patch_size=7 if i == 0 else 3,
                                             # stride=4 if i == 0 else 2,
                                             stride=1,
-                                            in_chans=in_chans if i == 0 else (embed_dims[i - 1] // 4) if self.down_fea else embed_dims[i - 1],
-                                            embed_dim=embed_dims[i] if i == 0 else (embed_dims[i] // 4) if self.down_fea else embed_dims[i],
+                                            in_chans=in_chans if i == 0 else embed_dims[i - 1],
+                                            embed_dim=embed_dims[i],
                                             bb_norm=bb_norm, 
                                             use_acb=use_acb, use_dbb=use_dbb, 
                                             deploy=use_inf, acb_norm=acb_norm)
 
             block = nn.ModuleList([Block(
-                dim=(embed_dims[i] // 4) if self.down_fea else embed_dims[i], 
+                dim=embed_dims[i], 
                 mlp_ratio=mlp_ratios[i], drop=drop_rate, drop_path=dpr[cur + j], dw_ker=dw_ker, dwd_ker=dwd_ker, dwd_pad=dwd_pad, dwd_dil=dwd_dil, 
                 bb_norm=bb_norm, use_acb=use_acb, use_dbb=use_dbb, deploy=use_inf, acb_norm=acb_norm, use_attn=use_attn)
                 for j in range(depths[i])])
             if self.stage_norm:
-                norm = norm_layer((embed_dims[i] // 4) if self.down_fea else embed_dims[i])
+                norm = norm_layer(embed_dims[i])
             cur += depths[i]
 
             setattr(self, f"patch_embed{i + 1}", patch_embed)
@@ -421,6 +449,11 @@ class DCAN(nn.Module):
 
         # ##################################################################################
         # Upsampling
+
+        if self.down_fea:
+            in_chans = in_chans // 4
+            embed_dims = [i // 4 for i in embed_dims]
+        
         self.preup_norm = LayerNorm(embed_dims[-1], eps=1e-6, data_format="channels_first")
         if self.upsampling != 'PixelShuffleDirect' and self.upsampling != 'Deconv':
             self.preup = nn.Sequential(
@@ -522,10 +555,6 @@ class DCAN(nn.Module):
             x, H, W = patch_embed(x)
             if i == 0:
                 input = x
-                if self.down_fea: 
-                    x = self.up_fea(x)
-                    H = H * 2
-                    W = W * 2
             if self.stage_res:
                 stage_input = x
             for blk in block:
@@ -540,7 +569,6 @@ class DCAN(nn.Module):
             if self.stage_res:
                 x = x + stage_input
 
-        if self.down_fea: x = self.down_fea(x)
         x = input + x   # Residual of the whole deep feature Extraction
 
         return x
@@ -549,7 +577,10 @@ class DCAN(nn.Module):
         if hasattr(self, 'sub_mean'):
             x = self.sub_mean(x)
         
-        out = self.forward_features(x)
+        if self.down_fea: 
+            wavex = self.wave_forward(x)
+        out = self.forward_features(wavex)
+        if self.down_fea: out = self.wave_inverse(out)
 
         if self.scale == 1:
             if self.upsampling == 'Nearest' or self.upsampling == 'NearestNoPA':
