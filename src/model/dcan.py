@@ -391,7 +391,7 @@ class DCAN(nn.Module):
         self.down_fea = args.down_fea
         
         # RGB mean for DIV2K
-        if in_chans == 3 and not self.down_fea:
+        if in_chans == 3:# and not self.down_fea:
             self.sub_mean = common.MeanShift(args.rgb_range)
             self.add_mean = common.MeanShift(args.rgb_range, sign=1)
         
