@@ -579,7 +579,9 @@ class DCAN(nn.Module):
         
         if self.down_fea: 
             wavex = self.wave_forward(x)
-        out = self.forward_features(wavex)
+            out = self.forward_features(wavex)
+        else:
+            out = self.forward_features(x)
         if self.down_fea: out = self.wave_inverse(out)
 
         if self.scale == 1:
