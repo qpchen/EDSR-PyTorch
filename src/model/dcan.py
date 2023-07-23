@@ -452,9 +452,9 @@ class DCAN(nn.Module):
         # ##################################################################################
         # Upsampling
 
-        if self.use_wave:
-            in_chans = in_chans // 4
-            embed_dims = [i // 4 for i in embed_dims]
+        # if self.use_wave:
+        #     in_chans = in_chans // 4
+        #     embed_dims = [i // 4 for i in embed_dims]
         
         self.preup_norm = LayerNorm(embed_dims[-1], eps=1e-6, data_format="channels_first")
         if self.upsampling != 'PixelShuffleDirect' and self.upsampling != 'Deconv':
@@ -580,11 +580,9 @@ class DCAN(nn.Module):
             x = self.sub_mean(x)
         
         if self.use_wave: 
-            wavex = self.wave_forward(x)
-            out = self.forward_features(wavex)
-        else:
-            out = self.forward_features(x)
-        if self.use_wave: out = self.wave_inverse(out)
+            x = self.wave_forward(x)
+
+        out = self.forward_features(x)
 
         if self.scale == 1:
             if self.upsampling == 'Nearest' or self.upsampling == 'NearestNoPA':
@@ -619,6 +617,9 @@ class DCAN(nn.Module):
             out = out + F.interpolate(x, scale_factor=self.scale, mode='nearest')
         elif self.interpolation == 'PixelShuffle':
             out = out + self.lr_up(x)
+        
+        if self.use_wave: 
+            out = self.wave_inverse(out)
 
         if hasattr(self, 'add_mean'):
             out = self.add_mean(out)
