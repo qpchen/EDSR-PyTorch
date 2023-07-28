@@ -6,37 +6,37 @@
 # ./scripts/train_srarn_v9.sh [mode] [cuda_device] [accummulation_step] [model_size] [interpolation] [sr_scale] [lr_patch_size] [LR_scheduler_class] [init LR] [stage Res] [acb_norm] [upsampling]
 # run example for v9test_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 test b 2 48 ms skip 1acb3 batch befln nolr 2e-4
 
-# done No1: ./scripts/train_dcan.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1
-# done No1: ./scripts/train_dcan.sh train 1 1 t2 nr 3 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1
-# done No1: ./scripts/train_dcan.sh train 2 1 t2 nr 4 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1
+# done No1: ./scripts/train_dcan.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+# done No1: ./scripts/train_dcan.sh train 1 1 t2 nr 3 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+# done No1: ./scripts/train_dcan.sh train 2 1 t2 nr 4 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
 
-# training No1: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 8e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1
-# training No3: ./scripts/train_dcan.sh train 1 1 t2 nr 2 48 ms 2e-3 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1
+# training No1: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 8e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
+# training No3: ./scripts/train_dcan.sh train 1 1 t2 nr 2 48 ms 2e-3 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
 
-# done No1: ./scripts/train_dcan.sh train 3 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1
-# training No2: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1
-# training No3: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 5e-4 useStageRes batch NN ACB 23 BN bicubic 0 0 no SmoothL1
-# training No4: ./scripts/train_dcan.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN DBB 23 BN bicubic 0 0 no SmoothL1
+# done No1: ./scripts/train_dcan.sh train 3 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+# training No2: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
+# training No3: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 5e-4 useStageRes batch NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+# training No4: ./scripts/train_dcan.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN DBB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
 
-# done No2: ./scripts/train_dcan.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no SmoothL1
-# done No2: ./scripts/train_dcan.sh train 1 1 t2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 no bicubic 0 0 no SmoothL1
-# giveup gradient explore at epoch 121: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 noAll bicubic 0 0 no SmoothL1
+# done No2: ./scripts/train_dcan.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
+# done No2: ./scripts/train_dcan.sh train 1 1 t2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 no bicubic 0 0 no SmoothL1 DIV2K_IR
+# giveup gradient explore at epoch 121: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 noAll bicubic 0 0 no SmoothL1 DIV2K_IR
 
-# done No2: ./scripts/train_dcan.sh train 3 1 t2_noAttn nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1
-# training No3: ./scripts/train_dcan.sh train 0 1 xs2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1
-# done: ./scripts/train_dcan.sh train 1 1 xt2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1
-# done: ./scripts/train_dcan.sh train 3 1 xt2_dep4 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1
-# pause No3: ./scripts/train_dcan.sh train 1 1 xt2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1
-# training No3: ./scripts/train_dcan.sh train 3 1 xt2_dep4 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1
+# done No2: ./scripts/train_dcan.sh train 3 1 t2_noAttn nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+# training No3: ./scripts/train_dcan.sh train 0 1 xs2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+# done: ./scripts/train_dcan.sh train 1 1 xt2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+# done: ./scripts/train_dcan.sh train 3 1 xt2_dep4 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+# pause No3: ./scripts/train_dcan.sh train 1 1 xt2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
+# training No3: ./scripts/train_dcan.sh train 3 1 xt2_dep4 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
 
-# training E2Ewave No1: ./scripts/train_dcan.sh train 3 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 wave SmoothL1
-# training No1: ./scripts/train_dcan.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 wave SmoothL1
-# training No1: ./scripts/train_dcan.sh train 1 1 t2 nr 2 96 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 wavePUp SmoothL1
-# training No2: ./scripts/train_dcan.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 wave SmoothL1
-# waiting: ./scripts/train_dcan.sh train 1 1 t2 nr 2 96 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 wavePUp SmoothL1
-# waiting: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 4e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1
-# waiting: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 2e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1
-# waiting: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no L1
+# training E2Ewave No1: ./scripts/train_dcan.sh train 3 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 wave SmoothL1 DIV2K_IR
+# training No1: ./scripts/train_dcan.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 wave SmoothL1 DIV2K_IR
+# training No1: ./scripts/train_dcan.sh train 1 1 t2 nr 2 96 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 wavePUp SmoothL1 DIV2K_IR
+# training No2: ./scripts/train_dcan.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 wave SmoothL1 DIV2K_IR
+# waiting: ./scripts/train_dcan.sh train 1 1 t2 nr 2 96 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 wavePUp SmoothL1 DIV2K_IR
+# waiting: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 4e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
+# waiting: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 2e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
+# waiting: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no L1 DIV2K_IR
 
 # #####################################
 # accept input
@@ -297,13 +297,25 @@ if [ $loss = "SmoothL1" ]; then
 else
   loss_print="_$loss"
 fi
+# training dataset options --data_train --data_range 
+dataset=${21}
+if [ $dataset = "DIV2K_IR" ]; then
+  train="--data_train DIV2K_IR --data_range 1-900"
+  dataset_print=""
+elif [ $dataset = "DF2K" ]; then
+  train="--data_train DF2K --data_range 1-3550"
+  dataset_print="_$dataset"
+elif [ $dataset = "Flickr2K" ]; then
+  train="--data_train Flickr2K --data_range 1-2650"
+  dataset_print="_$dataset"
+fi
 
 
 # #####################################
 # prepare program options parameters
 # v9 must use layernorm
-run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $interpolation --acb_norm $acb $stageres_opt --upsampling $upsam_opt --loss 1*$loss --lr $initlr --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class $lr_class $use_acb_opt $LKAk_opt $bb_norm_opt $usewave_opt --data_train DIV2K_IR --data_test $val_set $deg_opt --sigma $sigma --quality $quality --model DCAN"
-father_dir="../DCAN/v1${upsam_print}${use_acb_print}${acb_print}${stageres_print}${interpolation_print}${lr_print}${initlr_print}"
+run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $interpolation --acb_norm $acb $stageres_opt --upsampling $upsam_opt --loss 1*$loss --lr $initlr --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class $lr_class $use_acb_opt $LKAk_opt $bb_norm_opt $usewave_opt $train --data_test $val_set $deg_opt --sigma $sigma --quality $quality --model DCAN"
+father_dir="../DCAN/v1${upsam_print}${use_acb_print}${acb_print}${stageres_print}${interpolation_print}${lr_print}${initlr_print}${dataset_print}"
 file_name="dcan_${size}${patch_print}${LKAk_print}${bb_norm_print}${usewave_print}${deg_print}${sigma_print}${quality_print}${loss_print}_x${scale}"
 save_dir="${father_dir}/${file_name}"
 log_file="${father_dir}/logs/${file_name}.log"
