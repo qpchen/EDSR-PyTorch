@@ -392,7 +392,7 @@ class DCAN(nn.Module):
         wave_expand_patch = args.wave_patchup
         
         # RGB mean for DIV2K
-        if in_chans == 3:# and not self.use_wave:
+        if in_chans == 3 and not self.use_wave:
             self.sub_mean = common.MeanShift(args.rgb_range)
             self.add_mean = common.MeanShift(args.rgb_range, sign=1)
         
