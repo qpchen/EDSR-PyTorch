@@ -363,11 +363,12 @@ class FourierConv(nn.Module):
         self.conv_out = nn.Conv2d(dim, dim, 1)
 
     def forward(self, x):
+        _, _, H, W = x.shape
         out = self.conv_in(x)
         skip = out
-        out = torch.fft.rfft2(x)
+        out = torch.fft.rfft2(x, (H, W))
         out = torch.complex(self.conv_real(out.real), self.conv_imag(out.imag))
-        out = self.conv_out(torch.fft.irfft2(out) + skip)
+        out = self.conv_out(torch.fft.irfft2(out, (H, W)) + skip)
 
         return out
 
