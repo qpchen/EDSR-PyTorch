@@ -337,7 +337,8 @@ class Trainer():
                                 self.ckp.save_results(d, filename[0], save_list, scale)
 
                 self.ckp.log[-1, idx_data, idx_scale] /= len(d)
-                best = self.ckp.log.max(0)
+                # best = self.ckp.log.max(0)
+                best = torch.where(torch.isnan(self.ckp.log), torch.full_like(self.ckp.log, 0), self.ckp.log).max(0)
                 self.ckp.write_log(
                     '[{} x{}]\tPSNR: {:.3f} (Best: {:.3f} @epoch {})'.format(
                         d.dataset.name,
