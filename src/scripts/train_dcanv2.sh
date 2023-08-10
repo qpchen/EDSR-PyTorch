@@ -73,8 +73,10 @@ elif [ $size = "b" ]; then
   options="--epochs 1000 --decay 500-800-900-950 --srarn_up_feat 180 --depths 6+6+6+6+6+6+6+6 --dims 180+180+180+180+180+180+180+180 --mlp_ratios 4+4+4+4+4+4+4+4 --batch_size 32"
 elif [ $size = "b2" ]; then
   options="--epochs 1000 --decay 500-800-900-950 --srarn_up_feat 128 --depths 6+6+6+6+6+6+6+6 --dims 128+128+128+128+128+128+128+128 --mlp_ratios 4+4+4+4+4+4+4+4 --batch_size 32"
+# elif [ $size = "b26" ]; then
+#   options="--epochs 1000 --decay 200-500-800-900-950 --srarn_up_feat 128 --depths 6+6+6+6+6+6 --dims 128+128+128+128+128+128 --mlp_ratios 4+4+4+4+4+4 --batch_size 32"
 elif [ $size = "b26" ]; then
-  options="--epochs 1000 --decay 200-500-800-900-950 --srarn_up_feat 128 --depths 6+6+6+6+6+6 --dims 128+128+128+128+128+128 --mlp_ratios 4+4+4+4+4+4 --batch_size 32"
+  options="--epochs 1200 --decay 350-700-1000-1100-1150 --srarn_up_feat 128 --depths 6+6+6+6+6+6 --dims 128+128+128+128+128+128 --mlp_ratios 4+4+4+4+4+4 --batch_size 32"
 # ############## model_small #############
 elif [ $size = "s" ]; then
   options="--epochs 1500 --decay 750-1200-1350-1425 --srarn_up_feat 60 --depths 6+6+6+6+6 --dims 60+60+60+60+60 --mlp_ratios 4+4+4+4+4 --batch_size 32"
@@ -368,6 +370,11 @@ then
   echo "resume training:"
   echo "nohup $run_command --load $save_dir --resume -1 > $log_file 2>&1 &"
   nohup $run_command --load $save_dir --resume -1 >> $log_file 2>&1 &
+elif [ $mode = "resumeBest" ]
+then
+  echo "resume training from best epoch (copy the model_best.pt to model_1.pt):"
+  echo "nohup $run_command --load $save_dir --resume 1 > $log_file 2>&1 &"
+  nohup $run_command --load $save_dir --resume 1 >> $log_file 2>&1 &
 elif [ $mode = "switch" ]
 then
   echo "switch acb from training to inference mode:"
