@@ -35,7 +35,7 @@
 # 4. L1 loss
 # training No2: ./scripts/train_dcanv2.sh resume 0 1 xt2_dep4 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no L1 DIV2K_IR DCANV2
 # 5. local-then-global at block
-# training No5: ./scripts/train_dcanv2.sh training 3 1 xt2_dep4 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR DCANV2AA
+# training No5: ./scripts/train_dcanv2.sh train 3 1 xt2_dep4 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR DCANV2AA
 # 
 
 # #####################################
@@ -319,10 +319,13 @@ elif [ $dataset = "Flickr2K" ]; then
 fi
 # model options
 model=${22}
-if [ $dataset = "DCANV2" ]; then
+if [ $model = "DCANV2" ]; then
   model_print=""
-elif [ $dataset = "DCANV2AA" ]; then
+elif [ $model = "DCANV2AA" ]; then
   model_print="_blkLTG"
+else
+  echo "no valid $model ! Please input (DCANV2 | DCANV2AA)."
+  exit
 fi
 
 
