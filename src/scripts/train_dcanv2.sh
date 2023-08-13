@@ -6,54 +6,37 @@
 # ./scripts/train_srarn_v9.sh [mode] [cuda_device] [accummulation_step] [model_size] [interpolation] [sr_scale] [lr_patch_size] [LR_scheduler_class] [init LR] [stage Res] [acb_norm] [upsampling]
 # run example for v9test_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 test b 2 48 ms skip 1acb3 batch befln nolr 2e-4
 
-# done No1: ./scripts/train_dcanv2.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
-# done No1: ./scripts/train_dcanv2.sh train 1 1 t2 nr 3 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
-# done No1: ./scripts/train_dcanv2.sh train 2 1 t2 nr 4 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+#training No1: ./scripts/train_dcanv2.sh resume 1 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+#done No1: ./scripts/train_dcanv2.sh train 2 1 t2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+#training No1: ./scripts/train_dcanv2.sh resume 3 1 t2 nr 3 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+#training No2: ./scripts/train_dcanv2.sh resume 1 1 t2 nr 4 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+#done No2: ./scripts/train_dcanv2.sh train 3 1 xt2_dep4 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+#done No3: ./scripts/train_dcanv2.sh train 0 1 xt2_dep4 nr 3 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+#done No3: ./scripts/train_dcanv2.sh train 2 1 xt2_dep4 nr 4 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+#pause No8: ./scripts/train_dcanv2.sh train 1 1 b2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+#training No4: ./scripts/train_dcanv2.sh resume 0 1 b26 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+#training No4: ./scripts/train_dcanv2.sh resume 1 1 b26 nr 3 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+#training No4: ./scripts/train_dcanv2.sh resume 2 1 b26 nr 4 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
 
-# training No1: ./scripts/train_dcanv2.sh train 2 1 t2 nr 2 48 ms 8e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
-# giveup No3: ./scripts/train_dcanv2.sh train 1 1 t2 nr 2 48 ms 2e-3 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
+# Try better upsamling for large size model
+#training No4: ./scripts/train_dcanv2.sh resume 3 1 b26 nr 2 48 ms 5e-4 useStageRes no PSnA noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
 
-# done No1: ./scripts/train_dcanv2.sh train 3 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
-# done No2: ./scripts/train_dcanv2.sh train 2 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
-# done No3: ./scripts/train_dcanv2.sh train 2 1 t2 nr 2 48 ms 5e-4 useStageRes batch NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
-# giveup No4: ./scripts/train_dcanv2.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN DBB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+# Ablation
+# 1. no Linear Attention
+# training No2: ./scripts/train_dcanv2.sh resume 3 1 xt2_dep4_noAttn nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+# 2. backbone norm: LN | no | noAll
+# training No3: ./scripts/train_dcanv2.sh resume 0 1 xt2_dep4 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
+##### error for save loss, so retrain use pre_training option: nohup python main.py --n_GPUs 1 --accumulation_step 1 --scale 2 --patch_size 96 --epochs 2000 --decay 500-1400-1700-1850 --srarn_up_feat 32 --depths 4+4 --dims 32+32 --mlp_ratios 4+4 --batch_size 32 --interpolation Nearest --acb_norm no --stage_res --upsampling Nearest --loss 1*SmoothL1 --lr 5e-4 --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class MultiStepLR   --bb_norm LN  --data_train DIV2K_IR --data_range 1-900 --data_test Set5 --degradation bicubic --sigma 0 --quality 0 --model DCANV2 --pre_train ../DCAN/v2_UpNN_noACB_ACBno_StgRes_AddNr_MS_5e-4/dcanv2_xt2_dep4_p48_bbLN_x2_backup/model/model_latest.pt --save ../DCAN/v2_UpNN_noACB_ACBno_StgRes_AddNr_MS_5e-4/dcanv2_xt2_dep4_p48_bbLN_x2 --reset > ../DCAN/v2_UpNN_noACB_ACBno_StgRes_AddNr_MS_5e-4/logs/dcanv2_xt2_dep4_p48_bbLN_x2.log 2>&1 &
 
-# done No2: ./scripts/train_dcanv2.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
-# done No2: ./scripts/train_dcanv2.sh train 1 1 t2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 no bicubic 0 0 no SmoothL1 DIV2K_IR
-# giveup gradient explore at epoch 121: ./scripts/train_dcanv2.sh train 2 1 t2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 noAll bicubic 0 0 no SmoothL1 DIV2K_IR
+# training No3: ./scripts/train_dcanv2.sh resume 1 1 xt2_dep4 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 no bicubic 0 0 no SmoothL1 DIV2K_IR
+# training No3: ./scripts/train_dcanv2.sh resume 2 1 xt2_dep4 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 noAll bicubic 0 0 no SmoothL1 DIV2K_IR
+# 3. MLP level change to 2
+# training No3: ./scripts/train_dcanv2.sh resume 3 1 xt2_dep4_mlp2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+# 4. L1 loss
+# training No2: ./scripts/train_dcanv2.sh resume 0 1 xt2_dep4 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no L1 DIV2K_IR
+# 5. local-then-global at block
+# 
 
-# done No2: ./scripts/train_dcanv2.sh train 3 1 t2_noAttn nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
-# done No3: ./scripts/train_dcanv2.sh train 0 1 xs2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
-# done: ./scripts/train_dcanv2.sh train 1 1 xt2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
-# done: ./scripts/train_dcanv2.sh train 3 1 xt2_dep4 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
-# pause No3: ./scripts/train_dcanv2.sh train 1 1 xt2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
-# done No3: ./scripts/train_dcanv2.sh train 3 1 xt2_dep4 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
-
-# giveup E2Ewave No1: ./scripts/train_dcanv2.sh train 3 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 wave SmoothL1 DIV2K_IR
-# giveup E2Ewave No2 gradient explore at epoch 245: ./scripts/train_dcanv2.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 wave SmoothL1 DIV2K_IR
-# giveup No1: ./scripts/train_dcanv2.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 wave SmoothL1 DIV2K_IR
-# giveup No1: ./scripts/train_dcanv2.sh train 1 1 t2 nr 2 96 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 wavePUp SmoothL1 DIV2K_IR
-# giveup No2: ./scripts/train_dcanv2.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 wave SmoothL1 DIV2K_IR
-# giveup: ./scripts/train_dcanv2.sh train 1 1 t2 nr 2 96 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 wavePUp SmoothL1 DIV2K_IR
-# waiting: ./scripts/train_dcanv2.sh train 2 1 t2 nr 2 48 ms 4e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
-# waiting: ./scripts/train_dcanv2.sh train 2 1 t2 nr 2 48 ms 2e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
-# waiting: ./scripts/train_dcanv2.sh train 2 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no L1 DIV2K_IR
-
-
-#training No4: ./scripts/train_dcanv2.sh train 0 1 xs2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
-#training No5: ./scripts/train_dcanv2.sh train 0 1 xs2 nr 3 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
-#training No5: ./scripts/train_dcanv2.sh train 1 1 xs2 nr 4 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
-#training No3: ./scripts/train_dcanv2.sh train 0 1 xt2_dep4 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
-#training No3: ./scripts/train_dcanv2.sh train 2 1 xt2_dep4 nr 3 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
-#training No3: ./scripts/train_dcanv2.sh train 3 1 xt2_dep4 nr 4 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
-#training No6: ./scripts/train_dcanv2.sh train 0 1 b2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
-#training No7: ./scripts/train_dcanv2.sh train 0 1 b2 nr 3 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
-#training No8: ./scripts/train_dcanv2.sh train 0 1 b2 nr 4 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
-#training No3: ./scripts/train_dcanv2.sh train 1 1 t2 nr 3 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
-#training No2: ./scripts/train_dcanv2.sh train 0 1 t2 nr 4 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
-#training E2Ewave_noMean No2: ./scripts/train_dcanv2.sh train 2 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 wave SmoothL1 DIV2K_IR
-
-#training No1: ./scripts/train_dcanv2.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no L1 DIV2K_IR
 # #####################################
 # accept input
 # first is run mode, 
@@ -333,14 +316,21 @@ elif [ $dataset = "Flickr2K" ]; then
   train="--data_train Flickr2K --data_range 1-2650"
   dataset_print="_$dataset"
 fi
+# model options
+model=${22}
+if [ $dataset = "DCANV2" ]; then
+  model_print=""
+elif [ $dataset = "DCANV2AA" ]; then
+  model_print="_blkLTG"
+fi
 
 
 # #####################################
 # prepare program options parameters
 # v9 must use layernorm
-run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $interpolation --acb_norm $acb $stageres_opt --upsampling $upsam_opt --loss 1*$loss --lr $initlr --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class $lr_class $use_acb_opt $LKAk_opt $bb_norm_opt $usewave_opt $train --data_test $val_set $deg_opt --sigma $sigma --quality $quality --model DCANV2"
+run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $interpolation --acb_norm $acb $stageres_opt --upsampling $upsam_opt --loss 1*$loss --lr $initlr --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class $lr_class $use_acb_opt $LKAk_opt $bb_norm_opt $usewave_opt $train --data_test $val_set $deg_opt --sigma $sigma --quality $quality --model $model"
 father_dir="../DCAN/v2${upsam_print}${use_acb_print}${acb_print}${stageres_print}${interpolation_print}${lr_print}${initlr_print}${dataset_print}"
-file_name="dcanv2_${size}${patch_print}${LKAk_print}${bb_norm_print}${usewave_print}${deg_print}${sigma_print}${quality_print}${loss_print}_x${scale}"
+file_name="dcanv2_${size}${model_print}${patch_print}${LKAk_print}${bb_norm_print}${usewave_print}${deg_print}${sigma_print}${quality_print}${loss_print}_x${scale}"
 save_dir="${father_dir}/${file_name}"
 log_file="${father_dir}/logs/${file_name}.log"
 
