@@ -10,7 +10,7 @@
 
 #done No1: ./scripts/train_dcanv2.sh eval 1 1 t2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR DCANV2
 #done No1: ./scripts/train_dcanv2.sh eval 1 1 t2 nr 3 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR DCANV2
-#done No2: ./scripts/train_dcanv2.sh eval 2 1 t2 nr 4 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR DCANV2
+#done No2: ./scripts/train_dcanv2.sh lam 2 1 t2 nr 4 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR DCANV2
 #done No2: ./scripts/train_dcanv2.sh eval 3 1 xt2_dep4 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR DCANV2
 #done No3: ./scripts/train_dcanv2.sh eval 0 1 xt2_dep4 nr 3 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR DCANV2
 #done No3: ./scripts/train_dcanv2.sh eval 2 1 xt2_dep4 nr 4 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR DCANV2

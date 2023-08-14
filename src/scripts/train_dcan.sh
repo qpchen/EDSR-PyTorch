@@ -10,34 +10,50 @@
 # done No1: ./scripts/train_dcan.sh train 1 1 t2 nr 3 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
 # done No1: ./scripts/train_dcan.sh train 2 1 t2 nr 4 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
 
-# training No1: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 8e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
-# training No3: ./scripts/train_dcan.sh train 1 1 t2 nr 2 48 ms 2e-3 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
+# done No1: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 8e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
+# giveup No3: ./scripts/train_dcan.sh train 1 1 t2 nr 2 48 ms 2e-3 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
 
 # done No1: ./scripts/train_dcan.sh train 3 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
-# training No2: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
-# training No3: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 5e-4 useStageRes batch NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
-# training No4: ./scripts/train_dcan.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN DBB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+# done No2: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
+# done No3: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 5e-4 useStageRes batch NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+# giveup No4: ./scripts/train_dcan.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN DBB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
 
 # done No2: ./scripts/train_dcan.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
 # done No2: ./scripts/train_dcan.sh train 1 1 t2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 no bicubic 0 0 no SmoothL1 DIV2K_IR
 # giveup gradient explore at epoch 121: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 noAll bicubic 0 0 no SmoothL1 DIV2K_IR
 
 # done No2: ./scripts/train_dcan.sh train 3 1 t2_noAttn nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
-# training No3: ./scripts/train_dcan.sh train 0 1 xs2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+# done No3: ./scripts/train_dcan.sh train 0 1 xs2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
 # done: ./scripts/train_dcan.sh train 1 1 xt2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
 # done: ./scripts/train_dcan.sh train 3 1 xt2_dep4 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
 # pause No3: ./scripts/train_dcan.sh train 1 1 xt2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
-# training No3: ./scripts/train_dcan.sh train 3 1 xt2_dep4 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
+# done No3: ./scripts/train_dcan.sh train 3 1 xt2_dep4 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
 
-# training E2Ewave No1: ./scripts/train_dcan.sh train 3 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 wave SmoothL1 DIV2K_IR
-# training No1: ./scripts/train_dcan.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 wave SmoothL1 DIV2K_IR
-# training No1: ./scripts/train_dcan.sh train 1 1 t2 nr 2 96 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 wavePUp SmoothL1 DIV2K_IR
-# training No2: ./scripts/train_dcan.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 wave SmoothL1 DIV2K_IR
-# waiting: ./scripts/train_dcan.sh train 1 1 t2 nr 2 96 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 wavePUp SmoothL1 DIV2K_IR
+# giveup E2Ewave No1: ./scripts/train_dcan.sh train 3 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 wave SmoothL1 DIV2K_IR
+# giveup E2Ewave No2 gradient explore at epoch 245: ./scripts/train_dcan.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 wave SmoothL1 DIV2K_IR
+# giveup No1: ./scripts/train_dcan.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 wave SmoothL1 DIV2K_IR
+# giveup No1: ./scripts/train_dcan.sh train 1 1 t2 nr 2 96 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 wavePUp SmoothL1 DIV2K_IR
+# giveup No2: ./scripts/train_dcan.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 wave SmoothL1 DIV2K_IR
+# giveup: ./scripts/train_dcan.sh train 1 1 t2 nr 2 96 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 wavePUp SmoothL1 DIV2K_IR
 # waiting: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 4e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
 # waiting: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 2e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no SmoothL1 DIV2K_IR
 # waiting: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 no L1 DIV2K_IR
 
+
+#done No4: ./scripts/train_dcan.sh train 0 1 xs2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+#done No9: ./scripts/train_dcan.sh train 0 1 xs2 nr 3 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+#done No5: ./scripts/train_dcan.sh train 1 1 xs2 nr 4 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+#done No3: ./scripts/train_dcan.sh train 0 1 xt2_dep4 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+#done No3: ./scripts/train_dcan.sh train 2 1 xt2_dep4 nr 3 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+#done No3: ./scripts/train_dcan.sh train 3 1 xt2_dep4 nr 4 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+#training No5: ./scripts/train_dcan.sh resume 0 1 b2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+#pause No5: ./scripts/train_dcan.sh resume 1 1 b2 nr 3 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+#pause No5: ./scripts/train_dcan.sh resume 2 1 b2 nr 4 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+#done No3: ./scripts/train_dcan.sh train 1 1 t2 nr 3 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+#done No2: ./scripts/train_dcan.sh train 0 1 t2 nr 4 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+#done E2Ewave_noMean No2: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 wave SmoothL1 DIV2K_IR
+
+#training No1: ./scripts/train_dcan.sh resume 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no L1 DIV2K_IR
 # #####################################
 # accept input
 # first is run mode, 
@@ -314,7 +330,7 @@ fi
 # #####################################
 # prepare program options parameters
 # v9 must use layernorm
-run_command="python main.py --n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $interpolation --acb_norm $acb $stageres_opt --upsampling $upsam_opt --loss 1*$loss --lr $initlr --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class $lr_class $use_acb_opt $LKAk_opt $bb_norm_opt $usewave_opt $train --data_test $val_set $deg_opt --sigma $sigma --quality $quality --model DCAN"
+run_command="--n_GPUs $n_device --accumulation_step $accum --scale $scale --patch_size $patch_hr $options $interpolation --acb_norm $acb $stageres_opt --upsampling $upsam_opt --loss 1*$loss --lr $initlr --n_colors 3 --optimizer ADAM --skip_threshold 1e6 --lr_class $lr_class $use_acb_opt $LKAk_opt $bb_norm_opt $usewave_opt $train --data_test $val_set $deg_opt --sigma $sigma --quality $quality --model DCAN"
 father_dir="../DCAN/v1${upsam_print}${use_acb_print}${acb_print}${stageres_print}${interpolation_print}${lr_print}${initlr_print}${dataset_print}"
 file_name="dcan_${size}${patch_print}${LKAk_print}${bb_norm_print}${usewave_print}${deg_print}${sigma_print}${quality_print}${loss_print}_x${scale}"
 save_dir="${father_dir}/${file_name}"
@@ -342,34 +358,39 @@ then
     echo "$save_dir seems storing some model files trained before, please change the save dir!"
   else
     echo "start training from the beginning:"
-    echo "nohup $run_command --save $save_dir --reset > $log_file 2>&1 &"
-    nohup $run_command --save $save_dir --reset > $log_file 2>&1 &
+    echo "nohup python main.py $run_command --save $save_dir --reset > $log_file 2>&1 &"
+    nohup python main.py $run_command --save $save_dir --reset > $log_file 2>&1 &
   fi
 elif [ $mode = "resume" ]
 then
   echo "resume training:"
-  echo "nohup $run_command --load $save_dir --resume -1 > $log_file 2>&1 &"
-  nohup $run_command --load $save_dir --resume -1 >> $log_file 2>&1 &
+  echo "nohup python main.py $run_command --load $save_dir --resume -1 > $log_file 2>&1 &"
+  nohup python main.py $run_command --load $save_dir --resume -1 >> $log_file 2>&1 &
 elif [ $mode = "switch" ]
 then
   echo "switch acb from training to inference mode:"
-  echo "$run_command --save ${save_dir}_test --pre_train $save_dir/model/model_best.pt --test_only --inf_switch"
-  $run_command --save ${save_dir}_test --pre_train $save_dir/model/model_best.pt --test_only --inf_switch
+  echo "python main.py $run_command --save ${save_dir}_test --pre_train $save_dir/model/model_best.pt --test_only --inf_switch"
+  python main.py $run_command --save ${save_dir}_test --pre_train $save_dir/model/model_best.pt --test_only --inf_switch
 elif [ $mode = "eval" ]
 then
   echo "load inference version of acb to eval:"
-  echo "$run_command --data_test $test_set --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf"
-  $run_command --data_test $test_set --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf
+  echo "python main.py $run_command --data_test $test_set --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf"
+  python main.py $run_command --data_test $test_set --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf
 elif [ $mode = "eval_plus" ]
 then
   echo "load inference version of acb to eval:"
-  echo "$run_command --data_test $test_set --save ${save_dir}_test_plus --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf --self_ensemble"
-  $run_command --data_test $test_set --save ${save_dir}_test_plus --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf --self_ensemble
+  echo "python main.py $run_command --data_test $test_set --save ${save_dir}_test_plus --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf --self_ensemble"
+  python main.py $run_command --data_test $test_set --save ${save_dir}_test_plus --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf --self_ensemble
 elif [ $mode = "runtime" ]
 then
   # echo "load inference version of acb to test the runtime:"
-  # echo "$run_command --data_test 720P --runtime --no_count --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf"
-  $run_command --data_test 720P --runtime --no_count --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf --times ${11}
+  # echo "python main.py $run_command --data_test 720P --runtime --no_count --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf"
+  python main.py $run_command --data_test 720P --runtime --no_count --save ${save_dir}_test --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf --times ${11}
+elif [ $mode = "lam" ]
+then
+  echo "doing Local attribution map (LAM) analysis:"
+  echo "python lam.py $run_command --data_test Demo --dir_demo ../lams/imgs --save ${save_dir}_lam --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf"
+  python lam.py $run_command --data_test Demo --dir_demo ../lams/imgs --save ${save_dir}_lam --pre_train ${save_dir}_test/model/inf_model.pt --test_only --save_result --load_inf
 else
   echo "invalid value, it only accpet train, resume, switch, eval!"
 fi
