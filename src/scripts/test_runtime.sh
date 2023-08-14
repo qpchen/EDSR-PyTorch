@@ -48,6 +48,12 @@ elif [ $2 = "v1xs" ]; then
   dim_configs="--srarn_up_feat 60 --depths 6+6+6+6 --dims 60+60+60+60 --mlp_ratios 4+4+4+4"
 elif [ $2 = "v1s" ]; then
   dim_configs="--srarn_up_feat 60 --depths 6+6+6+6+6 --dims 60+60+60+60+60 --mlp_ratios 4+4+4+4+4"
+elif [ $2 = "b26" ]; then
+  dim_configs="--srarn_up_feat 128 --depths 6+6+6+6+6+6 --dims 128+128+128+128+128+128 --mlp_ratios 4+4+4+4+4+4"
+elif [ $2 = "t2" ]; then
+  dim_configs="--srarn_up_feat 48 --depths 6+6+6 --dims 48+48+48 --mlp_ratios 4+4+4"
+elif [ $2 = "xt2" ]; then
+  dim_configs="--srarn_up_feat 32 --depths 4+4 --dims 32+32 --mlp_ratios 4+4"
 fi
 
 if [ $model = "FSRCNN" ]; then
@@ -99,6 +105,10 @@ elif [ $model = "ShuffleMixer" ]; then
   python main.py --n_threads 6 --scale $3 --patch_size $patch --data_test 720P --n_colors 3 $dim_configs --model ShuffleMixer --save ../runtime_models/logs/ShuffleMixer-$2_x$3 --pre_train ../runtime_models/shufflemixer_$2_x$3.pth --test_only --reset --runtime --times $5 $6 #--no_count --save_result 
 elif [ $model = "ALAN" ]; then
   python main.py --n_threads 6 --scale $3 --patch_size $patch --data_test 720P --n_colors 3 $dim_configs --model RAAN --interpolation Nearest --acb_norm batch --upsampling Nearest --use_acb --save ../runtime_models/logs/alan_$2_x$3 --pre_train ../runtime_models/alan_$2_x$3.pt --test_only --load_inf --reset --runtime --times $5 $6 #--no_count --save_result 
+elif [ $model = "DCANV1" ]; then
+  python main.py --n_threads 6 --scale $3 --patch_size $patch --data_test 720P --n_colors 3 $dim_configs --model DCAN --interpolation Nearest --acb_norm no --stage_res --upsampling Nearest --bb_norm BN --degradation bicubic --sigma 0 --quality 0 --pre_train ../runtime_models/dcanv1_$2_x$3.pt --save ../runtime_models/logs/dcanv1_$2_x$3 --test_only --load_inf --reset --runtime --times $5 $6 #--no_count --save_result 
+elif [ $model = "DCANV2" ]; then
+  python main.py --n_threads 6 --scale $3 --patch_size $patch --data_test 720P --n_colors 3 $dim_configs --model DCANV2 --interpolation Nearest --acb_norm no --stage_res --upsampling Nearest --bb_norm BN --degradation bicubic --sigma 0 --quality 0 --pre_train ../runtime_models/dcanv2_$2_x$3.pt --save ../runtime_models/logs/dcanv2_$2_x$3 --test_only --load_inf --reset --runtime --times $5 $6 #--no_count --save_result 
 else
   # echo "The model $1 is not supported!"
   python main.py --n_threads 6 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --model $model --save ../runtime_models/logs/${model}_x$3 --pre_train ../runtime_models/${model}_x$3.pt --test_only --reset --runtime --times $5 $6 #--no_count --save_result 
