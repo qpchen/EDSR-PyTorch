@@ -15,7 +15,7 @@ from model.diversebranchblock import DiverseBranchBlock
 from model.ops_dcnv3 import modules as opsm
 
 def make_model(args, parent=False):
-    return DCANV3(args)
+    return DCANV4(args)
 
 class Mlp(nn.Module):
     def __init__(self, in_features, hidden_features=None, out_features=None, act_layer=nn.GELU, drop=0., use_acb=True, use_dbb=False, deploy=False, acb_norm="batch"):
@@ -86,6 +86,8 @@ class Mlp(nn.Module):
 class DCA(nn.Module):
     def __init__(self, core_op="DCNv3", channels=64, groups=4, offset_scale=1.0, act_layer='GELU', norm_layer='LN', dw_kernel_size=None, center_feature_scale=False, remove_center=False, use_attn=True):
         super().__init__()
+        self.use_multi = use_attn
+        self.dwconv = DWConv(channels, use_acb=False, use_dbb=False, deploy=False, acb_norm=act_layer)
         core_op=getattr(opsm, core_op)
         self.dcn = core_op(
             channels=channels,
@@ -102,11 +104,12 @@ class DCA(nn.Module):
             center_feature_scale=center_feature_scale, # for InternImage-H/G
             remove_center=remove_center,  # for InternImage-H/G
         )
-        self.use_multi = use_attn
+        # self.act = act_layer()
+        self.pwconv = nn.Conv2d(channels, channels, 1)
 
     def forward(self, x):
         u = x.clone()        
-        attn = self.dcn(x)
+        attn = self.pwconv(self.dcn(self.dwconv(x)))
         if self.use_multi:
             return u * attn
         else:
@@ -390,12 +393,12 @@ class SFB(nn.Module):
 
         return self.conv_out(out)
 
-class DCANV3(nn.Module):
+class DCANV4(nn.Module):
     # def __init__(self, img_size=224, in_chans=3, num_classes=1000, embed_dims=[64, 128, 256, 512],
     #             mlp_ratios=[4, 4, 4, 4], drop_rate=0., drop_path_rate=0., norm_layer=nn.LayerNorm,
     #              depths=[3, 4, 6, 3], num_stages=4, flag=False):
     def __init__(self, args):
-        super(DCANV3, self).__init__()
+        super(DCANV4, self).__init__()
 
         img_size=args.patch_size
         in_chans=args.n_colors

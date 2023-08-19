@@ -86,6 +86,8 @@ class Mlp(nn.Module):
 class DCA(nn.Module):
     def __init__(self, core_op="DCNv3", channels=64, groups=4, offset_scale=1.0, act_layer='GELU', norm_layer='LN', dw_kernel_size=None, center_feature_scale=False, remove_center=False, use_attn=True):
         super().__init__()
+        self.use_multi = use_attn
+        self.dwconv = DWConv(channels, use_acb=False, use_dbb=False, deploy=False, acb_norm=act_layer)
         core_op=getattr(opsm, core_op)
         self.dcn = core_op(
             channels=channels,
@@ -102,11 +104,12 @@ class DCA(nn.Module):
             center_feature_scale=center_feature_scale, # for InternImage-H/G
             remove_center=remove_center,  # for InternImage-H/G
         )
-        self.use_multi = use_attn
+        # self.act = act_layer()
+        self.pwconv = nn.Conv2d(channels, channels, 1)
 
     def forward(self, x):
         u = x.clone()        
-        attn = self.dcn(x)
+        attn = self.pwconv(self.dcn(self.dwconv(x)))
         if self.use_multi:
             return u * attn
         else:
