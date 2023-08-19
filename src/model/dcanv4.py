@@ -108,8 +108,12 @@ class DCA(nn.Module):
         self.pwconv = nn.Conv2d(channels, channels, 1)
 
     def forward(self, x):
-        u = x.clone()        
-        attn = self.pwconv(self.dcn(self.dwconv(x)))
+        u = x.clone()
+        x = self.dwconv(x)
+        x = x.permute(0, 2, 3, 1) # (N, C, H, W) -> (N, H, W, C)
+        x = self.dcn(x)
+        x = x.permute(0, 3, 1, 2) # (N, H, W, C) -> (N, C, H, W) 
+        attn = self.pwconv(x)
         if self.use_multi:
             return u * attn
         else:
@@ -128,9 +132,9 @@ class Attention(nn.Module):
         shorcut = x.clone()
         x = self.proj_1(x)
         x = self.activation(x)
-        x = x.permute(0, 2, 3, 1) # (N, C, H, W) -> (N, H, W, C)
+        # x = x.permute(0, 2, 3, 1) # (N, C, H, W) -> (N, H, W, C)
         x = self.spatial_gating_unit(x)
-        x = x.permute(0, 3, 1, 2) # (N, H, W, C) -> (N, C, H, W)
+        # x = x.permute(0, 3, 1, 2) # (N, H, W, C) -> (N, C, H, W)
         x = self.proj_2(x)
         x = x + shorcut
         return x
