@@ -15,7 +15,7 @@ from model.diversebranchblock import DiverseBranchBlock
 from model.ops_dcnv3 import modules as opsm
 
 def make_model(args, parent=False):
-    return DCANV4(args)
+    return DCANV5(args)
 
 class Mlp(nn.Module):
     def __init__(self, in_features, hidden_features=None, out_features=None, act_layer=nn.GELU, drop=0., use_acb=True, use_dbb=False, deploy=False, acb_norm="batch"):
@@ -87,7 +87,7 @@ class DCA(nn.Module):
     def __init__(self, core_op="DCNv3", channels=64, groups=4, offset_scale=1.0, act_layer='GELU', norm_layer='LN', dw_kernel_size=None, center_feature_scale=False, remove_center=False, use_attn=True):
         super().__init__()
         self.use_multi = use_attn
-        self.dwconv = DWConv(channels, use_acb=False, use_dbb=False, deploy=False, acb_norm=act_layer)
+        self.dwconv = nn.Conv2d(channels, channels, 3, 1, 1, bias=True, groups=channels)
         core_op=getattr(opsm, core_op)
         self.dcn = core_op(
             channels=channels,
@@ -108,8 +108,12 @@ class DCA(nn.Module):
         self.pwconv = nn.Conv2d(channels, channels, 1)
 
     def forward(self, x):
-        u = x.clone()        
-        attn = self.pwconv(self.dcn(self.dwconv(x)))
+        u = x.clone()
+        x = self.dwconv(x)
+        x = x.permute(0, 2, 3, 1) # (N, C, H, W) -> (N, H, W, C)
+        x = self.dcn(x)
+        x = x.permute(0, 3, 1, 2) # (N, H, W, C) -> (N, C, H, W) 
+        attn = self.pwconv(x)
         if self.use_multi:
             return u * attn
         else:
@@ -128,9 +132,9 @@ class Attention(nn.Module):
         shorcut = x.clone()
         x = self.proj_1(x)
         x = self.activation(x)
-        x = x.permute(0, 2, 3, 1) # (N, C, H, W) -> (N, H, W, C)
+        # x = x.permute(0, 2, 3, 1) # (N, C, H, W) -> (N, H, W, C)
         x = self.spatial_gating_unit(x)
-        x = x.permute(0, 3, 1, 2) # (N, H, W, C) -> (N, C, H, W)
+        # x = x.permute(0, 3, 1, 2) # (N, H, W, C) -> (N, C, H, W)
         x = self.proj_2(x)
         x = x + shorcut
         return x
@@ -393,12 +397,12 @@ class SFB(nn.Module):
 
         return self.conv_out(out)
 
-class DCANV4(nn.Module):
+class DCANV5(nn.Module):
     # def __init__(self, img_size=224, in_chans=3, num_classes=1000, embed_dims=[64, 128, 256, 512],
     #             mlp_ratios=[4, 4, 4, 4], drop_rate=0., drop_path_rate=0., norm_layer=nn.LayerNorm,
     #              depths=[3, 4, 6, 3], num_stages=4, flag=False):
     def __init__(self, args):
-        super(DCANV4, self).__init__()
+        super(DCANV5, self).__init__()
 
         img_size=args.patch_size
         in_chans=args.n_colors
