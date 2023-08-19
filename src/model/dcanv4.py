@@ -87,7 +87,7 @@ class DCA(nn.Module):
     def __init__(self, core_op="DCNv3", channels=64, groups=4, offset_scale=1.0, act_layer='GELU', norm_layer='LN', dw_kernel_size=None, center_feature_scale=False, remove_center=False, use_attn=True):
         super().__init__()
         self.use_multi = use_attn
-        self.dwconv = DWConv(channels, use_acb=False, use_dbb=False, deploy=False, acb_norm=act_layer)
+        self.dwconv = nn.Conv2d(channels, channels, 3, 1, 1, bias=True, groups=channels)
         core_op=getattr(opsm, core_op)
         self.dcn = core_op(
             channels=channels,
