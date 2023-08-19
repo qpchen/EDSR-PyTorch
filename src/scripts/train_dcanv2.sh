@@ -359,8 +359,11 @@ elif [ $model = "V3" ]; then
 elif [ $model = "V4" ]; then
   model_print="_DWDA"  # add DWConv in DCN attention
   model_v="v4"
+elif [ $model = "V5" ]; then
+  model_print="_LFFN_DWDA"  # add DWConv in DCN attention
+  model_v="v5"
 else
-  echo "no valid $model ! Please input (V2 | V2AA | V3 | V4)."
+  echo "no valid $model ! Please input (V2 | V2AA | V3 | V4 | V5)."
   exit
 fi
 
