@@ -46,14 +46,14 @@
 #done No3: ./scripts/train_dcan.sh train 0 1 xt2_dep4 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
 #done No3: ./scripts/train_dcan.sh train 2 1 xt2_dep4 nr 3 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
 #done No3: ./scripts/train_dcan.sh train 3 1 xt2_dep4 nr 4 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
-#training No5: ./scripts/train_dcan.sh resume 0 1 b2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
+#done No5: ./scripts/train_dcan.sh resume 0 1 b2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
 #pause No5: ./scripts/train_dcan.sh resume 1 1 b2 nr 3 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
 #pause No5: ./scripts/train_dcan.sh resume 2 1 b2 nr 4 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
 #done No3: ./scripts/train_dcan.sh train 1 1 t2 nr 3 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
 #done No2: ./scripts/train_dcan.sh train 0 1 t2 nr 4 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR
 #done E2Ewave_noMean No2: ./scripts/train_dcan.sh train 2 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 LN bicubic 0 0 wave SmoothL1 DIV2K_IR
 
-#training No1: ./scripts/train_dcan.sh resume 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no L1 DIV2K_IR
+#done No1: ./scripts/train_dcan.sh resume 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no L1 DIV2K_IR
 # #####################################
 # accept input
 # first is run mode, 

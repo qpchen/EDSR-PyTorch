@@ -52,7 +52,7 @@
 
 # batch_befLN/v9fbxt_s64_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 fbxt b 2 64 ms 1acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # done shen
 # batch_befLN/v9fbxt_s64_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 fbxt b 3 64 ms 1acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # done shen
-# batch_befLN/v9fbxt_s64_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0 1 fbxt b 4 64 ms 1acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # done shen
+# batch_befLN/v9fbxt_s64_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 2 1 fbxt b 4 64 ms 1acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # done shen
 # batch_befLN/v9fbxt_s64_3acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 0 1 fbxt b 2 64 ms 3acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # done t640  # param less than 100K
 # batch_befLN/v9fbxt_s64_3acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 fbxt b 3 64 ms 3acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # done t640
 # batch_befLN/v9fbxt_s64_3acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0 1 fbxt b 4 64 ms 3acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # done shen
@@ -60,8 +60,8 @@
 # batch_befLN/v9fblt_s64_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 2 1 fblt b 3 64 ms 1acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # done shen
 # batch_befLN/v9fblt_s64_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 3 1 fblt b 4 64 ms 1acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # done shen
 # batch_befLN/v9fs_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 fs b 2 48 ms 1acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # done shen
-# batch_befLN/v9fs_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 1 1 fs b 3 48 ms 1acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # done shen
-# batch_befLN/v9fs_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 0 1 fs b 4 48 ms 1acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # done shen
+# batch_befLN/v9fs_1acb3_D1acb3_x3: ./scripts/train_srarn_v9.sh train 2 1 fs b 3 48 ms 1acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # done shen
+# batch_befLN/v9fs_1acb3_D1acb3_x4: ./scripts/train_srarn_v9.sh train 3 1 fs b 4 48 ms 1acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0  # done shen
 
   # ############## test larger init LR ###############  !!! fs paused at epoch 1000 and good enough, l3 need further train
   # batch_befLN/v9fs_1acb3_D1acb3_x2: ./scripts/train_srarn_v9.sh train 1 1 fs b 2 48 ms 1acb3 1acb3 batch befln nolr 8e-4 bicubic 0 0  # done shen
