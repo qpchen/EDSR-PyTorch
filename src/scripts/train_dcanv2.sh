@@ -472,6 +472,11 @@ then
   echo "resume training from best epoch (copy the model_best.pt to model_1.pt):"
   echo "nohup python main.py $run_command --load $save_dir --resume 1 > $log_file 2>&1 &"
   nohup python main.py $run_command --load $save_dir --resume 1 >> $log_file 2>&1 &
+elif [ $mode = "retrainBest" ]
+then
+  echo "retraining from best epoch:"
+  echo "nohup python main.py $run_command --save $save_dir --pre_train $save_dir/model/model_best.pt > $log_file 2>&1 &"
+  nohup python main.py $run_command --save $save_dir --pre_train $save_dir/model/model_best.pt >> $log_file 2>&1 &
 elif [ $mode = "switch" ]
 then
   echo "switch acb from training to inference mode:"
