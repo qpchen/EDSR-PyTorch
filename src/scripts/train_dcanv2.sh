@@ -143,6 +143,8 @@ elif [ $size = "b2" ]; then
   options="--epochs 1000 --decay 500-800-900-950 --srarn_up_feat 128 --depths 6+6+6+6+6+6+6+6 --dims 128+128+128+128+128+128+128+128 --mlp_ratios 4+4+4+4+4+4+4+4 --batch_size 32"
 elif [ $size = "b26" ]; then
   options="--epochs 1000 --decay 200-500-800-900-950 --srarn_up_feat 128 --depths 6+6+6+6+6+6 --dims 128+128+128+128+128+128 --mlp_ratios 4+4+4+4+4+4 --batch_size 32"
+elif [ $size = "n" ]; then
+  options="--epochs 1000 --decay 500-800-900-950 --srarn_up_feat 128 --depths 6+6+6+6+6+6 --dims 128+128+128+128+128+128 --mlp_ratios 4+4+4+4+4+4 --batch_size 32"
 # elif [ $size = "b26" ]; then
 #   options="--epochs 1200 --decay 350-700-1000-1100-1150 --srarn_up_feat 128 --depths 6+6+6+6+6+6 --dims 128+128+128+128+128+128 --mlp_ratios 4+4+4+4+4+4 --batch_size 32"
 # ############## model_small #############
