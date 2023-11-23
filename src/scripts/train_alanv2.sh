@@ -94,7 +94,7 @@
 
     # done No5: ./scripts/train_alanv2.sh lam 0 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1
     # done No5: ./scripts/train_alanv2.sh eval 1 1 t nr 3 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1
-    # done No1: ./scripts/train_alanv2.sh eval 0 1 t nr 4 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1
+    # done No1: ./scripts/train_alanv2.sh lam 1 1 t nr 4 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1
 
     # done No1: ./scripts/train_alanv2.sh eval 1 1 xt nr 4 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1
     # done t640: ./scripts/train_alanv2.sh eval 0 1 xt nr 3 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1
@@ -102,7 +102,7 @@
 
     # done No2: ./scripts/train_alanv2.sh eval 0 1 xs nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1
     # done No2: ./scripts/train_alanv2.sh eval 1 1 xs nr 3 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1
-    # done No5: ./scripts/train_alanv2.sh eval 0 1 xs nr 4 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1
+    # done No5: ./scripts/train_alanv2.sh lam 1 1 xs nr 4 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1
 
     # done No1: ./scripts/train_alanv2.sh resume 1 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN Noise 50 0 no SmoothL1
     # done No5: ./scripts/train_alanv2.sh train 1 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN Noise 10 0 no SmoothL1
@@ -121,17 +121,18 @@
 
     # done No7: ./scripts/train_alanv2.sh train 1 1 xs nr 1 48 ms 5e-4 useStageRes no NN ACB 23 BN Blur 0 0 no SmoothL1
 
-      # ablation: 2. LKA size; 3. MLP ratio；4. LKA不使用attention; 5. stage、block等数量设置；6. Loss
-      #2 done No7: ./scripts/train_alanv2.sh lam 0 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 7 BN bicubic 0 0 no SmoothL1
-      #2 done No7: ./scripts/train_alanv2.sh lam 1 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 15 BN bicubic 0 0 no SmoothL1
-      #2 done No2: ./scripts/train_alanv2.sh lam 0 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 31 BN bicubic 0 0 no SmoothL1
-      #2 done No2: ./scripts/train_alanv2.sh lam 1 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 39 BN bicubic 0 0 no SmoothL1
-      #2 done t640: ./scripts/train_alanv2.sh lam 0 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 47 BN bicubic 0 0 no SmoothL1
-      #2 done t640: ./scripts/train_alanv2.sh lam 1 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 55 BN bicubic 0 0 no SmoothL1
+      # ablation: 2. LKA size; 3. MLP ratio；4. LKA不使用attention; 5. stage、block等数量设置；6. Loss; 7. no PA
+      #2 done No7: ./scripts/train_alanv2.sh eval 0 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 7 BN bicubic 0 0 no SmoothL1
+      #2 done No7: ./scripts/train_alanv2.sh eval 0 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 15 BN bicubic 0 0 no SmoothL1
+      #2 done No2: ./scripts/train_alanv2.sh eval 0 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 31 BN bicubic 0 0 no SmoothL1
+      #2 done No2: ./scripts/train_alanv2.sh eval 0 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 39 BN bicubic 0 0 no SmoothL1
+      #2 done t640: ./scripts/train_alanv2.sh eval 0 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 47 BN bicubic 0 0 no SmoothL1
+      #2 done t640: ./scripts/train_alanv2.sh eval 0 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 55 BN bicubic 0 0 no SmoothL1
       #3 done No7: ./scripts/train_alanv2.sh switch 0 1 t_mlp2 nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1
       #4 done No7: ./scripts/train_alanv2.sh switch 1 1 t_noAttn nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1
       #5 pause: ./scripts/train_alanv2.sh train 0 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no SmoothL1
       #6 done No1: ./scripts/train_alanv2.sh switch 1 1 t nr 2 48 ms 5e-4 useStageRes no NN ACB 23 BN bicubic 0 0 no L1
+      #7 training: ./scripts/train_alanv2.sh train 0 1 t nr 2 48 ms 5e-4 useStageRes no NNnPA ACB 23 BN bicubic 0 0 no SmoothL1
 
 
 

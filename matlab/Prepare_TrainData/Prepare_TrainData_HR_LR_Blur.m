@@ -1,11 +1,12 @@
 function Prepare_TrainData_HR_LR_Blur()
 %% settings
-path_save = './DIV2K';
-path_src = './DIV2K/DIV2K_train_HR';
+% path_save = './DIV2K';
+% path_src = './DIV2K/DIV2K_train_HR';
 % path_save = './test';
 % path_src = './test/HR';
-% path_save = './Flickr2K';
-% path_src = './Flickr2K/Flickr2K_HR';
+data_name = 'Custom';
+path_save = ['./', data_name];
+path_src = ['./',data_name,'/',data_name,'_HR'];
 ext               =  {'*.jpg','*.png','*.bmp'};
 filepaths           =  [];
 for i = 1 : length(ext)
@@ -36,8 +37,8 @@ for IdxIm = 1:nb_im
         digit = digit*10;
     end
 
-    FolderLRx3 = fullfile(path_save, 'DIV2K_train_LR_Blur', 'K25N2');
-%     FolderLRx3 = fullfile(path_save, 'Flickr2K_LR_Blur', 'K25N2');
+%     FolderLRx3 = fullfile(path_save, 'DIV2K_train_LR_Blur', 'K25N2');
+    FolderLRx3 = fullfile(path_save, [data_name,'_LR_Blur'], 'K25N2');
     
     if ~exist(FolderLRx3)
         mkdir(FolderLRx3)

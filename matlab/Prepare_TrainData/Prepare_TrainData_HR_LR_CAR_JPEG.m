@@ -1,12 +1,13 @@
 % addpath(genpath('/home/jumpchan/master/develop/practice/SISR/EDSR-PyTorch/matlab/JPEG-Encoder-Decoder'))
 function Prepare_TrainData_HR_LR_CAR_JPEG()
 %% settings
-path_save = './DIV2K';
-path_src = './DIV2K/DIV2K_train_HR';
+% path_save = './DIV2K';
+% path_src = './DIV2K/DIV2K_train_HR';
 % path_save = './test';
 % path_src = './test/HR';
-%path_save = './Flickr2K';
-%path_src = './Flickr2K/Flickr2K_HR';
+data_name = 'Custom';
+path_save = ['./', data_name];
+path_src = ['./',data_name,'/',data_name,'_HR'];
 ext               =  {'*.jpg','*.png','*.bmp'};
 filepaths           =  [];
 for i = 1 : length(ext)
@@ -36,8 +37,8 @@ for quality = quality_all
             digit = digit*10;
         end
     
-        FolderLR = fullfile(path_save, 'DIV2K_train_LR_JPEG', ['Q', num2str(quality)]);
-        %FolderLRx3 = fullfile(path_save, 'Flickr2K_LR_DN', 'X3');
+%         FolderLR = fullfile(path_save, 'DIV2K_train_LR_JPEG', ['Q', num2str(quality)]);
+        FolderLR = fullfile(path_save, [data_name,'_LR_JPEG'], ['Q', num2str(quality)]);
         
         if ~exist(FolderLR)
             mkdir(FolderLR)
