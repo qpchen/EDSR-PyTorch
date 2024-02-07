@@ -27,6 +27,28 @@
 # Try better upsamling for large size model
 #done No4: ./scripts/train_dcanv2.sh resume 3 1 b26 nr 2 48 ms 5e-4 useStageRes no PSnA noACB 23 BN bicubic 0 0 no SmoothL1 DIV2K_IR V2
 
+  # Training Image Restoration IR (!! dataset only DIV2K caused overfit in 70-200 epoch!!)
+    # Noise, 
+    # training No1: ./scripts/train_dcanv2.sh train 5 1 t2 nr 1 128 ms 2e-4 useStageRes no NN noACB 23 BN Noise 15 0 no L1 DIV2K_IR V2
+    # training No1: ./scripts/train_dcanv2.sh train 6 1 t2 nr 1 128 ms 2e-4 useStageRes no NN noACB 23 BN Noise 25 0 no L1 DIV2K_IR V2
+    # training No1: ./scripts/train_dcanv2.sh resume 7 1 t2 nr 1 128 ms 2e-4 useStageRes no NN noACB 23 BN Noise 50 0 no L1 DIV2K_IR V2
+    # pause No1: ./scripts/train_dcanv2.sh train 0 1 t2 nr 1 128 ms 2e-4 useStageRes no NN noACB 23 BN Noise 70 0 no L1 DIV2K_IR V2
+    # Gray_Noise
+    # training No1: ./scripts/train_dcanv2.sh train 2 1 t2 nr 1 128 ms 2e-4 useStageRes no NN noACB 23 BN Gray_Noise 15 0 no L1 DIV2K_IR V2
+    # training No1: ./scripts/train_dcanv2.sh train 3 1 t2 nr 1 128 ms 2e-4 useStageRes no NN noACB 23 BN Gray_Noise 25 0 no L1 DIV2K_IR V2
+    # training No1: ./scripts/train_dcanv2.sh train 4 1 t2 nr 1 128 ms 2e-4 useStageRes no NN noACB 23 BN Gray_Noise 50 0 no L1 DIV2K_IR V2
+    # pause No1: ./scripts/train_dcanv2.sh train 1 1 t2 nr 1 128 ms 2e-4 useStageRes no NN noACB 23 BN Gray_Noise 70 0 no L1 DIV2K_IR V2
+    # Blur, 
+    # training No1: ./scripts/train_dcanv2.sh train 0 1 t2 nr 1 128 ms 2e-4 useStageRes no NN noACB 23 BN Blur 0 0 no L1 DIV2K_IR V2
+    # JPEG, 
+    # training No1: ./scripts/train_dcanv2.sh train 1 1 t2 nr 1 128 ms 2e-4 useStageRes no NN noACB 23 BN JPEG 0 10 no L1 DIV2K_IR V2
+    # training No2: ./scripts/train_dcanv2.sh train 0 1 t2 nr 1 128 ms 2e-4 useStageRes no NN noACB 23 BN JPEG 0 20 no L1 DIV2K_IR V2
+    # training No2: ./scripts/train_dcanv2.sh train 1 1 t2 nr 1 128 ms 2e-4 useStageRes no NN noACB 23 BN JPEG 0 30 no L1 DIV2K_IR V2
+    # training No2: ./scripts/train_dcanv2.sh train 2 1 t2 nr 1 128 ms 2e-4 useStageRes no NN noACB 23 BN JPEG 0 40 no L1 DIV2K_IR V2
+    # BD, 
+    # ./scripts/train_dcanv2.sh train 3 1 t2 nr 3 48 ms 5e-4 useStageRes no NN noACB 23 BN BD 0 0 no L1 DIV2K_IR V2
+    # DN, 
+    # ./scripts/train_dcanv2.sh train 1 1 t2 nr 3 48 ms 5e-4 useStageRes no NN noACB 23 BN DN 0 0 no L1 DIV2K_IR V2
 
 
 # Ablation
@@ -49,32 +71,48 @@
 # LN !!!!!!!!!! maybe the best:
 #done: ./scripts/train_dcanv2.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no L1 DIV2K_IR V2
 #done: ./scripts/train_dcanv2.sh train 1 1 t2 nr 3 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no L1 DIV2K_IR V2
-#retrain No7: ./scripts/train_dcanv2.sh train 0 1 t2 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no L1 DIV2K_IR V2
-#retrain No6: ./scripts/train_dcanv2.sh train 0 1 t2 nr 3 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no L1 DIV2K_IR V2
-#training No7: ./scripts/train_dcanv2.sh resume 1 1 t2 nr 4 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no L1 DIV2K_IR V2
-#training No5: ./scripts/train_dcanv2.sh train 0 1 xt2_dep4 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no L1 DIV2K_IR V2
-#training No3: ./scripts/train_dcanv2.sh train 0 1 xt2_dep4 nr 3 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no L1 DIV2K_IR V2
-#training No3: ./scripts/train_dcanv2.sh train 1 1 xt2_dep4 nr 4 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no L1 DIV2K_IR V2
-#training No2: ./scripts/train_dcanv2.sh train 1 1 b26 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no L1 DIV2K_IR V2
-#training No4: ./scripts/train_dcanv2.sh train 0 1 b26 nr 3 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no L1 DIV2K_IR V2
-#training No4: ./scripts/train_dcanv2.sh train 1 1 b26 nr 4 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no L1 DIV2K_IR V2
+#training No3: ./scripts/train_dcanv2.sh train 1 1 t2 nr 2 48 ms 2e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no L1 DIV2K_IR V2
+#training No3: ./scripts/train_dcanv2.sh train 0 1 t2 nr 3 48 ms 2e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no L1 DIV2K_IR V2
+#training No3: ./scripts/train_dcanv2.sh train 2 1 t2 nr 4 48 ms 2e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no L1 DIV2K_IR V2
+#done No3: ./scripts/train_dcanv2.sh eval 1 1 xt2_dep4 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no L1 DIV2K_IR V2
+#done No3: ./scripts/train_dcanv2.sh eval 2 1 xt2_dep4 nr 3 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no L1 DIV2K_IR V2
+#done No3: ./scripts/train_dcanv2.sh eval 3 1 xt2_dep4 nr 4 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no L1 DIV2K_IR V2
+#pause No1: ./scripts/train_dcanv2.sh resume 0 1 b26 nr 2 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no L1 DIV2K_IR V2   # giveup: retrain at 796(38.290 @763)
+#done No1: ./scripts/train_dcanv2.sh resume 1 1 b26 nr 3 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no L1 DIV2K_IR V2   # giveup: retrain at 818(34.818 @566)
+#pause No1: ./scripts/train_dcanv2.sh resume 2 1 b26 nr 4 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no L1 DIV2K_IR V2   # giveup: retrain at 760(32.804 @554)
+#debug: ./scripts/train_dcanv2.sh train 5 1 b26 nr 8 48 ms 5e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no L1 DIV2K_IR V2
+#giveup No1: ./scripts/train_dcanv2.sh train 0 1 n nr 2 48 ms 2e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no L1 DIV2K_IR V2
+#giveup No1: ./scripts/train_dcanv2.sh train 1 1 n nr 3 48 ms 2e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no L1 DIV2K_IR V2
+#training No1: ./scripts/train_dcanv2.sh train 0 1 b26 nr 2 48 ms 1e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no L1 DIV2K_IR V2
+#training No1: ./scripts/train_dcanv2.sh train 1 1 n nr 3 48 ms 1e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no L1 DIV2K_IR V2
+#training No1: ./scripts/train_dcanv2.sh train 2 1 n nr 4 48 ms 2e-4 useStageRes no NN noACB 23 LN bicubic 0 0 no L1 DIV2K_IR V2
 
-  # Training Image Restoration IR
+  # Training Image Restoration IR (!! dataset only DIV2K caused overfit in 70-200 epoch!!)
     # Noise, 
-    # training No1: ./scripts/train_dcanv2.sh train 0 1 b26 nr 1 48 ms 5e-4 useStageRes no NN noACB 23 LN Noise 15 0 no L1 DIV2K_IR V2
-    # training No1: ./scripts/train_dcanv2.sh train 1 1 b26 nr 1 48 ms 5e-4 useStageRes no NN noACB 23 LN Noise 25 0 no L1 DIV2K_IR V2
-    # training No1: ./scripts/train_dcanv2.sh train 2 1 b26 nr 1 48 ms 5e-4 useStageRes no NN noACB 23 LN Noise 50 0 no L1 DIV2K_IR V2
+    # pause No1: ./scripts/train_dcanv2.sh train 5 1 b26 nr 1 48 ms 4e-7 useStageRes no NN noACB 23 LN Noise 10 0 no L1 DIV2K_IR V2
+    # pause No1: ./scripts/train_dcanv2.sh train 6 1 b26 nr 1 48 ms 4e-7 useStageRes no NN noACB 23 LN Noise 30 0 no L1 DIV2K_IR V2
+    # training No1: ./scripts/train_dcanv2.sh train 5 4 n nr 1 128 ms 2e-4 useStageRes no NN noACB 23 LN Noise 15 0 no L1 DIV2K_IR V2
+    # training No1: ./scripts/train_dcanv2.sh train 6 4 n nr 1 128 ms 2e-4 useStageRes no NN noACB 23 LN Noise 25 0 no L1 DIV2K_IR V2
+    # training No1: ./scripts/train_dcanv2.sh resume 7 4 n nr 1 128 ms 2e-4 useStageRes no NN noACB 23 LN Noise 50 0 no L1 DIV2K_IR V2
+    # pause No1: ./scripts/train_dcanv2.sh train 7 1 b26 nr 1 48 ms 4e-7 useStageRes no NN noACB 23 LN Noise 70 0 no L1 DIV2K_IR V2
     # Gray_Noise
-    # training No1: ./scripts/train_dcanv2.sh train 3 1 b26 nr 1 48 ms 5e-4 useStageRes no NN noACB 23 LN Gray_Noise 15 0 no L1 DIV2K_IR V2
-    # training No1: ./scripts/train_dcanv2.sh train 4 1 b26 nr 1 48 ms 5e-4 useStageRes no NN noACB 23 LN Gray_Noise 25 0 no L1 DIV2K_IR V2
-    # training No1: ./scripts/train_dcanv2.sh train 5 1 b26 nr 1 48 ms 5e-4 useStageRes no NN noACB 23 LN Gray_Noise 50 0 no L1 DIV2K_IR V2
+    # pause No2: ./scripts/train_dcanv2.sh train 0 1 b26 nr 1 48 ms 4e-7 useStageRes no NN noACB 23 LN Gray_Noise 10 0 no L1 DIV2K_IR V2
+    # pause No1: ./scripts/train_dcanv2.sh train 3 1 b26 nr 1 48 ms 4e-7 useStageRes no NN noACB 23 LN Gray_Noise 30 0 no L1 DIV2K_IR V2
+    # waiting No4: ./scripts/train_dcanv2.sh train 0 1 b26 nr 1 48 ms 4e-7 useStageRes no NN noACB 23 LN Gray_Noise 15 0 no L1 DIV2K_IR V2
+    # training No1: ./scripts/train_dcanv2.sh train 3 4 n nr 1 128 ms 2e-4 useStageRes no NN noACB 23 LN Gray_Noise 25 0 no L1 DIV2K_IR V2
+    # training No1: ./scripts/train_dcanv2.sh train 4 4 n nr 1 128 ms 2e-4 useStageRes no NN noACB 23 LN Gray_Noise 50 0 no L1 DIV2K_IR V2
+    # pause No1: ./scripts/train_dcanv2.sh train 5 1 b26 nr 1 48 ms 4e-7 useStageRes no NN noACB 23 LN Gray_Noise 70 0 no L1 DIV2K_IR V2
     # Blur, 
-    # training No1: ./scripts/train_dcanv2.sh train 6 1 b26 nr 1 48 ms 5e-4 useStageRes no NN noACB 23 LN Blur 0 0 no L1 DIV2K_IR V2
+    # pause No2: ./scripts/train_dcanv2.sh resume 3 1 b26 nr 1 48 ms 1e-5 useStageRes no NN noACB 23 LN Blur 0 0 no L1 DIV2K_IR V2
+    # waiting No2: ./scripts/train_dcanv2.sh resume 3 4 n nr 1 128 ms 2e-4 useStageRes no NN noACB 23 LN Blur 0 0 no L1 DIV2K_IR V2
     # JPEG, 
-    # training No1: ./scripts/train_dcanv2.sh train 7 1 b26 nr 1 48 ms 5e-4 useStageRes no NN noACB 23 LN JPEG 0 10 no L1 DIV2K_IR V2
-    # training No2: ./scripts/train_dcanv2.sh train 0 1 b26 nr 1 48 ms 5e-4 useStageRes no NN noACB 23 LN JPEG 0 20 no L1 DIV2K_IR V2
-    # training No8: ./scripts/train_dcanv2.sh train 1 1 b26 nr 1 48 ms 5e-4 useStageRes no NN noACB 23 LN JPEG 0 30 no L1 DIV2K_IR V2
-    # training No8: ./scripts/train_dcanv2.sh train 0 1 b26 nr 1 48 ms 5e-4 useStageRes no NN noACB 23 LN JPEG 0 40 no L1 DIV2K_IR V2
+    # training No2: ./scripts/train_dcanv2.sh train 0 1 n nr 1 48 ms 4e-5 useStageRes no NN noACB 23 LN JPEG 0 10 no L1 DIV2K_IR V2
+    # training No2: ./scripts/train_dcanv2.sh train 1 1 n nr 1 48 ms 4e-5 useStageRes no NN noACB 23 LN JPEG 0 20 no L1 DIV2K_IR V2
+    # training No2: ./scripts/train_dcanv2.sh resume 2 1 n nr 1 48 ms 4e-5 useStageRes no NN noACB 23 LN JPEG 0 30 no L1 DIV2K_IR V2
+    # waiting No2: ./scripts/train_dcanv2.sh train 0 4 n nr 1 128 ms 2e-4 useStageRes no NN noACB 23 LN JPEG 0 10 no L1 DIV2K_IR V2
+    # waiting No2: ./scripts/train_dcanv2.sh train 1 4 n nr 1 128 ms 2e-4 useStageRes no NN noACB 23 LN JPEG 0 20 no L1 DIV2K_IR V2
+    # waiting No2: ./scripts/train_dcanv2.sh resume 2 4 n nr 1 128 ms 2e-4 useStageRes no NN noACB 23 LN JPEG 0 30 no L1 DIV2K_IR V2
+    # waiting No4: ./scripts/train_dcanv2.sh train 0 1 n nr 1 48 ms 4e-5 useStageRes no NN noACB 23 LN JPEG 0 40 no L1 DIV2K_IR V2
     # BD, 
     # ./scripts/train_dcanv2.sh train 3 1 b26 nr 3 48 ms 5e-4 useStageRes no NN noACB 23 LN BD 0 0 no L1 DIV2K_IR V2
     # DN, 
@@ -154,6 +192,8 @@ elif [ $size = "xs" ]; then
   options="--epochs 1500 --decay 750-1200-1350-1425 --srarn_up_feat 60 --depths 6+6+6+6 --dims 60+60+60+60 --mlp_ratios 4+4+4+4 --batch_size 32"
 elif [ $size = "xs2" ]; then
   options="--epochs 1500 --decay 750-1200-1350-1425 --srarn_up_feat 64 --depths 6+6+6+6 --dims 64+64+64+64 --mlp_ratios 4+4+4+4 --batch_size 32"
+elif [ $size = "s2" ]; then
+  options="--epochs 2000 --decay 1000-1600-1800-1900 --srarn_up_feat 64 --depths 4+4+4 --dims 64+64+64 --mlp_ratios 4+4+4 --batch_size 32"
 # ############## model_tiny #############
 elif [ $size = "t" ]; then
   options="--epochs 2000 --decay 1000-1600-1800-1900 --srarn_up_feat 42 --depths 6+6+6 --dims 42+42+42 --mlp_ratios 4+4+4 --batch_size 32"

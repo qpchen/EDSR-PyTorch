@@ -13,9 +13,10 @@
                 "--n_GPUs",
                 "1",
                 "--scale",
-                "2",
+                // "2",
                 // "3",
                 // "4",
+                "8",
                 // "1",
                 "--degradation",
                 "bicubic",
@@ -31,7 +32,7 @@
                 // "144",
                 // "192",
                 // "128",               // A2N/SwinIR-L for larger dataset like Flickr2K
-                // "192",
+                // "384",
                 // "256",
                 "--batch_size",
                 "4",  // test
@@ -44,7 +45,8 @@
                 // "Flickr2K",
                 // "DF2K",
                 "--data_range",
-                "1-900",
+                "1-800",
+                // "1-900",
                 // "1-2650",
                 // "1-3550",
                 "--data_test",
@@ -182,7 +184,8 @@
                 // "RAAN",
                 // "ALANV2",
                 // "DCAN",
-                "DCANV3",
+                "DCANV2",
+                // "DCANV3",
                 // "--down_fea",
                 // "--use_wave",
                 // "--wave_patchup",
@@ -221,7 +224,7 @@
             ],
             "env": {
                 "PYTHONUNBUFFERED": "1",
-                "CUDA_VISIBLE_DEVICES": "1"
+                "CUDA_VISIBLE_DEVICES": "0"
             },
             "console": "integratedTerminal",
             "justMyCode": true
