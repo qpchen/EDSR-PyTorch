@@ -143,6 +143,8 @@ elif [ $size = "b2" ]; then
   options="--epochs 1000 --decay 500-800-900-950 --srarn_up_feat 128 --depths 6+6+6+6+6+6+6+6 --dims 128+128+128+128+128+128+128+128 --mlp_ratios 4+4+4+4+4+4+4+4 --batch_size 32"
 elif [ $size = "b26" ]; then
   options="--epochs 1000 --decay 200-500-800-900-950 --srarn_up_feat 128 --depths 6+6+6+6+6+6 --dims 128+128+128+128+128+128 --mlp_ratios 4+4+4+4+4+4 --batch_size 32"
+elif [ $size = "n" ]; then
+  options="--epochs 1000 --decay 500-800-900-950 --srarn_up_feat 128 --depths 6+6+6+6+6+6 --dims 128+128+128+128+128+128 --mlp_ratios 4+4+4+4+4+4 --batch_size 32"
 # elif [ $size = "b26" ]; then
 #   options="--epochs 1200 --decay 350-700-1000-1100-1150 --srarn_up_feat 128 --depths 6+6+6+6+6+6 --dims 128+128+128+128+128+128 --mlp_ratios 4+4+4+4+4+4 --batch_size 32"
 # ############## model_small #############
@@ -162,7 +164,7 @@ elif [ $size = "t_noAttn" ]; then
 # elif [ $size = "t2" ]; then
 #   options="--epochs 2000 --decay 1000-1600-1800-1900 --srarn_up_feat 48 --depths 6+6+6 --dims 48+48+48 --mlp_ratios 4+4+4 --batch_size 32"
 elif [ $size = "t2" ]; then
-  options="--epochs 2000 --decay 800-1200-1600-1800-1900 --srarn_up_feat 48 --depths 6+6+6 --dims 48+48+48 --mlp_ratios 4+4+4 --batch_size 32"
+  options="--epochs 2000 --decay 1600-1800-1900 --srarn_up_feat 48 --depths 6+6+6 --dims 48+48+48 --mlp_ratios 4+4+4 --batch_size 32"
 elif [ $size = "t2_noAttn" ]; then
   options="--epochs 2000 --decay 1000-1600-1800-1900 --srarn_up_feat 48 --depths 6+6+6 --dims 48+48+48 --mlp_ratios 4+4+4 --batch_size 32 --no_attn"
 # ############## model_xt extremely tiny #############
