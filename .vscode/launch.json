@@ -3,7 +3,7 @@
     "configurations": [
         {
             "name": "Python: Current File",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             // "program": "${workspaceFolder}/src/lam.py",
@@ -13,10 +13,10 @@
                 "--n_GPUs",
                 "1",
                 "--scale",
-                // "2",
+                "2",
                 // "3",
                 // "4",
-                "8",
+                // "8",
                 // "1",
                 "--degradation",
                 "bicubic",

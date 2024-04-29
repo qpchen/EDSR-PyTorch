@@ -74,6 +74,7 @@ target/
 *.out
 
 *.tar
+*.tar.gz
 
 # Jupyter temp file
 *.ipynb_checkpoints/
