@@ -47,6 +47,7 @@ We provide scripts for reproducing all the results from our paper. You can train
 * timm
 * mmdet
 * pytorch_wavelets
+* pywavelets
 
 
 ## Code
@@ -76,13 +77,14 @@ pip install torch==1.10.1+cu111 torchvision==0.11.2+cu111 torchaudio==0.10.1 -f 
 ```bash
 pip install -U openmim
 mim install mmcv-full==1.5.0
+mim install mmsegmentation==0.27.0
 pip install timm==0.6.11 mmdet==2.28.1
 ```
 
 - Install other requirements:
 
 ```bash
-pip install opencv-python termcolor yacs pyyaml scipy scikit-image imageio matplotlib tqdm torchinfo thop pytorch_wavelets
+pip install opencv-python termcolor yacs pyyaml scipy scikit-image imageio matplotlib tqdm torchinfo thop pytorch_wavelets pywavelets
 ```
 
 - Compiling CUDA operators

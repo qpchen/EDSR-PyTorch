@@ -68,6 +68,9 @@ elif [ $model = "v8" ]; then
 #   python main.py --n_threads 6 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --res_connect 1acb3 $dim_configs --model SRARNV5 --save ../runtime_models/logs/v5$2_x$3 --pre_train ../runtime_models/v5$2_x$3.pt --test_only --load_inf --reset --runtime --times $5 $6 #--no_count --save_result 
 elif [ $model = "v5" ]; then
   python main.py --n_threads 6 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --res_connect 1acb3 $dim_configs --model SRARNV5 --save ../runtime_models/logs/v5$2_x$3 --pre_train ../runtime_models/v5$2_x$3.pt --test_only --load_inf --reset --runtime --times $5 $6 #--no_count --save_result 
+elif [ $model = "v9" ]; then
+  # ./scripts/train_srarn_v9.sh train 0 1 fbxt b 2 64 ms 1acb3 1acb3 batch befln nolr 2e-4 bicubic 0 0
+  python main.py --n_threads 6 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --res_connect 1acb3 --deep_conv 1acb3 --acb_norm batch --norm_at before $dim_configs --upsampling Nearest --model SRARNV9 --save ../runtime_models/logs/v9$2_x$3 --pre_train ../runtime_models/v9$2_x$3.pt --test_only --load_inf --reset --runtime --times $5 $6 #--no_count --save_result 
 elif [ $model = "IMDN" ]; then
   python main.py --n_threads 6 --scale $3 --patch_size $patch --batch_size 32 --data_test 720P --n_colors 3 --model IMDN --save ../runtime_models/logs/IMDN_x$3 --pre_train ../runtime_models/IMDN_x$3.pth --test_only --reset --runtime --times $5 $6 #--no_count --save_result 
 elif [ $model = "LAPAR_A" ]; then
