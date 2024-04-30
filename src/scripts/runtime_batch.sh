@@ -7,6 +7,7 @@
 # ./scripts/runtime_batch.sh "v5" 64 "fblt fbt fbxt" "2 3 4" "--save_result --no_count --cpu --times 50"
 # ./scripts/runtime_batch.sh "FSRCNN SRCNN" 64 "no" "2 3 4" "--save_result --no_count --n_GPUs 1 --times 50"
 # ./scripts/runtime_batch.sh "IMDN LAPAR_A LAPAR_B LAPAR_C CARN LatticeNet LBNet LBNet-T ESRT IDN LapSRN DRRN EDSR-baseline RCAN" 48 "no" "2 3 4" "--save_result --no_count --n_GPUs 1 --times 50"
+# ./scripts/runtime_batch.sh "LBNet LBNet-T ESRT IDN LapSRN DRRN" 48 "no" "2 3 4" "--save_result --no_count --n_GPUs 1 --times 50"
 # ./scripts/runtime_batch.sh "v9" 64 "fblt fbxt" "2 3 4" "--save_result --no_count --n_GPUs 1 --times 50"
 # ./scripts/runtime_batch.sh "v9" 48 "fs" "2 3 4" "--save_result --no_count --n_GPUs 1 --times 50"
 # ./scripts/runtime_batch.sh "ALAN" 48 "v1xt v1t v1xs v1s" "2 3 4" "--save_result --no_count --n_GPUs 1 --times 50"
